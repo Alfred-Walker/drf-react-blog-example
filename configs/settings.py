@@ -14,7 +14,7 @@ import os
 
 from django.core.exceptions import ImproperlyConfigured
 
-with open("conf/privates.json") as f:
+with open("configs/privates.json") as f:
     privates = json.loads(f.read())
 
 
