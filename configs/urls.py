@@ -35,5 +35,6 @@ urlpatterns = [
     url(r'^rest-auth/google/', GoogleLogin.as_view(), name='google_login'),
     url(r'^rest-auth/kakao/', KakaoLogin.as_view(), name='kakao_login'),
     path('admin/', admin.site.urls),
+    path('rest-auth/', include(router.urls)),
     path('', include(router.urls)),
 ]
