@@ -16,15 +16,20 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework import routers
 from rest_framework_swagger.views import get_swagger_view
 
-from . import views
+from users import views
 
 schema_view = get_swagger_view(title='StudyReview API')
 
+router = routers.DefaultRouter()
+router.register(r'users', views.UserViewSet)
+router.register(r'groups', views.GroupViewSet)
+
 urlpatterns = [
-    path('', views.Home.as_view(), name='home'),
-    path('admin/', admin.site.urls),
     url(r'^api/$', schema_view),
-    url(r'^accounts/', include('allauth.urls')),
+    url(r'^rest-auth/', include('rest_auth.urls')),
+    path('admin/', admin.site.urls),
+    path('', include(router.urls)),
 ]
