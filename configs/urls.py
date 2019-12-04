@@ -18,9 +18,13 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework_swagger.views import get_swagger_view
 
+from . import views
+
 schema_view = get_swagger_view(title='StudyReview API')
 
 urlpatterns = [
+    path('', views.Home.as_view(), name='home'),
     path('admin/', admin.site.urls),
-    url(r'^api/$', schema_view)
+    url(r'^api/$', schema_view),
+    url(r'^accounts/', include('allauth.urls')),
 ]

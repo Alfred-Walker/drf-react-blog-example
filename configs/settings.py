@@ -54,6 +54,22 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+
+    # for custom widgets
+    'django.forms',
+
+    # django-allauth modules
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
+    # django-allauth providers
+    'allauth.socialaccount.providers.kakao',
+    'allauth.socialaccount.providers.google',
+
+    # custom user app
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -71,7 +87,7 @@ ROOT_URLCONF = 'configs.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -141,4 +157,45 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
+}
+
+# default site of the project
+# ('django.contrib.sites' requires SITE_ID)
+SITE_ID = 1
+
+# use email as authentication method
+# (you can use 'name')
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+
+# custom user model
+AUTH_USER_MODEL = 'users.User'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+
+    # 'allauth' specific authentication method
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+# redirect config for sign-in and sign-out authentication
+#ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True
+#ACCOUNT_AUTHENTICATED_LOGOUT_REDIRECTS = True
+#LOGIN_REDIRECT_URL = "/"
+#ACCOUNT_LOGOUT_REDIRECT_URL = "/"
+
+# email verification
+# ('none' or 'optional')
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+# custom signin / signup form
+ACCOUNT_FORMS = {
+    'login': 'users.forms.CustomLoginForm',
+    'signup': 'users.forms.CustomSignupForm',
+    'change_password': 'users.forms.CustomChangePasswordForm',
+    'set_password': 'users.forms.CustomSetPasswordForm',
+    'reset_password': 'users.forms.CustomResetPasswordForm',
+    'reset_password_from_key': 'users.forms.CustomResetPasswordKeyForm',
 }
