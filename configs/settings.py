@@ -46,8 +46,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'rest_framework',
-    'rest_framework_swagger',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -58,6 +56,17 @@ INSTALLED_APPS = [
 
     # for custom widgets
     'django.forms',
+
+    # django-rest-framework modules
+    'rest_framework',
+    'rest_framework.authtoken',
+
+    # # django-rest-auth modules
+    'rest_auth',
+    'rest_auth.registration',
+
+    # swagger for api documentation
+    'rest_framework_swagger',
 
     # django-allauth modules
     'allauth',
@@ -154,9 +163,12 @@ STATIC_URL = '/static/'
 
 # pagination
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
-    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
 }
 
 # default site of the project

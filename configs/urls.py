@@ -20,6 +20,7 @@ from rest_framework import routers
 from rest_framework_swagger.views import get_swagger_view
 
 from users import views
+from .views import GoogleLogin, KakaoLogin
 
 schema_view = get_swagger_view(title='StudyReview API')
 
@@ -30,6 +31,9 @@ router.register(r'groups', views.GroupViewSet)
 urlpatterns = [
     url(r'^api/$', schema_view),
     url(r'^rest-auth/', include('rest_auth.urls')),
+    url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
+    url(r'^rest-auth/google/', GoogleLogin.as_view(), name='google_login'),
+    url(r'^rest-auth/kakao/', KakaoLogin.as_view(), name='kakao_login'),
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
 ]
