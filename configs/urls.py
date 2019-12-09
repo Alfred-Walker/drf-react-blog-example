@@ -16,25 +16,58 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework import routers
-from rest_framework_swagger.views import get_swagger_view
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_auth.views import LoginView, LogoutView
+from rest_framework import permissions, routers
+from rest_framework.authtoken.views import obtain_auth_token
 
 from users import views
 from .views import GoogleLogin, KakaoLogin
 
-schema_view = get_swagger_view(title='StudyReview API')
 
+# In the latest DRF, you need to explicitly set base_name in your viewset url
+# (if you don't have queryset defined)
 router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
-router.register(r'groups', views.GroupViewSet)
+router.register(r'users', views.UserViewSet, base_name='users')
+router.register(r'groups', views.GroupViewSet, base_name='groups')
+
+schema_view = get_schema_view(
+   openapi.Info(
+      title="StudyReview API",
+      default_version='v1',
+      description="Test description",
+      terms_of_service="https://www.google.com/policies/terms/",
+      contact=openapi.Contact(email="studio.alfred.walker@gmail.com"),
+      license=openapi.License(name="MIT License"),
+   ),
+   # validators=['flex'], # JSON schema validator package
+   public=True,
+   permission_classes=(permissions.AllowAny,),
+)
 
 urlpatterns = [
-    url(r'^api/$', schema_view),
-    url(r'^rest-auth/', include('rest_auth.urls')),
+    # 4 endpoints for drf-yasg
+    #    1. A JSON view of your API specification at /swagger.json
+    #    2. A YAML view of your API specification at /swagger.yaml
+    #    3. A swagger-ui view of your API specification at /swagger/
+    #    4. A ReDoc view of your API specification at /redoc/
+    url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    url(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^api/get_token/$', obtain_auth_token),
+
+    # DO NOT INCLUDE WHOLE REST_AUTH ALL URLS. An error will happen. (rest-auth issue?)
+    # => django.core.exceptions.ImproperlyConfigured: Field name `username` is not valid for model `User`.
+    # url(r'^rest-auth/', include('rest_auth.urls')),
     url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
+    url(r'^rest-auth/login/$', LoginView.as_view(), name='rest_login'),
+    url(r'^rest-auth/logout/$', LogoutView.as_view(), name='rest_logout'),
     url(r'^rest-auth/google/', GoogleLogin.as_view(), name='google_login'),
     url(r'^rest-auth/kakao/', KakaoLogin.as_view(), name='kakao_login'),
-    path('admin/', admin.site.urls),
-    path('rest-auth/', include(router.urls)),
+
     path('', include(router.urls)),
+    path('admin/', admin.site.urls),
 ]

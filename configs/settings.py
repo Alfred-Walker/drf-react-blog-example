@@ -65,8 +65,8 @@ INSTALLED_APPS = [
     'rest_auth',
     'rest_auth.registration',
 
-    # swagger for api documentation
-    'rest_framework_swagger',
+    # drf-yasg for auto-documentation
+    'drf_yasg',
 
     # django-allauth modules
     'allauth',
@@ -161,15 +161,25 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# pagination
+# see about permissions 'rest_framework.permissions'
 REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
-    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.AutoSchema',
 }
+
+# The URL to use to log in(or out) session authentication.
+# Accepts named URL patterns.
+LOGIN_URL = 'rest_framework:login'
+LOGOUT_URL = 'rest_framework:logout'
 
 # default site of the project
 # ('django.contrib.sites' requires SITE_ID)
@@ -177,10 +187,11 @@ SITE_ID = 1
 
 # use email as authentication method
 # (you can use 'name')
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
 
 # custom user model
 AUTH_USER_MODEL = 'users.User'
@@ -210,4 +221,19 @@ ACCOUNT_FORMS = {
     'set_password': 'users.forms.CustomSetPasswordForm',
     'reset_password': 'users.forms.CustomResetPasswordForm',
     'reset_password_from_key': 'users.forms.CustomResetPasswordKeyForm',
+}
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'api_key': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization'
+        }
+    },
+}
+
+# custom rest_auth serializers
+REST_AUTH_REGISTER_SERIALIZERS = {
+        'REGISTER_SERIALIZER': 'users.serializers.RegistrationSerializer',
 }
