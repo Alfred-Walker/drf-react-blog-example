@@ -37,5 +37,7 @@ class Study(models.Model):
 
     notification_enabled = models.BooleanField(blank=False, null=False, default=True)
 
+    is_public = models.BooleanField(default=False)
+
     def __str__(self):
         return self.title
