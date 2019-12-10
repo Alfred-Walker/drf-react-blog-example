@@ -79,6 +79,7 @@ INSTALLED_APPS = [
 
     # custom user app
     'users',
+    'studies',
 ]
 
 MIDDLEWARE = [
