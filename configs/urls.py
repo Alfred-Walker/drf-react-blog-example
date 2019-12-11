@@ -56,7 +56,10 @@ urlpatterns = [
     url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     url(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
+    # default rest_framework auth url
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+
+    #
     url(r'^api/get_token/$', obtain_auth_token),
 
     # DO NOT INCLUDE WHOLE REST_AUTH ALL URLS. An error will happen. (rest-auth issue?)
@@ -65,9 +68,11 @@ urlpatterns = [
     url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
     url(r'^rest-auth/login/$', LoginView.as_view(), name='rest_login'),
     url(r'^rest-auth/logout/$', LogoutView.as_view(), name='rest_logout'),
-    url(r'^rest-auth/google/', GoogleLogin.as_view(), name='google_login'),
-    url(r'^rest-auth/kakao/', KakaoLogin.as_view(), name='kakao_login'),
+    url(r'^rest-auth/login/google/', GoogleLogin.as_view(), name='google_login'),
+    url(r'^rest-auth/login/kakao/', KakaoLogin.as_view(), name='kakao_login'),
 
     path('', include(router.urls)),
     path('admin/', admin.site.urls),
+
+    path('study/', include('studies.urls'))
 ]
