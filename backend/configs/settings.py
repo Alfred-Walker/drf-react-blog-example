@@ -80,6 +80,9 @@ INSTALLED_APPS = [
     # custom user app
     'users',
     'studies',
+
+    # CORS for React (Cross-Origin Resource Sharing)
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
