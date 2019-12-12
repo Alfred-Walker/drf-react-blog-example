@@ -249,5 +249,5 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 
 # CORS whitelist
 CORS_ORIGIN_WHITELIST = (
-    'localhost:3000/',
+    'http://localhost:3000',
 )
