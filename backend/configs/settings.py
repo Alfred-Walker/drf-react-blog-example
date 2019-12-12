@@ -86,6 +86,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -241,3 +242,8 @@ SWAGGER_SETTINGS = {
 REST_AUTH_REGISTER_SERIALIZERS = {
         'REGISTER_SERIALIZER': 'users.serializers.RegistrationSerializer',
 }
+
+# CORS whitelist
+CORS_ORIGIN_WHITELIST = (
+    'localhost:3000/',
+)
