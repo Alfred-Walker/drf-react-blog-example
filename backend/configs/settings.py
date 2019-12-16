@@ -29,7 +29,7 @@ def get_private(key, privates_json=privates):
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+FRONT_DIR = os.path.abspath(os.path.join(BASE_DIR, '../frontend'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -101,7 +101,7 @@ ROOT_URLCONF = 'configs.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'frontend', 'build')],
+        'DIRS': [os.path.join(FRONT_DIR, 'build')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -115,7 +115,7 @@ TEMPLATES = [
 ]
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'frontend', 'build', 'static')
+    os.path.join(FRONT_DIR, 'build', 'static')
 ]
 
 WSGI_APPLICATION = 'configs.wsgi.application'
@@ -247,7 +247,17 @@ REST_AUTH_REGISTER_SERIALIZERS = {
         'REGISTER_SERIALIZER': 'users.serializers.RegistrationSerializer',
 }
 
+# local dev setting
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+
+# publish setting
+# CORS_ORIGIN_ALLOW_ALL = False
+
 # CORS whitelist
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
+    'http://localhost:8000',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:8000',
 )
