@@ -27,7 +27,7 @@ class Study(models.Model):
     registered_date = models.DateTimeField(default=datetime.now())
 
     # last notification date
-    last_review_date = models.DateTimeField(null=True)
+    last_review_date = models.DateTimeField(blank=True, null=True)
 
     # review notification count
     review_count = models.PositiveIntegerField(default=0)
