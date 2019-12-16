@@ -1,7 +1,7 @@
 from django.db.models import Q
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
 from rest_framework.response import Response
 
 from .serializers import *
@@ -10,6 +10,7 @@ from .models import Study
 
 class StudyViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,)
+    # permission_classes = (AllowAny,)
     serializer_class = StudySerializer
 
     # HTTP GET /study/list/
@@ -26,13 +27,13 @@ class StudyViewSet(viewsets.ModelViewSet):
             else:
                 criteria = (
                         (Q(title__icontains=search) | Q(body__icontains=search)) &
-                        (Q(is_public=True) | Q(foreignkey_field=self.request.user))
+                        (Q(is_public=True) | Q(user_id=self.request.user.id))
                 )
         else:
             if self.request.user.is_superuser:
                 criteria = Q()
             else:
-                criteria = (Q(is_public=True) | Q(foreignkey_field=self.request.user))
+                criteria = (Q(is_public=True) | Q(user_id=self.request.user.id))
 
         queryset = Study.objects.filter(criteria).order_by('-registered_date')
 
