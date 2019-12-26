@@ -6,9 +6,7 @@ import { Button, Form, Segment, Header } from 'semantic-ui-react'
 function ContactForm() {
     return (
         <div className="form">
-            <Segment>
-                <Header as="h2">Contact Form</Header>
-            </Segment>
+            <Header as="h2">Contact</Header>
             <Form>
                 <Form.Field>
                     <label>First Name</label>
@@ -18,8 +16,8 @@ function ContactForm() {
                     <label>Last Name</label>
                     <input placeholder='Last Name' />
                 </Form.Field>
-                <Form.TextArea label='About'
-                placeholder='Tell us more about you...' />
+                <Form.TextArea rows={5} label='About'
+                placeholder='Ask me anything you want' />
                 <Button type='submit' color="blue">Submit</Button>
             </Form>
         </div>
