@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { Menu } from 'semantic-ui-react'
+import { NavLink, Route, BrowserRouter as Router } from "react-router-dom";
+
 
 /* Tutorial Reference*/
 /* https://reactgo.com/semantic-ui-react/ */
-function NavigationBar() {
+function NavigationBar(props) {
     return (
         <Menu fixed='top' pointing>
-            <Menu.Item  name='home' href="/"/>
-            <Menu.Item  name='new' href="/study/new"/>
-            <Menu.Item  name='studies' href="/study/list"/>
-            <Menu.Item  name='contact' href="/contact"/>
+            <Menu.Item as={NavLink} exact to="/" activeClassName="active" name='home'/>
+            <Menu.Item as={NavLink} to="/study/new" activeClassName="active" name='new'/>
+            <Menu.Item as={NavLink} to="/study/list" activeClassName="active" name='studies'/>
+            <Menu.Item as={NavLink} exact to="/contact" activeClassName="active" name='contact'/>
         </Menu>
     )
 }
