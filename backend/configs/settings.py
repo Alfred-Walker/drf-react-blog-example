@@ -171,6 +171,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # see about permissions 'rest_framework.permissions'
+# (DEFAULT_AUTHENTICATION_CLASSES's order is descending order)
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
