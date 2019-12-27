@@ -9,10 +9,12 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
+import datetime
 import json
 import os
 
 from django.core.exceptions import ImproperlyConfigured
+
 
 with open("configs/privates.json") as f:
     privates = json.loads(f.read())
@@ -177,7 +179,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.JSONWebTokenAuthentication',
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
@@ -185,6 +187,16 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.AutoSchema',
+}
+
+# JWT_EXPIRATION_DELTA: force logout if there was no refresh in last days
+# JWT_REFRESH_EXPIRATION_DELTA: force logout after 28 days passed
+JWT_AUTH = {
+    'JWT_SECRET_KEY': get_private("SECRET_KEY_JWT"),
+    'JWT_ALGORITHM': 'HS256',
+    'JWT_ALLOW_REFRESH': True,
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=28),
 }
 
 # The URL to use to log in(or out) session authentication.
@@ -259,7 +271,5 @@ CORS_ALLOW_CREDENTIALS = True
 # CORS whitelist
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
-    'http://localhost:8000',
     'http://127.0.0.1:3000',
-    'http://127.0.0.1:8000',
 )
