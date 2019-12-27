@@ -189,6 +189,9 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.AutoSchema',
 }
 
+# Enable JWT authentication for django-rest-auth
+REST_USE_JWT = True
+
 # JWT_EXPIRATION_DELTA: force logout if there was no refresh in last days
 # JWT_REFRESH_EXPIRATION_DELTA: force logout after 28 days passed
 JWT_AUTH = {
