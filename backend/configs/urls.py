@@ -21,6 +21,7 @@ from drf_yasg.views import get_schema_view
 from rest_auth.views import LoginView, LogoutView
 from rest_framework import permissions, routers
 from rest_framework.authtoken.views import obtain_auth_token
+from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
 
 from users import views
 from .views import GoogleLogin, KakaoLogin
@@ -73,6 +74,9 @@ urlpatterns = [
 
     path('', include(router.urls)),
     path('admin/', admin.site.urls),
+    path('study/', include('studies.urls')),
 
-    path('study/', include('studies.urls'))
+    url(r'^jwt-auth/$', obtain_jwt_token),
+    url(r'^jwt-auth/refresh/$', refresh_jwt_token),
+    url(r'^jwt-auth/verify/$', verify_jwt_token),
 ]
