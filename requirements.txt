@@ -10,6 +10,7 @@ django-allauth==0.40.0
 django-cors-headers==3.2.0
 django-rest-auth==0.9.5
 djangorestframework==3.10.3
+djangorestframework-jwt==1.11.0
 drf-yasg==1.17.0
 flex==6.14.1
 idna==2.8
@@ -24,6 +25,7 @@ more-itertools==8.0.2
 oauthlib==3.1.0
 packaging==19.2
 pip-autoremove==0.9.1
+PyJWT==1.7.1
 pyparsing==2.4.2
 pyrsistent==0.15.6
 python3-openid==3.1.0
