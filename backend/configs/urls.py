@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
-from rest_auth.views import LoginView, LogoutView
+# from rest_auth.views import LoginView, LogoutView
 from rest_framework import permissions, routers
 from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
@@ -63,12 +63,13 @@ urlpatterns = [
     #
     url(r'^api/get_token/$', obtain_auth_token),
 
-    # DO NOT INCLUDE WHOLE REST_AUTH ALL URLS. An error will happen. (rest-auth issue?)
+    # DO NOT INCLUDE WHOLE REST_AUTH ALL URLS. An error will happen. (1~3., rest-auth issue?)
     # => django.core.exceptions.ImproperlyConfigured: Field name `username` is not valid for model `User`.
-    # url(r'^rest-auth/', include('rest_auth.urls')),
+    # 1. url(r'^rest-auth/', include('rest_auth.urls')),
+    # 2. url(r'^rest-auth/login/$', LoginView.as_view(), name='rest_login'),
+    # 3. url(r'^rest-auth/logout/$', LogoutView.as_view(), name='rest_logout'),
+
     url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
-    url(r'^rest-auth/login/$', LoginView.as_view(), name='rest_login'),
-    url(r'^rest-auth/logout/$', LogoutView.as_view(), name='rest_logout'),
     url(r'^rest-auth/login/google/', GoogleLogin.as_view(), name='google_login'),
     url(r'^rest-auth/login/kakao/', KakaoLogin.as_view(), name='kakao_login'),
 

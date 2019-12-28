@@ -180,9 +180,9 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.BasicAuthentication',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
@@ -200,6 +200,7 @@ JWT_AUTH = {
     'JWT_ALLOW_REFRESH': True,
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=28),
+    'JWT_RESPONSE_PAYLOAD_HANDLER': 'users.utils.jwt_payload_handler',
 }
 
 # The URL to use to log in(or out) session authentication.
@@ -260,8 +261,13 @@ SWAGGER_SETTINGS = {
 }
 
 # custom rest_auth serializers
+# https://github.com/Tivix/django-rest-auth/blob/master/docs/configuration.rst
+REST_AUTH_SERIALIZERS = {
+        'USER_DETAILS_SERIALIZER': 'users.serializers.UserDetailSerializer'
+}
+
 REST_AUTH_REGISTER_SERIALIZERS = {
-        'REGISTER_SERIALIZER': 'users.serializers.RegistrationSerializer',
+        'REGISTER_SERIALIZER': 'users.serializers.UserRegistrationSerializerWithToken',
 }
 
 # local dev setting
