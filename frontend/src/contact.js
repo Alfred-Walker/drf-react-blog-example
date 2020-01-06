@@ -3,7 +3,7 @@ import { Button, Form, Segment, Header } from 'semantic-ui-react'
 
 /* Tutorial Reference*/
 /* https://reactgo.com/semantic-ui-react/ */
-function ContactForm() {
+function ContactForm(props) {
     return (
         <div className="form">
             <Header as="h2">Contact</Header>

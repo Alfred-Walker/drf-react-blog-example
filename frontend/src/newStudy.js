@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Form, Segment, Header, Label, List } from 'semantic-ui-react'
 
 
-function NewStudyForm() {
+function NewStudyForm(props) {
     return (
         <div className="form">
             <Header as="h2">New Study</Header>

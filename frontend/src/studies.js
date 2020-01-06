@@ -3,7 +3,7 @@ import { Button, Grid, Header, Image, Label, List, Segment} from 'semantic-ui-re
 import { studies } from './dummy-studies';
 
 
-function Studies() {
+function Studies(props) {
     return (
         <Grid centered columns={1} doubling> {
                     studies.map(study =>
