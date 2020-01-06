@@ -42,7 +42,7 @@ schema_view = get_schema_view(
       contact=openapi.Contact(email="studio.alfred.walker@gmail.com"),
       license=openapi.License(name="MIT License"),
    ),
-   # validators=['flex'], # JSON schema validator package
+   validators=['flex'],     # JSON schema validator package
    public=True,
    permission_classes=(permissions.AllowAny,),
 )
@@ -57,13 +57,7 @@ urlpatterns = [
     url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     url(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
-    # default rest_framework auth url
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-
-    #
-    url(r'^api/get_token/$', obtain_auth_token),
-
-    # DO NOT INCLUDE WHOLE REST_AUTH ALL URLS. An error will happen. (1~3., rest-auth issue?)
+    # DO NOT INCLUDE WHOLE REST_AUTH ALL URLS. An error will happen. (1. ~ 3. belows, rest-auth issue?)
     # => django.core.exceptions.ImproperlyConfigured: Field name `username` is not valid for model `User`.
     # 1. url(r'^rest-auth/', include('rest_auth.urls')),
     # 2. url(r'^rest-auth/login/$', LoginView.as_view(), name='rest_login'),
