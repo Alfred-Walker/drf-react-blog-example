@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
+import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react'
 
 
 class Login extends Component {
@@ -28,6 +28,8 @@ class Login extends Component {
             password
         } = this.state
 
+        event.preventDefault();
+        
         fetch(
             'http://localhost:8000/jwt-auth/', {
                 method: 'POST',
@@ -39,10 +41,16 @@ class Login extends Component {
                 credentials: 'include'
             }
         )
-        .then(response => console.log("login response", response.json()))
-        .catch(err => console.log("login error", err));
-        
-        event.preventDefault();
+        .then(
+            response => (response.json())
+        )
+        .then(
+            result => localStorage.setItem("jwt-token", result.token)
+        )
+        .catch(
+            err => console.log("login error", err)
+            );
+
         // POST API here
     }
 
