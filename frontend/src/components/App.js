@@ -53,10 +53,10 @@ class App extends Component {
     render() {
         return (
             <div className="App">
-                <Router>
-                    <NavigationBar loggedInStatus={this.state.loggedInStatus}/>
-                    <Switch>
-                        <div className="container">
+                <div className="container">
+                    <Router>
+                        <NavigationBar loggedInStatus={this.state.loggedInStatus} />
+                        <Switch>
                             <Route exact path="/" render={props => (
                                 <StudyInfo {...props} handleLogin={this.handleLogin} loggedInStatus={this.state.loggedInStatus} />
                             )}
@@ -81,9 +81,9 @@ class App extends Component {
                                 <Registration {...props} loggedInStatus={this.state.loggedInStatus} />
                             )}
                             />
-                        </div>
-                    </Switch>
-                </Router>
+                        </Switch>
+                    </Router>
+                </div>
             </div >
             /*
             <div>
