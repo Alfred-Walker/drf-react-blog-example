@@ -1,6 +1,5 @@
 //frontend/src/app.js
 import React, { Component } from 'react';
-import { Container } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
 import Login from './auth/login';
 import Registration from './auth/registration';
@@ -9,7 +8,7 @@ import StudyInfo from './study/studyInfo';
 import NewStudyForm from './study/newStudy';
 import Studies from './study/studies';
 import ContactForm from './contact'
-import { Link, Route, BrowserRouter as Router, Switch } from "react-router-dom";
+import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 
 class App extends Component {
     constructor() {

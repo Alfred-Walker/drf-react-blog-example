@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Grid, Header, Image, Label, List, Segment} from 'semantic-ui-react'
+import { Button, Grid, Header, Label, List, Segment} from 'semantic-ui-react'
 import { studies } from './dummy-studies';
 
 

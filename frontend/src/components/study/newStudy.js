@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Form, Segment, Header, Label, List } from 'semantic-ui-react'
+import { Button, Form, Header, List } from 'semantic-ui-react'
 
 
 function NewStudyForm(props) {

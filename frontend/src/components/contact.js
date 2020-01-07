@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Form, Segment, Header } from 'semantic-ui-react'
+import { Button, Form, Header } from 'semantic-ui-react'
 
 /* Tutorial Reference*/
 /* https://reactgo.com/semantic-ui-react/ */
