@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import 'semantic-ui-css/semantic.min.css';
 import Login from './auth/login';
+import Logout from './auth/logout';
 import Registration from './auth/registration';
 import NavigationBar from './navigation';
 import StudyInfo from './study/studyInfo';
@@ -9,6 +10,8 @@ import NewStudyForm from './study/newStudy';
 import Studies from './study/studies';
 import ContactForm from './contact'
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
+import Protected from './protected';
+import Authenticated from './auth/authenticated';
 
 class App extends Component {
     constructor() {
@@ -16,18 +19,29 @@ class App extends Component {
 
         this.state = {
             loggedInStatus: "NOT_LOGGED_IN",
-            user: {},
+            user: undefined,
+            userUrl: undefined,
             response: []
         }
 
         this.handleLogin = this.handleLogin.bind(this);
+        this.handleLogout = this.handleLogout.bind(this);
         this.handleSuccessfulAuth = this.handleSuccessfulAuth.bind(this);
     }
 
     handleLogin(data) {
         this.setState({
             loggedInStatus: "LOGGED_IN",
-            user: data.user
+            user: data.user,
+            userUrl: data.user.url
+        });
+    }
+
+    handleLogout(data) {
+        this.setState({
+            loggedInStatus: "NOT_LOGGED_IN",
+            user: undefined,
+            userUrl: undefined
         });
     }
 
@@ -73,11 +87,21 @@ class App extends Component {
                             )}
                             />
                             <Route exact path="/login" render={props => (
-                                <Login {...props} loggedInStatus={this.state.loggedInStatus} />
+                                <Login {...props} handleLogin={this.handleLogin} loggedInStatus={this.state.loggedInStatus} />
+                            )}
+                            />
+                            <Route exact path="/logout" render={props => (
+                                <Logout {...props} handleLogout={this.handleLogout} loggedInStatus={this.state.loggedInStatus} />
                             )}
                             />
                             <Route exact path="/registration" render={props => (
                                 <Registration {...props} loggedInStatus={this.state.loggedInStatus} />
+                            )}
+                            />
+                            <Route exact path="/protected" render={props => (
+                                <Authenticated {...props} loggedInStatus={this.state.loggedInStatus} userUrl={this.state.userUrl} >
+                                    <Protected></Protected>
+                                </Authenticated>
                             )}
                             />
                         </Switch>

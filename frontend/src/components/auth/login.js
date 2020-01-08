@@ -45,7 +45,11 @@ class Login extends Component {
             response => (response.json())
         )
         .then(
-            result => localStorage.setItem("jwt-token", result.token)
+            result => {
+                localStorage.setItem("jwt-token", result.token);
+                this.props.handleLogin(result);
+                this.props.history.push('protected');
+            }
         )
         .catch(
             err => console.log("login error", err)
