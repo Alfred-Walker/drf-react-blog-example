@@ -1,29 +1,35 @@
 from rest_framework import serializers
-from users.serializers import UserSerializer
 from .models import Study
+from tags.models import Tag
+from tags.serializers import TagSerializer
+from pprint import pprint
 
 
-class StudySerializer(serializers.HyperlinkedModelSerializer):
+class StudySerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='study-detail')
+    tags = serializers.SlugRelatedField(many=True, read_only=True, slug_field='name', allow_null=True)
+
     class Meta:
-        url = serializers.HyperlinkedIdentityField(view_name='study-detail')
-
         model = Study
         fields = [
+            'id',
             'url',
             'title',
             'body',
-            'category',
-            'registered_date',
+            'tags',
             'review_cycle_in_minute',
             'notification_enabled',
             'is_public'
         ]
-        # fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(StudySerializer, self).__init__(*args, **kwargs)
+        pprint(kwargs)
 
     def create(self, validated_data):
         user = None
-
         request = self.context.get("request")
+
         if request and hasattr(request, "user"):
             user = request.user
 
@@ -32,7 +38,6 @@ class StudySerializer(serializers.HyperlinkedModelSerializer):
                 user=user,
                 title=validated_data['title'],
                 body=validated_data['body'],
-                category=validated_data['category'],
                 review_cycle_in_minute=validated_data['review_cycle_in_minute'],
                 notification_enabled=validated_data['notification_enabled'],
                 is_public=validated_data['is_public'],
@@ -42,9 +47,12 @@ class StudySerializer(serializers.HyperlinkedModelSerializer):
                 user=user,
                 title=validated_data['title'],
                 body=validated_data['body'],
-                category=validated_data['category'],
                 notification_enabled=validated_data['notification_enabled'],
                 is_public=validated_data['is_public'],
             )
+
+        for item in request.data['tags']:
+            tag, created = Tag.objects.get_or_create(name=item)
+            study.tags.add(tag)
 
         return study

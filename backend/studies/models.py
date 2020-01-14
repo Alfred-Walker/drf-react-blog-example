@@ -1,11 +1,13 @@
 from django.db import models
 from datetime import datetime
 from users.models import User
+from tags.models import Tag
 
 
 # Create your models here.
 class Study(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    tags = models.ManyToManyField(Tag, blank=True)
 
     title = models.CharField(
         max_length=255,
@@ -15,13 +17,6 @@ class Study(models.Model):
 
     # studied contents
     body = models.TextField(blank=False)
-
-    category = models.CharField(
-        max_length=20,
-        unique=False,
-        blank=True,
-        default="Type"
-    )
 
     # the day registered study
     registered_date = models.DateTimeField(default=datetime.now())

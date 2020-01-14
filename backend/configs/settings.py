@@ -82,6 +82,7 @@ INSTALLED_APPS = [
     # custom user app
     'users',
     'studies',
+    'tags',
 
     # CORS for React (Cross-Origin Resource Sharing)
     'corsheaders',
