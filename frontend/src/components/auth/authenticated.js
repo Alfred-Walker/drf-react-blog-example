@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getJwt } from '../helpers/jwt';
+import * as helpers from '../helpers/jwt';
 
 
 class Authenticated extends Component {
@@ -7,22 +7,46 @@ class Authenticated extends Component {
         super(props);
 
         this.state = {
-            email: undefined
+            user: undefined
         }
     }
 
-    componentDidMount() {
-        const jwt = getJwt();
-        const userUrl = this.props.userUrl;
+    handleVerificationSuccess() {
+        console.log("token verified for an authenticated component")
+    }
 
-        if(!jwt || !userUrl) {
-            this.props.history.push('/');
+    handleVerificationFailure(err) {
+        console.log("token verification failed: ", err);
+        this.props.clearAuthInfo();
+        this.props.history.push('/login');
+    }
+
+    componentDidMount() {
+        const token = helpers.getJwt();
+        const user = this.props.user;
+        this.setState({user})
+
+        if(!token || !user) {
+            this.props.history.push('/login');
+            return;
+        }
+
+        // verify existing token's life before POST
+        var isExpired = helpers.isJwtExpired(token);
+        
+        if (isExpired) {
+            localStorage.clear();
+            this.props.history.push('/login');
+            return;
         }
 
         fetch(
-            userUrl, {
-                method: 'GET',
-                headers: {'Authorization': `JWT ${jwt}`},
+            "http://localhost:8000/jwt-auth/verify/", {
+                method: 'POST',
+                headers: {'Authorization': `JWT ${token}`, 'Content-Type':'application/json; charset="utf-8"'},
+                body: JSON.stringify({
+                    token: token,
+                }),
                 credentials: 'include'
             }
         )
@@ -31,24 +55,19 @@ class Authenticated extends Component {
         )
         .then(
             result => {
-                this.setState({
-                    email: result.email
-                });
+                this.handleVerificationSuccess();
             }
         )
         .catch(
             // TODO: need better catch. 
             err => {
-                console.log("login error");
-                console.log(err);
-                localStorage.removeItem('jwt-token');
-                this.props.history.push('/login');
+                this.handleVerificationFailure(err);
             }
         );
     }
 
     render() {
-        if(this.state.email === undefined) {
+        if(this.state.user === undefined) {
             return (
                 <div><h1>Loading...</h1></div>
             );

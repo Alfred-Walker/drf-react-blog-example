@@ -48,14 +48,12 @@ class Login extends Component {
             result => {
                 localStorage.setItem("jwt-token", result.token);
                 this.props.handleLogin(result);
-                this.props.history.push('protected');
+                this.props.history.push('/');
             }
         )
         .catch(
             err => console.log("login error", err)
             );
-
-        // POST API here
     }
 
     render() {

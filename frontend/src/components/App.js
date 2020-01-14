@@ -6,12 +6,13 @@ import Logout from './auth/logout';
 import Registration from './auth/registration';
 import NavigationBar from './navigation';
 import StudyInfo from './study/studyInfo';
-import NewStudyForm from './study/newStudy';
+import NewStudy from './study/newStudy';
 import Studies from './study/studies';
 import ContactForm from './contact'
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
-import Protected from './protected';
 import Authenticated from './auth/authenticated';
+import * as helpers from './helpers/jwt';
+
 
 class App extends Component {
     constructor() {
@@ -19,50 +20,93 @@ class App extends Component {
 
         this.state = {
             loggedInStatus: "NOT_LOGGED_IN",
-            user: undefined,
-            userUrl: undefined,
-            response: []
+            user: undefined
         }
 
+        this.clearAuthInfo = this.clearAuthInfo.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
         this.handleLogout = this.handleLogout.bind(this);
-        this.handleSuccessfulAuth = this.handleSuccessfulAuth.bind(this);
+        this.handleTokenRefreshSuccess = this.handleTokenRefreshSuccess.bind(this);
+    }
+
+    clearAuthInfo() {
+        localStorage.clear();
+        this.setState({
+            loggedInStatus: "NOT_LOGGED_IN",
+            user: undefined
+        });
+    }
+
+    initializeAuthInfo() {
+        const token = helpers.getJwt();
+
+        // clear localStorage if there is no access token
+        if (!token || token === 'undefined') {
+            localStorage.clear();
+            return;
+        }
+
+        // verify existing token's life before POST
+        const isExpired = helpers.isJwtExpired(token);
+        
+        if (isExpired) {
+            localStorage.clear();
+            return;
+        }
+            
+        // refresh token
+        fetch(
+            'http://localhost:8000/jwt-auth/refresh/', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json; charset="utf-8"'},
+                body: JSON.stringify({token: token}),
+                credentials: 'include'
+            }
+        )
+        .then(
+            response => response.json()
+        )
+        .then(
+            result => {
+                console.log("refresh success")
+                this.handleTokenRefreshSuccess(result);
+            }
+        )
+        .catch(err => {
+                console.log("token refresh failed", err);
+                this.handleTokenRefreshFailure();
+            }
+        );
+    }
+
+    componentDidMount() {
+        this.initializeAuthInfo();
     }
 
     handleLogin(data) {
+        localStorage.setItem("jwt-token", data.token);
         this.setState({
             loggedInStatus: "LOGGED_IN",
-            user: data.user,
-            userUrl: data.user.url
+            user: data.user
         });
     }
 
     handleLogout(data) {
+        this.clearAuthInfo();
+    }
+
+    handleTokenRefreshSuccess(data) {
+        localStorage.setItem("jwt-token", data.token);
         this.setState({
-            loggedInStatus: "NOT_LOGGED_IN",
-            user: undefined,
-            userUrl: undefined
+            loggedInStatus: "LOGGED_IN",
+            user: data.user
         });
     }
 
-    handleSuccessfulAuth(data) {
-        // TODO update parent component
-        this.props.handleLogin(data);
-        this.props.history.push("/study/list")
+    handleTokenRefreshFailure(data) {
+        this.clearAuthInfo();
     }
 
-    /*
-        async componentDidMount() {
-            try {
-                const res = await fetch('http://127.0.0.1:8000/users/');
-                const response = await res.json();
-                console.log(response)
-                this.setState({ response });
-            } catch (e) {
-                console.log(e);
-            }
-        }
-    */
     render() {
         return (
             <div className="App">
@@ -71,37 +115,37 @@ class App extends Component {
                         <NavigationBar loggedInStatus={this.state.loggedInStatus} />
                         <Switch>
                             <Route exact path="/" render={props => (
-                                <StudyInfo {...props} handleLogin={this.handleLogin} loggedInStatus={this.state.loggedInStatus} />
+                                <StudyInfo {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} />
                             )}
                             />
                             <Route exact path="/study/new" render={props => (
-                                <NewStudyForm {...props} loggedInStatus={this.state.loggedInStatus} />
+                                <Authenticated {...props} 
+                                    loggedInStatus={this.state.loggedInStatus} 
+                                    user={this.state.user} 
+                                    clearAuthInfo={this.clearAuthInfo}
+                                >
+                                    <NewStudy {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user}/>
+                                </Authenticated>
                             )}
                             />
                             <Route exact path="/study/list" render={props => (
-                                <Studies {...props} loggedInStatus={this.state.loggedInStatus} />
+                                <Studies {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} studyListUrl="http://localhost:8000/study/" />
                             )}
                             />
                             <Route exact path="/contact" render={props => (
-                                <ContactForm {...props} loggedInStatus={this.state.loggedInStatus} />
+                                <ContactForm {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} />
                             )}
                             />
                             <Route exact path="/login" render={props => (
-                                <Login {...props} handleLogin={this.handleLogin} loggedInStatus={this.state.loggedInStatus} />
+                                <Login {...props} loggedInStatus={this.state.loggedInStatus} handleLogin={this.handleLogin} />
                             )}
                             />
                             <Route exact path="/logout" render={props => (
-                                <Logout {...props} handleLogout={this.handleLogout} loggedInStatus={this.state.loggedInStatus} />
+                                <Logout {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} handleLogout={this.handleLogout} />
                             )}
                             />
                             <Route exact path="/registration" render={props => (
                                 <Registration {...props} loggedInStatus={this.state.loggedInStatus} />
-                            )}
-                            />
-                            <Route exact path="/protected" render={props => (
-                                <Authenticated {...props} loggedInStatus={this.state.loggedInStatus} userUrl={this.state.userUrl} >
-                                    <Protected></Protected>
-                                </Authenticated>
                             )}
                             />
                         </Switch>
