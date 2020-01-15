@@ -9,9 +9,12 @@ import StudyInfo from './study/studyInfo';
 import NewStudy from './study/newStudy';
 import Studies from './study/studies';
 import ContactForm from './contact'
-import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
+import { Route, BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
 import Authenticated from './auth/authenticated';
 import * as helpers from './helpers/jwt';
+import internalServer from './error/internalServer/internalServer'
+import notFound from './error/notFound/notFound'
+
 
 
 class App extends Component {
@@ -148,6 +151,8 @@ class App extends Component {
                                 <Registration {...props} loggedInStatus={this.state.loggedInStatus} />
                             )}
                             />
+                            <Route path="/500" component={internalServer} />
+                            <Route component={notFound} />
                         </Switch>
                     </Router>
                 </div>
