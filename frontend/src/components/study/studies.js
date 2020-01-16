@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Button, Grid, Header, List, Segment, Label } from 'semantic-ui-react';
+import { Button, Divider, Grid, Header, Label, List, Segment } from 'semantic-ui-react';
 import { getJwt } from '../helpers/jwt';
 import TagsInput from 'react-tagsinput';
 import './studies.css';
+import ReactQuill from 'react-quill';
 
 
 class Studies extends Component {
@@ -71,6 +72,12 @@ class Studies extends Component {
             );
     }
 
+    // quill editor without toolbar
+    modules = {
+        toolbar: false,
+        clipboard: { matchVisual: false }
+      };
+
     render() {
         if (this.state.studyList === undefined) {
             return (
@@ -86,7 +93,13 @@ class Studies extends Component {
                             <Header as="h1">
                                 {study.title}{study.is_public ? "" : <Label className="ui horizontal red">Private</Label>}
                             </Header>
-                            <p>{study.body}</p>
+                            <Divider />
+                            <ReactQuill 
+                                modules={this.modules}
+                                value={study.body} 
+                                readOnly={true}
+                                theme={"snow"}
+                            />
                             <p>
                             {study.registered_date}
                             </p>

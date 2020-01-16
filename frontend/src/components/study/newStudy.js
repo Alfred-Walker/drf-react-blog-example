@@ -3,9 +3,16 @@ import { Button, Form, Header, List } from 'semantic-ui-react'
 import TagsInput from 'react-tagsinput';
 import './newStudy.css'
 import * as helpers from '../helpers/jwt'
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; // ES6
 
-/* react-tagsinput reference */
-/* https://github.com/olahol/react-tagsinput */
+/* References */
+// 1. react-tagsinput
+// https://github.com/olahol/react-tagsinput
+
+// 2. react-quill
+// https://github.com/zenoamaro/react-quill
+
 
 class NewStudy extends Component {
     constructor(props) {
@@ -20,16 +27,21 @@ class NewStudy extends Component {
             review_cycle_in_minute: 12
         }
 
-        this.handleChange = this.handleChange.bind(this);
+        this.handleGenericChange = this.handleGenericChange.bind(this);
+        this.handleEditorChange = this.handleEditorChange.bind(this);
         this.handleTagsChange = this.handleTagsChange.bind(this);
         this.handleToggleChange = this.handleToggleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChange(event) {
+    handleGenericChange(event) {
         this.setState({
             [event.target.name]: event.target.value
         });
+    }
+
+    handleEditorChange(value) {
+        this.setState({ body: value })
     }
 
     handleTagsChange(tags) {
@@ -97,6 +109,46 @@ class NewStudy extends Component {
         // POST API here
     }
 
+    modules = {
+        toolbar: {
+          container: [
+            ["bold", "italic", "underline", "strike", "blockquote"],
+            [{ size: ["small", false, "large", "huge"] }, { color: [] }],
+            [
+              { list: "ordered" },
+              { list: "bullet" },
+              { indent: "-1" },
+              { indent: "+1" },
+              { align: [] }
+            ],
+            ["link", "image", "video", "code-block"],
+            ["clean"]
+          ],
+          handlers: { image: this.imageHandler }
+        },
+        clipboard: { matchVisual: false }
+      };
+    
+      formats = [
+        "header",
+        "bold",
+        "italic",
+        "underline",
+        "strike",
+        "blockquote",
+        "size",
+        "color",
+        "list",
+        "bullet",
+        "indent",
+        "link",
+        "image",
+        "video",
+        "align",
+        "code",
+        "code-block"
+      ];
+
     render() {
         return (
             <div className="form">
@@ -108,17 +160,19 @@ class NewStudy extends Component {
                             name='title'
                             placeholder='Title'
                             value={this.state.title}
-                            onChange={this.handleChange}
+                            onChange={this.handleGenericChange}
                         />
                     </Form.Field>
                     <Form.Field>
                         <label>Contents</label>
-                        <Form.TextArea
+                        <ReactQuill
                             name='body'
-                            rows={10}
+                            theme='snow'
+                            modules={this.modules}
+                            formats={this.formats}
                             placeholder='Contents'
                             value={this.state.body}
-                            onChange={this.handleChange}
+                            onChange={this.handleEditorChange}
                         />
                     </Form.Field>
                     <Form.Field>
