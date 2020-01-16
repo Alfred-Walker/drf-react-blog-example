@@ -12,7 +12,6 @@ class StudySerializer(serializers.ModelSerializer):
     class Meta:
         model = Study
         fields = [
-            'user',
             'id',
             'url',
             'title',
