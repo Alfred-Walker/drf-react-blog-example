@@ -4,6 +4,7 @@ import { getJwt } from '../helpers/jwt';
 import TagsInput from 'react-tagsinput';
 import './studies.css';
 import ReactQuill from 'react-quill';
+import { Link } from "react-router-dom";
 
 
 class Studies extends Component {
@@ -76,7 +77,27 @@ class Studies extends Component {
     modules = {
         toolbar: false,
         clipboard: { matchVisual: false }
-      };
+    };
+
+    formats = [
+        "header",
+        "bold",
+        "italic",
+        "underline",
+        "strike",
+        "blockquote",
+        "size",
+        "color",
+        "list",
+        "bullet",
+        "indent",
+        "link",
+        "image",
+        "video",
+        "align",
+        "code",
+        "code-block"
+    ];
 
     render() {
         if (this.state.studyList === undefined) {
@@ -96,6 +117,7 @@ class Studies extends Component {
                             <Divider />
                             <ReactQuill 
                                 modules={this.modules}
+                                formats={this.formats}
                                 value={study.body} 
                                 readOnly={true}
                                 theme={"snow"}
@@ -112,7 +134,7 @@ class Studies extends Component {
                                 />
                             </List>
                             <Button primary basic as="a" href="/">See all</Button>
-                            <Button primary basic as="a" href="/">Edit</Button>
+                            <Button as={Link} to={{ pathname: '/study/edit/'+study.id, state: { study: study} }} primary basic>Edit</Button>
                         </Segment>
                     </Grid.Column>
                 )

@@ -6,6 +6,7 @@ import Logout from './auth/logout';
 import Registration from './auth/registration';
 import NavigationBar from './navigation';
 import StudyInfo from './study/studyInfo';
+import EditStudy from './study/editStudy';
 import NewStudy from './study/newStudy';
 import Studies from './study/studies';
 import ContactForm from './contact'
@@ -128,6 +129,16 @@ class App extends Component {
                                     clearAuthInfo={this.clearAuthInfo}
                                 >
                                     <NewStudy {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user}/>
+                                </Authenticated>
+                            )}
+                            />
+                            <Route exact path="/study/edit/:id" render={props => (
+                                <Authenticated {...props} 
+                                    loggedInStatus={this.state.loggedInStatus} 
+                                    user={this.state.user} 
+                                    clearAuthInfo={this.clearAuthInfo}
+                                >
+                                    <EditStudy {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} study={props.location.study} />
                                 </Authenticated>
                             )}
                             />
