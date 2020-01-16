@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { Button, Form, Header, List } from 'semantic-ui-react'
 import TagsInput from 'react-tagsinput';
-import './newStudy.css'
 import * as helpers from '../helpers/jwt'
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css'; // ES6
+import 'react-quill/dist/quill.snow.css';
+import './newStudy.css'
 
 /* References */
 // 1. react-tagsinput
@@ -129,7 +129,7 @@ class NewStudy extends Component {
         clipboard: { matchVisual: false }
       };
     
-      formats = [
+    formats = [
         "header",
         "bold",
         "italic",
@@ -147,7 +147,7 @@ class NewStudy extends Component {
         "align",
         "code",
         "code-block"
-      ];
+    ];
 
     render() {
         return (
@@ -166,6 +166,7 @@ class NewStudy extends Component {
                     <Form.Field>
                         <label>Contents</label>
                         <ReactQuill
+                            className='study-new'
                             name='body'
                             theme='snow'
                             modules={this.modules}
