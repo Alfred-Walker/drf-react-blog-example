@@ -5,56 +5,48 @@
 /* https://codepen.io/sqfreakz/pen/GJRJOY */
 
 
-body {
-    font-family: 'Open Sans', sans-serif;
-    max-height: 700px;
-    overflow: hidden;
-}
-
-._error {
+.not-found {
     text-align: center;
     display: block;
     position: relative;
     width: 80%;
-    margin: 200px auto;
+    margin: 128px auto;
 }
 
-._code {
-    font-size: 172px;
+.not-found .header {
+    font-size: 112px;
     position: relative;
-    display: inline-block;
-    z-index: 2;
-    height: 128px;
-    letter-spacing: 15px;
+    display: block;
+    min-height: 96px;
+    letter-spacing: 16px;
     margin-top: 16px auto;
 }
 
-._1 {
+.not-found .label {
     text-align: center;
     display: block;
     position: relative;
-    letter-spacing: 12px;
-    font-size: 3em;
+    letter-spacing: 4px;
     line-height: 80%;
-    margin: 32px auto;
+    margin: 4px auto;
+    max-width: 640px;
 }
 
-._2 {
+.not-found .message {
     text-align: center;
     display: block;
     position: relative;
-    font-size: 20px;
-    margin: 32px auto;
+    font-size: 18px;
+    margin: 16px auto;
+    max-width: 640px;
 }
 
-.btn {
-    background-color: #2185d0;
+.not-found .button {
     position: relative;
     display: inline-block;
-    width: 358px;
+    min-width: 172px;
     padding: 5px;
     z-index: 5;
-    font-size: 25px;
     margin: 0 auto;
     color: #fff;
     text-decoration: none;
