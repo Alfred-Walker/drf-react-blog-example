@@ -63,3 +63,51 @@
 .ql-container.ql-snow {
   border: none;
 }
+
+.study-empty {
+  text-align: center;
+  display: block;
+  position: relative;
+  width: 80%;
+  margin: 128px auto;
+}
+
+.study-empty .header {
+  font-size: 32px;
+  position: relative;
+  display: block;
+  min-height: 32px;
+  letter-spacing: 16px;
+  margin-top: 16px auto;
+}
+
+.study-empty .label {
+  text-align: center;
+  display: block;
+  position: relative;
+  letter-spacing: 4px;
+  line-height: 80%;
+  margin: 4px auto;
+  max-width: 640px;
+}
+
+.study-empty .message {
+  text-align: center;
+  display: block;
+  position: relative;
+  font-size: 18px;
+  margin: 16px auto;
+  max-width: 640px;
+}
+
+.study-empty .button {
+  position: relative;
+  display: inline-block;
+  min-width: 172px;
+  padding: 5px;
+  z-index: 5;
+  margin: 0 auto;
+  color: #fff;
+  text-decoration: none;
+  margin-right: 10px
+}
