@@ -65,15 +65,7 @@ class NewStudy extends Component {
             notification_enabled,
             review_cycle_in_minute
         } = this.state;
-        console.log(tags);
-        console.log(JSON.stringify({
-            title: title,
-            body: body,
-            tags: tags,
-            is_public: is_public,
-            notification_enabled: notification_enabled,
-            review_cycle_in_minute: review_cycle_in_minute
-        }));
+
         event.preventDefault();
 
         fetch(
@@ -99,14 +91,12 @@ class NewStudy extends Component {
             )
             .then(
                 result => {
-                    this.props.history.push('list');
+                    this.props.history.push('/study/list');
                 }
             )
             .catch(
                 err => console.log("login error", err)
             );
-
-        // POST API here
     }
 
     modules = {
@@ -128,8 +118,8 @@ class NewStudy extends Component {
         },
         clipboard: { matchVisual: false }
       };
-    
-    formats = [
+
+      formats = [
         "header",
         "bold",
         "italic",
@@ -147,7 +137,7 @@ class NewStudy extends Component {
         "align",
         "code",
         "code-block"
-    ];
+      ];
 
     render() {
         return (
