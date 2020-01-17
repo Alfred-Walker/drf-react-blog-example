@@ -1,21 +1,20 @@
 import React, { Component } from 'react';
-import { Button, Divider, Grid, Header, Label, List, Segment } from 'semantic-ui-react';
+import { Button, Confirm, Dimmer, Divider, Grid, GridColumn, Header, Label, List, Loader, Message, Segment } from 'semantic-ui-react';
 import { getJwt } from '../helpers/jwt';
 import TagsInput from 'react-tagsinput';
 import './studies.css';
 import ReactQuill from 'react-quill';
 import { Link } from "react-router-dom";
-
+import * as helpers from '../helpers/jwt'
 
 class Studies extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            open: false,
             index: 0,
             studyList: undefined,
-            tags: [],
-            suggestions: []
         }
 
         this.tagsInputProps = {
@@ -24,10 +23,57 @@ class Studies extends Component {
           }
 
         this.handleChange = this.handleChange.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
+        this.handleShow = this.handleShow.bind(this);
+        this.deleteStudyFromList = this.deleteStudyFromList.bind(this);
     }
+
+    deleteStudyFromList(id) {
+        this.setState(
+                {
+                    studyList: this.state.studyList.filter(
+                        function(study) {
+                            return study.id !== Number(id);
+                    }
+                )
+            }
+        );
+    }
+
+    handleCancel = () => this.setState({ open: false })
 
     handleChange(tags) {
         this.setState({ tags });
+    }
+
+    handleDelete(event) {
+        const jwt = helpers.getJwt();
+        const id = this.state.id;
+        
+        this.setState({ open: false });
+        event.preventDefault();
+
+        fetch(
+            'http://localhost:8000/study/'+id+"/", {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `JWT ${jwt}`,
+                'Content-Type': 'application/json; charset="utf-8"'
+            },
+            credentials: 'include'
+        }
+        )
+        .then(
+            response => this.deleteStudyFromList(id)
+        )
+        .catch(
+            err => console.log("delete error", err)
+        );
+    }
+
+    handleShow(event) {
+        const id = event.target.name;
+        this.setState({ open: true, id: id })
     }
 
     componentDidMount() {
@@ -56,18 +102,14 @@ class Studies extends Component {
             .then(
                 result => {
                     this.setState({
-                        studyList: result
+                        studyList: result.results
                     });
                 }
-            )
-            .then(
-                console.log(this.state)
             )
             .catch(
                 // TODO: need better catch.
                 err => {
-                    console.log("studies error");
-                    console.log(err);
+                    console.log("studies error", err);
                     this.props.history.push('/');
                 }
             );
@@ -102,13 +144,30 @@ class Studies extends Component {
     render() {
         if (this.state.studyList === undefined) {
             return (
-                <div><h1>No studies found...</h1></div>
+                <Dimmer active>
+                    <Loader>Loading</Loader>
+                </Dimmer>
+            );
+        }
+
+        if (this.state.studyList.length === 0) {
+            return (
+                <GridColumn className='study-empty' >
+                    <Header className='header'>&nbsp;NO DATA</Header> 
+                    <Label className='label'>&nbsp;STUDY NOT FOUND</Label> 
+                    <Divider />
+                    <Message className='message'>
+                        There is no study accessible. <br />
+                        How about your own?
+                    </Message> 
+                    <Button as={Link} to={{ pathname: '/study/new/' }} primary basic>ADD YOUR STUDY</Button>
+                </GridColumn> 
             );
         }
 
         return (
             <Grid centered columns={1} doubling> {
-                this.state.studyList.results.map(study =>
+                this.state.studyList.map(study =>
                     <Grid.Column key={study.id}>
                         <Segment>
                             <Header as="h1">
@@ -135,6 +194,13 @@ class Studies extends Component {
                             </List>
                             <Button primary basic as="a" href="/">See all</Button>
                             <Button as={Link} to={{ pathname: '/study/edit/'+study.id, state: { study: study} }} primary basic>Edit</Button>
+                            <Button name={study.id} onClick={this.handleShow} primary basic negative>Delete</Button>
+                            <Confirm
+                                open={this.state.open}
+                                content='Do you really want to delete?'
+                                onCancel={this.handleCancel}
+                                onConfirm={this.handleDelete}
+                            />
                         </Segment>
                     </Grid.Column>
                 )
