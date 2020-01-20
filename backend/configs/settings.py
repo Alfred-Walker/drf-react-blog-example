@@ -83,6 +83,8 @@ INSTALLED_APPS = [
     'users',
     'studies',
     'tags',
+    'questions',
+    'comments',
 
     # CORS for React (Cross-Origin Resource Sharing)
     'corsheaders',
