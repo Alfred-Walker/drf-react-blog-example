@@ -158,7 +158,6 @@ class Studies extends Component {
                     <Divider />
                     <Message className='message'>
                         There is no study accessible. <br />
-                        How about your own?
                     </Message> 
                     <Button as={Link} to={{ pathname: '/study/new/' }} primary basic>ADD YOUR STUDY</Button>
                 </GridColumn> 
