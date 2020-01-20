@@ -16,8 +16,7 @@ class QuestionSerializer(serializers.ModelSerializer):
             'url',
             'title',
             'body',
-            'tags',
-            'is_public'
+            'tags'
         ]
 
     def __init__(self, *args, **kwargs):
@@ -34,8 +33,7 @@ class QuestionSerializer(serializers.ModelSerializer):
         question = Question.objects.create(
             user=user,
             title=validated_data['title'],
-            body=validated_data['body'],
-            is_public=validated_data['is_public'],
+            body=validated_data['body']
         )
 
         for item in request.data['tags']:
