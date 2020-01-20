@@ -71,6 +71,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('study/', include('studies.urls')),
     path('tag/', include('tags.urls')),
+    path('question/', include('questions.urls')),
 
     url(r'^jwt-auth/$', obtain_jwt_token),
     url(r'^jwt-auth/refresh/$', refresh_jwt_token),
