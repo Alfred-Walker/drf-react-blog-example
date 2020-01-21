@@ -5,10 +5,12 @@ import Login from './auth/login';
 import Logout from './auth/logout';
 import Registration from './auth/registration';
 import NavigationBar from './navigation';
+
 import StudyInfo from './study/studyInfo';
 import EditStudy from './study/editStudy';
 import NewStudy from './study/newStudy';
 import Studies from './study/studies';
+
 import ContactForm from './contact'
 import { Route, BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
 import Authenticated from './auth/authenticated';
@@ -72,12 +74,12 @@ class App extends Component {
         )
         .then(
             result => {
-                console.log("refresh success")
+                // console.log("refresh success")
                 this.handleTokenRefreshSuccess(result);
             }
         )
         .catch(err => {
-                console.log("token refresh failed", err);
+                // console.log("token refresh failed", err);
                 this.handleTokenRefreshFailure();
             }
         );
@@ -123,9 +125,9 @@ class App extends Component {
                             )}
                             />
                             <Route exact path="/study/new" render={props => (
-                                <Authenticated {...props} 
-                                    loggedInStatus={this.state.loggedInStatus} 
-                                    user={this.state.user} 
+                                <Authenticated {...props}
+                                    loggedInStatus={this.state.loggedInStatus}
+                                    user={this.state.user}
                                     clearAuthInfo={this.clearAuthInfo}
                                 >
                                     <NewStudy {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user}/>
@@ -133,9 +135,9 @@ class App extends Component {
                             )}
                             />
                             <Route exact path="/study/edit/:id" render={props => (
-                                <Authenticated {...props} 
-                                    loggedInStatus={this.state.loggedInStatus} 
-                                    user={this.state.user} 
+                                <Authenticated {...props}
+                                    loggedInStatus={this.state.loggedInStatus}
+                                    user={this.state.user}
                                     clearAuthInfo={this.clearAuthInfo}
                                 >
                                     <EditStudy {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} study={props.location.study} />
@@ -143,9 +145,10 @@ class App extends Component {
                             )}
                             />
                             <Route exact path="/study/list" render={props => (
-                                <Studies {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} studyListUrl="http://localhost:8000/study/" />
+                                <Studies {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} page={1} studyListUrl="http://localhost:8000/study/" />
                             )}
                             />
+
                             <Route exact path="/contact" render={props => (
                                 <ContactForm {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} />
                             )}

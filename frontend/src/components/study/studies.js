@@ -1,11 +1,28 @@
 import React, { Component } from 'react';
-import { Button, Confirm, Dimmer, Divider, Grid, GridColumn, Header, Label, List, Loader, Message, Segment } from 'semantic-ui-react';
 import { getJwt } from '../helpers/jwt';
-import TagsInput from 'react-tagsinput';
-import './studies.css';
-import ReactQuill from 'react-quill';
 import { Link } from "react-router-dom";
-import * as helpers from '../helpers/jwt'
+import ReactQuill from 'react-quill';
+import TagsInput from 'react-tagsinput';
+import * as helpers from '../helpers/jwt';
+
+import {
+    Button,
+    Confirm,
+    Dimmer,
+    Divider,
+    Grid,
+    GridColumn,
+    Header,
+    Label,
+    List,
+    Loader,
+    Message,
+    Pagination,
+    Segment
+} from 'semantic-ui-react';
+
+import './studies.css';
+
 
 class Studies extends Component {
     constructor(props) {
@@ -13,31 +30,22 @@ class Studies extends Component {
 
         this.state = {
             open: false,
-            index: 0,
             studyList: undefined,
+            activePage: this.props.page,
+            pageCount: 1,
+            perPageCount: 2,
+            totalStudyCount: 0
         }
 
         this.tagsInputProps = {
             className: 'react-tagsinput-input',
             placeholder: ''
-          }
+        }
 
         this.handleChange = this.handleChange.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
+        this.handlePageChange = this.handlePageChange.bind(this);
         this.handleShow = this.handleShow.bind(this);
-        this.deleteStudyFromList = this.deleteStudyFromList.bind(this);
-    }
-
-    deleteStudyFromList(id) {
-        this.setState(
-                {
-                    studyList: this.state.studyList.filter(
-                        function(study) {
-                            return study.id !== Number(id);
-                    }
-                )
-            }
-        );
     }
 
     handleCancel = () => this.setState({ open: false })
@@ -49,12 +57,12 @@ class Studies extends Component {
     handleDelete(event) {
         const jwt = helpers.getJwt();
         const id = this.state.id;
-        
+
         this.setState({ open: false });
         event.preventDefault();
 
         fetch(
-            'http://localhost:8000/study/'+id+"/", {
+            'http://localhost:8000/study/' + id + "/", {
             method: 'DELETE',
             headers: {
                 'Authorization': `JWT ${jwt}`,
@@ -63,12 +71,17 @@ class Studies extends Component {
             credentials: 'include'
         }
         )
-        .then(
-            response => this.deleteStudyFromList(id)
-        )
-        .catch(
-            err => console.log("delete error", err)
-        );
+            .then(
+                response => this.loadStudiesFromServer(1)
+            )
+            .catch(
+                err => console.log("delete error", err)
+            );
+    }
+
+    handlePageChange(e, pageInfo) {
+        this.setState({ activePage: pageInfo.activePage });
+        this.loadStudiesFromServer(pageInfo.activePage);
     }
 
     handleShow(event) {
@@ -76,18 +89,18 @@ class Studies extends Component {
         this.setState({ open: true, id: id })
     }
 
-    componentDidMount() {
+    loadStudiesFromServer(page) {
         let headers = {};
         const jwt = getJwt();
 
         if (jwt) {
-            headers = { 
+            headers = {
                 'Authorization': `JWT ${jwt}`,
                 'Content-Type': 'Application/json'
             };
         }
 
-        const studyListUrl = this.props.studyListUrl;
+        const studyListUrl = this.props.studyListUrl + "?page=" + page;
 
         fetch(
             studyListUrl, {
@@ -102,7 +115,11 @@ class Studies extends Component {
             .then(
                 result => {
                     this.setState({
-                        studyList: result.results
+                        studyList: result.results,
+                        pageCount: Math.ceil(result.count / this.state.perPageCount),
+                        totalStudyCount: result.count,
+                        prevPage: result.previous,
+                        nextPage: result.next
                     });
                 }
             )
@@ -113,6 +130,10 @@ class Studies extends Component {
                     this.props.history.push('/');
                 }
             );
+    }
+
+    componentDidMount() {
+        this.loadStudiesFromServer(this.props.page);
     }
 
     // quill editor without toolbar
@@ -153,14 +174,14 @@ class Studies extends Component {
         if (this.state.studyList.length === 0) {
             return (
                 <GridColumn className='study-empty' >
-                    <Header className='header'>&nbsp;NO DATA</Header> 
-                    <Label className='label'>&nbsp;STUDY NOT FOUND</Label> 
+                    <Header className='header'>&nbsp;NO DATA</Header>
+                    <Label className='label'>&nbsp;STUDY NOT FOUND</Label>
                     <Divider />
                     <Message className='message'>
                         There is no study accessible. <br />
-                    </Message> 
+                    </Message>
                     <Button as={Link} to={{ pathname: '/study/new/' }} primary basic>ADD YOUR STUDY</Button>
-                </GridColumn> 
+                </GridColumn>
             );
         }
 
@@ -173,26 +194,26 @@ class Studies extends Component {
                                 {study.title}{study.is_public ? "" : <Label className="ui horizontal red">Private</Label>}
                             </Header>
                             <Divider />
-                            <ReactQuill 
+                            <ReactQuill
                                 modules={this.modules}
                                 formats={this.formats}
-                                value={study.body} 
+                                value={study.body}
                                 readOnly={true}
                                 theme={"snow"}
                             />
                             <p>
-                            {study.registered_date}
+                                {study.registered_date}
                             </p>
                             <p>{study.excerpt}</p>
                             <List className="list-tag-horizontal">
                                 <TagsInput in
-                                disabled={true} 
-                                value={study.tags}
-                                inputProps={this.tagsInputProps}
+                                    disabled={true}
+                                    value={study.tags}
+                                    inputProps={this.tagsInputProps}
                                 />
                             </List>
                             <Button primary basic as="a" href="/">See all</Button>
-                            <Button as={Link} to={{ pathname: '/study/edit/'+study.id, state: { study: study} }} primary basic>Edit</Button>
+                            <Button as={Link} to={{ pathname: '/study/edit/' + study.id, state: { study: study } }} primary basic>Edit</Button>
                             <Button name={study.id} onClick={this.handleShow} primary basic negative>Delete</Button>
                             <Confirm
                                 open={this.state.open}
@@ -204,6 +225,12 @@ class Studies extends Component {
                     </Grid.Column>
                 )
             }
+                <Pagination
+                    activePage={this.state.activePage}
+                    onPageChange={this.handlePageChange}
+                    totalPages={this.state.pageCount}
+                    ellipsisItem={null}
+                />
             </Grid>
         )
     }
