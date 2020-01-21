@@ -1,5 +1,4 @@
 from django.db import models
-from datetime import datetime
 from users.models import User
 from tags.models import Tag
 
@@ -19,7 +18,7 @@ class Study(models.Model):
     body = models.TextField(blank=False)
 
     # the day registered study
-    registered_date = models.DateTimeField(default=datetime.now())
+    registered_date = models.DateTimeField(auto_now_add=True)
 
     # last notification date
     last_review_date = models.DateTimeField(blank=True, null=True)
@@ -36,3 +35,6 @@ class Study(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        ordering = ['registered_date']
