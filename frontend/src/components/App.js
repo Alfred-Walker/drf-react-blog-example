@@ -11,6 +11,10 @@ import EditStudy from './study/editStudy';
 import NewStudy from './study/newStudy';
 import Studies from './study/studies';
 
+import EditQuestion from './question/editQuestion';
+import NewQuestion from './question/newQuestion';
+import Questions from './question/questions';
+
 import ContactForm from './contact'
 import { Route, BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
 import Authenticated from './auth/authenticated';
@@ -146,6 +150,31 @@ class App extends Component {
                             />
                             <Route exact path="/study/list" render={props => (
                                 <Studies {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} page={1} studyListUrl="http://localhost:8000/study/" />
+                            )}
+                            />
+
+                            <Route exact path="/question/new" render={props => (
+                                <Authenticated {...props}
+                                    loggedInStatus={this.state.loggedInStatus}
+                                    user={this.state.user}
+                                    clearAuthInfo={this.clearAuthInfo}
+                                >
+                                    <NewQuestion {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user}/>
+                                </Authenticated>
+                            )}
+                            />
+                            <Route exact path="/question/edit/:id" render={props => (
+                                <Authenticated {...props}
+                                    loggedInStatus={this.state.loggedInStatus}
+                                    user={this.state.user}
+                                    clearAuthInfo={this.clearAuthInfo}
+                                >
+                                    <EditQuestion {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} question={props.location.question} />
+                                </Authenticated>
+                            )}
+                            />
+                            <Route exact path="/question/list" render={props => (
+                                <Questions {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} page={1} questionListUrl="http://localhost:8000/question/" />
                             )}
                             />
 
