@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Divider, GridColumn, Header, Label, Message } from 'semantic-ui-react'
-import './internalServer.css';
+import './InternalServer.css';
 
 
 const internalServer = (props) => {

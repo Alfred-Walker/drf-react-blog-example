@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import * as helpers from '../helpers/jwt';
+import * as helpers from '../../utils/jwt';
 
 
 class Authenticated extends Component {

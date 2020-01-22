@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { Button, Divider, Form, Header, List } from 'semantic-ui-react'
 import TagsInput from 'react-tagsinput';
-import * as helpers from '../helpers/jwt'
+import * as helpers from '../../utils/jwt'
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import './editStudy.css'
+import './EditQuestion.css'
 
 
 /* References */
@@ -15,18 +15,15 @@ import './editStudy.css'
 // https://github.com/zenoamaro/react-quill
 
 
-class EditStudy extends Component {
+class EditQuestion extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            id: props.location.state.study.id,
-            title: props.location.state.study.title,
-            body: props.location.state.study.body,
-            tags: props.location.state.study.tags,
-            is_public: props.location.state.study.is_public,
-            notification_enabled: props.location.state.study.notification_enabled,
-            review_cycle_in_minute: props.location.state.study.review_cycle_in_minute
+            id: props.location.state.question.id,
+            title: props.location.state.question.title,
+            body: props.location.state.question.body,
+            tags: props.location.state.question.tags
         }
 
         this.handleGenericChange = this.handleGenericChange.bind(this);
@@ -63,24 +60,18 @@ class EditStudy extends Component {
             id,
             title,
             body,
-            tags,
-            is_public,
-            notification_enabled,
-            review_cycle_in_minute
+            tags
         } = this.state;
         console.log(tags);
         console.log(JSON.stringify({
             title: title,
             body: body,
-            tags: tags,
-            is_public: is_public,
-            notification_enabled: notification_enabled,
-            review_cycle_in_minute: review_cycle_in_minute
+            tags: tags
         }));
         event.preventDefault();
 
         fetch(
-            'http://localhost:8000/study/'+id+"/", {
+            'http://localhost:8000/question/'+id+"/", {
             method: 'PUT',
             headers: {
                 'Authorization': `JWT ${jwt}`,
@@ -89,10 +80,7 @@ class EditStudy extends Component {
             body: JSON.stringify({
                 title: title,
                 body: body,
-                tags: tags,
-                is_public: is_public,
-                notification_enabled: notification_enabled,
-                review_cycle_in_minute: review_cycle_in_minute
+                tags: tags
             }),
             credentials: 'include'
         }
@@ -102,7 +90,7 @@ class EditStudy extends Component {
             )
             .then(
                 result => {
-                    this.props.history.push('/study/list');
+                    this.props.history.push('/question/list');
                 }
             )
             .catch(
@@ -168,7 +156,7 @@ class EditStudy extends Component {
                     <Form.Field>
                         <label>Contents</label>
                         <ReactQuill
-                            className='study-edit'
+                            className='question-edit'
                             name='body'
                             theme='snow'
                             modules={this.modules}
@@ -187,22 +175,7 @@ class EditStudy extends Component {
                             addKeys={[9, 13, 188]}
                             onlyUnique={true} />
                     </Form.Field>
-                    <Form.Field>
-                        <Form.Checkbox
-                            name='is_public'
-                            defaultChecked={this.state.is_public}
-                            onChange={this.handleToggleChange}
-                            label='Is Public'
-                            toggle
-                        />
-                        <Form.Checkbox
-                            name='notification_enabled'
-                            defaultChecked={this.state.notification_enabled}
-                            onChange={this.handleToggleChange}
-                            label='Notification Enabled'
-                            toggle
-                        />
-                    </Form.Field>
+                    
                     <List className="list-checkbox-horizontal">
 
                     </List>
@@ -214,4 +187,4 @@ class EditStudy extends Component {
     }
 }
 
-export default EditStudy;
+export default EditQuestion;

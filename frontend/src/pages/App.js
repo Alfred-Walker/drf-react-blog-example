@@ -1,26 +1,26 @@
 //frontend/src/app.js
 import React, { Component } from 'react';
 import 'semantic-ui-css/semantic.min.css';
-import Login from './auth/login';
-import Logout from './auth/logout';
-import Registration from './auth/registration';
-import NavigationBar from './navigation';
+import Login from './Login';
+import Logout from './Logout';
+import Registration from './Registration';
+import NavigationBar from './app/Navigation';
 
-import StudyInfo from './study/studyInfo';
-import EditStudy from './study/editStudy';
-import NewStudy from './study/newStudy';
-import Studies from './study/studies';
+import StudyInfo from './study/StudyInfo';
+import EditStudy from './study/EditStudy';
+import NewStudy from './study/NewStudy';
+import Studies from './Study';
 
-import EditQuestion from './question/editQuestion';
-import NewQuestion from './question/newQuestion';
-import Questions from './question/questions';
+import EditQuestion from './question/EditQuestion';
+import NewQuestion from './question/NewQuestion';
+import Questions from './Question';
 
-import ContactForm from './contact'
+import ContactForm from './Contact'
 import { Route, BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
-import Authenticated from './auth/authenticated';
-import * as helpers from './helpers/jwt';
-import internalServer from './error/internalServer/internalServer'
-import notFound from './error/notFound/notFound'
+import Authenticated from './app/Authenticated';
+import * as helpers from '../utils/jwt';
+import internalServer from './error/InternalServer'
+import notFound from './error/NotFound'
 
 
 

@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { Button, Form, Header, List } from 'semantic-ui-react'
 import TagsInput from 'react-tagsinput';
-import * as helpers from '../helpers/jwt'
+import * as helpers from '../../utils/jwt'
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import './newQuestion.css'
+import './NewStudy.css'
 
 /* References */
 // 1. react-tagsinput
@@ -14,14 +14,17 @@ import './newQuestion.css'
 // https://github.com/zenoamaro/react-quill
 
 
-class NewQuestion extends Component {
+class NewStudy extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             title: "",
             body: "",
-            tags: []
+            tags: [],
+            is_public: true,
+            notification_enabled: false,
+            review_cycle_in_minute: 12
         }
 
         this.handleGenericChange = this.handleGenericChange.bind(this);
@@ -57,13 +60,16 @@ class NewQuestion extends Component {
         const {
             title,
             body,
-            tags
+            tags,
+            is_public,
+            notification_enabled,
+            review_cycle_in_minute
         } = this.state;
 
         event.preventDefault();
 
         fetch(
-            'http://localhost:8000/question/', {
+            'http://localhost:8000/study/', {
             method: 'POST',
             headers: {
                 'Authorization': `JWT ${jwt}`,
@@ -72,7 +78,10 @@ class NewQuestion extends Component {
             body: JSON.stringify({
                 title: title,
                 body: body,
-                tags: tags
+                tags: tags,
+                is_public: is_public,
+                notification_enabled: notification_enabled,
+                review_cycle_in_minute: review_cycle_in_minute
             }),
             credentials: 'include'
         }
@@ -82,7 +91,7 @@ class NewQuestion extends Component {
             )
             .then(
                 result => {
-                    this.props.history.push('/question/list');
+                    this.props.history.push('/study/list');
                 }
             )
             .catch(
@@ -133,7 +142,7 @@ class NewQuestion extends Component {
     render() {
         return (
             <div className="form">
-                <Header as="h2">New Question</Header>
+                <Header as="h2">New Study</Header>
                 <Form onSubmit={this.handleSubmit}>
                     <Form.Field>
                         <label>Title</label>
@@ -147,7 +156,7 @@ class NewQuestion extends Component {
                     <Form.Field>
                         <label>Contents</label>
                         <ReactQuill
-                            className='question-new'
+                            className='study-new'
                             name='body'
                             theme='snow'
                             modules={this.modules}
@@ -166,6 +175,22 @@ class NewQuestion extends Component {
                             addKeys={[9, 13, 188]}
                             onlyUnique={true} />
                     </Form.Field>
+                    <Form.Field>
+                        <Form.Checkbox
+                            name='is_public'
+                            defaultChecked={this.state.is_public}
+                            onChange={this.handleToggleChange}
+                            label='Is Public'
+                            toggle
+                        />
+                        <Form.Checkbox
+                            name='notification_enabled'
+                            defaultChecked={this.state.notification_enabled}
+                            onChange={this.handleToggleChange}
+                            label='Notification Enabled'
+                            toggle
+                        />
+                    </Form.Field>
                     <List className="list-checkbox-horizontal">
 
                     </List>
@@ -177,4 +202,4 @@ class NewQuestion extends Component {
     }
 }
 
-export default NewQuestion;
+export default NewStudy;

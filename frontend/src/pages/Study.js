@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { getJwt } from '../helpers/jwt';
+import { getJwt } from '../utils/jwt';
 import { Link } from "react-router-dom";
 import ReactQuill from 'react-quill';
 import TagsInput from 'react-tagsinput';
-import * as helpers from '../helpers/jwt';
+import * as helpers from '../utils/jwt';
 
 import {
     Button,
@@ -23,7 +23,7 @@ import {
     FormGroup
 } from 'semantic-ui-react';
 
-import './studies.css';
+import './Study.css';
 
 
 class Studies extends Component {

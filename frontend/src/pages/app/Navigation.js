@@ -1,7 +1,7 @@
 import React from 'react';
 import { Menu } from 'semantic-ui-react'
 import { NavLink } from "react-router-dom";
-import './navigation.css';
+import './Navigation.css';
 
 /* Tutorial Reference*/
 /* https://reactgo.com/semantic-ui-react/ */

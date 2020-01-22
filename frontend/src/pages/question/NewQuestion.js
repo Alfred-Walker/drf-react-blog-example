@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { Button, Form, Header, List } from 'semantic-ui-react'
 import TagsInput from 'react-tagsinput';
-import * as helpers from '../helpers/jwt'
+import * as helpers from '../../utils/jwt'
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import './newStudy.css'
+import './NewQuestion.css'
 
 /* References */
 // 1. react-tagsinput
@@ -14,17 +14,14 @@ import './newStudy.css'
 // https://github.com/zenoamaro/react-quill
 
 
-class NewStudy extends Component {
+class NewQuestion extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             title: "",
             body: "",
-            tags: [],
-            is_public: true,
-            notification_enabled: false,
-            review_cycle_in_minute: 12
+            tags: []
         }
 
         this.handleGenericChange = this.handleGenericChange.bind(this);
@@ -60,16 +57,13 @@ class NewStudy extends Component {
         const {
             title,
             body,
-            tags,
-            is_public,
-            notification_enabled,
-            review_cycle_in_minute
+            tags
         } = this.state;
 
         event.preventDefault();
 
         fetch(
-            'http://localhost:8000/study/', {
+            'http://localhost:8000/question/', {
             method: 'POST',
             headers: {
                 'Authorization': `JWT ${jwt}`,
@@ -78,10 +72,7 @@ class NewStudy extends Component {
             body: JSON.stringify({
                 title: title,
                 body: body,
-                tags: tags,
-                is_public: is_public,
-                notification_enabled: notification_enabled,
-                review_cycle_in_minute: review_cycle_in_minute
+                tags: tags
             }),
             credentials: 'include'
         }
@@ -91,7 +82,7 @@ class NewStudy extends Component {
             )
             .then(
                 result => {
-                    this.props.history.push('/study/list');
+                    this.props.history.push('/question/list');
                 }
             )
             .catch(
@@ -142,7 +133,7 @@ class NewStudy extends Component {
     render() {
         return (
             <div className="form">
-                <Header as="h2">New Study</Header>
+                <Header as="h2">New Question</Header>
                 <Form onSubmit={this.handleSubmit}>
                     <Form.Field>
                         <label>Title</label>
@@ -156,7 +147,7 @@ class NewStudy extends Component {
                     <Form.Field>
                         <label>Contents</label>
                         <ReactQuill
-                            className='study-new'
+                            className='question-new'
                             name='body'
                             theme='snow'
                             modules={this.modules}
@@ -175,22 +166,6 @@ class NewStudy extends Component {
                             addKeys={[9, 13, 188]}
                             onlyUnique={true} />
                     </Form.Field>
-                    <Form.Field>
-                        <Form.Checkbox
-                            name='is_public'
-                            defaultChecked={this.state.is_public}
-                            onChange={this.handleToggleChange}
-                            label='Is Public'
-                            toggle
-                        />
-                        <Form.Checkbox
-                            name='notification_enabled'
-                            defaultChecked={this.state.notification_enabled}
-                            onChange={this.handleToggleChange}
-                            label='Notification Enabled'
-                            toggle
-                        />
-                    </Form.Field>
                     <List className="list-checkbox-horizontal">
 
                     </List>
@@ -202,4 +177,4 @@ class NewStudy extends Component {
     }
 }
 
-export default NewStudy;
+export default NewQuestion;
