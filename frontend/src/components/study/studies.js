@@ -10,6 +10,7 @@ import {
     Confirm,
     Dimmer,
     Divider,
+    Form,
     Grid,
     GridColumn,
     Header,
@@ -18,7 +19,8 @@ import {
     Loader,
     Message,
     Pagination,
-    Segment
+    Segment,
+    FormGroup
 } from 'semantic-ui-react';
 
 import './studies.css';
@@ -34,7 +36,8 @@ class Studies extends Component {
             activePage: this.props.page,
             pageCount: 1,
             perPageCount: 2,
-            totalStudyCount: 0
+            totalStudyCount: 0,
+            search: ""
         }
 
         this.tagsInputProps = {
@@ -42,16 +45,19 @@ class Studies extends Component {
             placeholder: ''
         }
 
-        this.handleChange = this.handleChange.bind(this);
+        this.handleGenericChange = this.handleGenericChange.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
         this.handlePageChange = this.handlePageChange.bind(this);
         this.handleShow = this.handleShow.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleCancel = () => this.setState({ open: false })
 
-    handleChange(tags) {
-        this.setState({ tags });
+    handleGenericChange(event) {
+        this.setState({
+            [event.target.name]: event.target.value
+        });
     }
 
     handleDelete(event) {
@@ -81,7 +87,7 @@ class Studies extends Component {
 
     handlePageChange(e, pageInfo) {
         this.setState({ activePage: pageInfo.activePage });
-        this.loadStudiesFromServer(pageInfo.activePage);
+        this.loadStudiesFromServer(pageInfo.activePage, this.state.search);
     }
 
     handleShow(event) {
@@ -89,8 +95,14 @@ class Studies extends Component {
         this.setState({ open: true, id: id })
     }
 
-    loadStudiesFromServer(page) {
+    handleSubmit(event) {
+        event.preventDefault();
+        this.loadStudiesFromServer(1, this.state.search);
+    }
+
+    loadStudiesFromServer(page, search) {
         let headers = {};
+        let studyListUrl = "";
         const jwt = getJwt();
 
         if (jwt) {
@@ -100,7 +112,11 @@ class Studies extends Component {
             };
         }
 
-        const studyListUrl = this.props.studyListUrl + "?page=" + page;
+        if (search) {
+            studyListUrl = this.props.studyListUrl + "?page=" + page + "&search=" + search;
+        } else {
+            studyListUrl = this.props.studyListUrl + "?page=" + page;
+        }
 
         fetch(
             studyListUrl, {
@@ -186,7 +202,7 @@ class Studies extends Component {
         }
 
         return (
-            <Grid centered columns={1} doubling> {
+            <Grid className='study' centered columns={1} doubling> {
                 this.state.studyList.map(study =>
                     <Grid.Column key={study.id}>
                         <Segment>
@@ -225,13 +241,32 @@ class Studies extends Component {
                     </Grid.Column>
                 )
             }
-                <Pagination
-                    activePage={this.state.activePage}
-                    onPageChange={this.handlePageChange}
-                    totalPages={this.state.pageCount}
-                    ellipsisItem={null}
-                />
+                <GridColumn>
+                    <Pagination
+                        className='pagination'
+                        activePage={this.state.activePage}
+                        onPageChange={this.handlePageChange}
+                        totalPages={this.state.pageCount}
+                        ellipsisItem={null}
+                    />
+                </GridColumn>
+
+                <GridColumn>
+                    <Form onSubmit={this.handleSubmit}>
+                        <FormGroup>
+                            <Form.Input
+                                name='search'
+                                className='search'
+                                placeholder='search'
+                                value={this.state.search}
+                                onChange={this.handleGenericChange}
+                            />
+                            <Form.Button type='submit'>Search</Form.Button>
+                        </FormGroup>
+                    </Form>
+                </GridColumn>
             </Grid>
+
         )
     }
 }
