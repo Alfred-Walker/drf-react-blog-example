@@ -1,9 +1,13 @@
 import React from 'react'
-import { Button, Form, Header } from 'semantic-ui-react'
+import PropTypes from 'prop-types';
+import { 
+    Button, 
+    Form, 
+    Header 
+} from 'semantic-ui-react'
 
-/* Tutorial Reference*/
-/* https://reactgo.com/semantic-ui-react/ */
-function ContactForm(props) {
+
+const Contact = (props) => {
     return (
         <div className="form">
             <Header as="h2">Contact</Header>
@@ -23,4 +27,13 @@ function ContactForm(props) {
         </div>
     )
 }
-export default ContactForm;
+
+Contact.propTypes = {
+    user: PropTypes.object
+};
+
+Contact.defaultProps = {
+    user: undefined
+};
+
+export default Contact;

@@ -15,7 +15,7 @@ import EditQuestion from './question/EditQuestion';
 import NewQuestion from './question/NewQuestion';
 import Questions from './Question';
 
-import ContactForm from './Contact'
+import Contact from './Contact'
 import { Route, BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
 import Authenticated from './app/Authenticated';
 import * as helpers from '../utils/jwt';
@@ -178,7 +178,7 @@ class App extends Component {
                             />
 
                             <Route exact path="/contact" render={props => (
-                                <ContactForm {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} />
+                                <Contact {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} />
                             )}
                             />
                             <Route exact path="/login" render={props => (
