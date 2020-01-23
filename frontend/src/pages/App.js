@@ -182,11 +182,11 @@ class App extends Component {
                             )}
                             />
                             <Route exact path="/login" render={props => (
-                                <Login {...props} loggedInStatus={this.state.loggedInStatus} handleLogin={this.handleLogin} />
+                                <Login {...props} handleLogin={this.handleLogin} />
                             )}
                             />
                             <Route exact path="/logout" render={props => (
-                                <Logout {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} handleLogout={this.handleLogout} />
+                                <Logout {...props} handleLogout={this.handleLogout} />
                             )}
                             />
                             <Route exact path="/registration" render={props => (
