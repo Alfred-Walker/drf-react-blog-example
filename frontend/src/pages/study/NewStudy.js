@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Button, Form, Header, List } from 'semantic-ui-react'
 import TagsInput from 'react-tagsinput';
-import * as helpers from '../../utils/jwt'
+import * as Utils from '../../utils/jwt'
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './NewStudy.css'
@@ -55,7 +55,7 @@ class NewStudy extends Component {
     }
 
     handleSubmit(event) {
-        const jwt = helpers.getJwt();
+        const jwt = Utils.getJwt();
 
         const {
             title,

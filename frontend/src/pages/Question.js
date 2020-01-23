@@ -3,7 +3,7 @@ import { getJwt } from '../utils/jwt';
 import { Link } from "react-router-dom";
 import ReactQuill from 'react-quill';
 import TagsInput from 'react-tagsinput';
-import * as helpers from '../utils/jwt';
+import * as Utils from '../utils/jwt';
 
 import {
     Button,
@@ -55,7 +55,7 @@ class Questions extends Component {
     }
 
     handleDelete(event) {
-        const jwt = helpers.getJwt();
+        const jwt = Utils.getJwt();
         const id = this.state.id;
 
         this.setState({ open: false });

@@ -18,7 +18,7 @@ import Questions from './Question';
 import Contact from './Contact'
 import { Route, BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
 import Authenticated from './app/Authenticated';
-import * as helpers from '../utils/jwt';
+import * as Utils from '../utils/jwt';
 import Error from './Error'
 
 
@@ -47,7 +47,7 @@ class App extends Component {
     }
 
     initializeAuthInfo() {
-        const token = helpers.getJwt();
+        const token = Utils.getJwt();
 
         // clear localStorage if there is no access token
         if (!token || token === 'undefined') {
@@ -56,7 +56,7 @@ class App extends Component {
         }
 
         // verify existing token's life before POST
-        const isExpired = helpers.isJwtExpired(token);
+        const isExpired = Utils.isJwtExpired(token);
         
         if (isExpired) {
             localStorage.clear();

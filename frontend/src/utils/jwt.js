@@ -1,9 +1,19 @@
 import jwt from 'jsonwebtoken';
 
 
+const JWT_TOKEN_KEY = "jwt-token";
+
+export const clearJwt = () => {
+    localStorage.removeItem(JWT_TOKEN_KEY);
+}
+
 export const getJwt = () => {
-    return localStorage.getItem("jwt-token");
+    return localStorage.getItem(JWT_TOKEN_KEY);
 };
+
+export const setJwt = (token) => {
+    localStorage.setItem(JWT_TOKEN_KEY, token);
+}
 
 export const isJwtExpired = (token) => {
     var isExpired = false;
@@ -20,4 +30,4 @@ export const isJwtExpired = (token) => {
     return isExpired;
 };
 
-export default {getJwt, isJwtExpired};
+export default { clearJwt, getJwt, setJwt, isJwtExpired };

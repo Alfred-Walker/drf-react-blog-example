@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
-import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react'
+import PropTypes from 'prop-types';
+import LoginForm from './login/LoginForm';
+import * as Utils from '../utils/jwt';
 
 
 class Login extends Component {
@@ -7,16 +9,15 @@ class Login extends Component {
         super(props);
 
         this.state = {
-            email: "",
-            password: "",
-            loginErrors: ""
+            email: undefined,
+            password: undefined
         };
 
-        this.handleChange = this.handleChange.bind(this);
+        this.handleGeneralChange = this.handleGeneralChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChange(event) {
+    handleGeneralChange(event) {
         this.setState({
             [event.target.name]: event.target.value
         });
@@ -29,76 +30,53 @@ class Login extends Component {
         } = this.state
 
         event.preventDefault();
-        
+
         fetch(
             'http://localhost:8000/jwt-auth/', {
-                method: 'POST',
-                headers: {'Content-Type':'application/json; charset="utf-8"'},
-                body: JSON.stringify({
-                    email: email,
-                    password: password,
-                }),
-                credentials: 'include'
-            }
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset="utf-8"' },
+            body: JSON.stringify({
+                email: email,
+                password: password,
+            }),
+            credentials: 'include'
+        }
         )
-        .then(
-            response => (response.json())
-        )
-        .then(
-            result => {
-                localStorage.setItem("jwt-token", result.token);
-                this.props.handleLogin(result);
-                this.props.history.push('/');
-            }
-        )
-        .catch(
-            err => console.log("login error", err)
+            .then(
+                response => (response.json())
+            )
+            .then(
+                result => {
+                    Utils.setJwt(result.token);
+                    this.props.handleLogin(result);
+                    this.props.history.push('/');
+                }
+            )
+            .catch(
+                err => console.log("login error", err)
             );
     }
 
     render() {
         return (
-            <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
-                <Grid.Column style={{ maxWidth: 450 }}>
-                    <Header as='h2' color='teal' textAlign='center'>
-                        Login to your account
-                    </Header>
-                    <Form size='large' onSubmit={this.handleSubmit}>
-                        <Segment stacked>
-                            <Form.Input
-                                name='email'
-                                type='email'
-                                fluid icon='user'
-                                iconPosition='left'
-                                placeholder='E-mail address'
-                                onChange={this.handleChange}
-                                value={this.state.email}
-                                required
-                            />
-                            <Form.Input
-                                fluid
-                                name='password'
-                                type='password'
-                                icon='lock'
-                                iconPosition='left'
-                                placeholder='Password'
-                                onChange={this.handleChange}
-                                value={this.state.password}
-                                required
-                            />
-
-                            <Button color='teal' fluid size='large'>
-                                Login
-                            </Button>
-                        </Segment>
-                    </Form>
-                    <Message>
-                        New to us? <a href='/registration'>Sign Up</a>
-                    </Message>
-                </Grid.Column>
-            </Grid>
+            <LoginForm
+                handleChange={this.handleGeneralChange}
+                handleSubmit={this.handleSubmit}
+                email={this.state.email}
+                password={this.state.password}
+            />
         );
     }
 }
+
+Login.propTypes = {
+    history: PropTypes.object,
+    handleLogin: PropTypes.func
+};
+
+Login.defaultProps = {
+    history: undefined,
+    handleLogin: undefined
+};
 
 export default Login;
