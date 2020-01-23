@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Button, Divider, Form, Header, List } from 'semantic-ui-react'
 import TagsInput from 'react-tagsinput';
-import * as helpers from '../../utils/jwt'
+import * as Utils from '../../utils/jwt'
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './EditQuestion.css'
@@ -54,7 +54,7 @@ class EditQuestion extends Component {
     }
 
     handleSubmit(event) {
-        const jwt = helpers.getJwt();
+        const jwt = Utils.getJwt();
 
         const {
             id,
