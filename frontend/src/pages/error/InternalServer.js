@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import './InternalServer.css';
 import {
     Button,
@@ -24,5 +25,13 @@ const InternalServer = (props) => {
         </GridColumn>
     )
 }
+
+InternalServer.propTypes = {
+    history: PropTypes.object
+};
+
+InternalServer.defaultProps = {
+    history: undefined
+};
 
 export default InternalServer;

@@ -8,7 +8,7 @@ class Error extends Component {
     render() {
         const errorCode = this.props.errorCode;
 
-        if (errorCode == 404) {
+        if (errorCode === 404) {
             return <NotFound {...this.props} />;
         } else {
             return <InternalServer {...this.props} />;
@@ -18,6 +18,10 @@ class Error extends Component {
 
 Error.propTypes = {
     errorCode: PropTypes.number
+};
+
+Error.defaultProps = {
+    errorCode: 500
 };
 
 export default Error;

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import './NotFound.css';
 import {
     Button,
@@ -21,5 +22,13 @@ const NotFound = (props) => {
         </GridColumn>
     )
 }
+
+NotFound.propTypes = {
+    history: PropTypes.object
+};
+
+NotFound.defaultProps = {
+    history: undefined
+};
 
 export default NotFound;
