@@ -19,8 +19,7 @@ import ContactForm from './Contact'
 import { Route, BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
 import Authenticated from './app/Authenticated';
 import * as helpers from '../utils/jwt';
-import internalServer from './error/InternalServer'
-import notFound from './error/NotFound'
+import Error from './Error'
 
 
 
@@ -194,8 +193,14 @@ class App extends Component {
                                 <Registration {...props} loggedInStatus={this.state.loggedInStatus} />
                             )}
                             />
-                            <Route path="/500" component={internalServer} />
-                            <Route component={notFound} />
+                            <Route path="/500" render={props => (
+                                <Error {...props} errorCode={500} />
+                            )} 
+                            />
+                            <Route render={props => (
+                                <Error {...props} errorCode={404} />
+                            )} 
+                            />
                         </Switch>
                     </Router>
                 </div>
