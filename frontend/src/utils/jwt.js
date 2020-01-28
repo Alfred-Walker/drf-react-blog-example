@@ -22,8 +22,8 @@ export const isJwtExpired = (token) => {
     // * 1000 to sync numeric time unit
     var dateExp = new Date(decodedToken.payload.exp * 1000);
     var dateNow = new Date();
-
-    if(decodedToken < dateNow) {
+    
+    if(dateExp < dateNow) {
         isExpired = true;
     }
 
