@@ -25,14 +25,14 @@ const SearchInput = (props) => {
 
 SearchInput.propTypes = {
     search: PropTypes.string,
-    handleGenericChange: PropTypes.func,
-    handleGenericSubmit: PropTypes.func
+    onChange: PropTypes.func,
+    onSubmit: PropTypes.func
 };
 
 SearchInput.defaultProps = {
     search: PropTypes.string,
-    handleGenericChange: undefined,
-    handleGenericSubmit: undefined
+    onChange: undefined,
+    onSubmit: undefined
 };
 
 export default SearchInput;
