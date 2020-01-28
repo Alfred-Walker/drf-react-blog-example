@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
-import { getJwt } from '../utils/jwt';
 import { Link } from "react-router-dom";
 import ReactQuill from 'react-quill';
 import TagsInput from 'react-tagsinput';
-import * as helpers from '../utils/jwt';
+import * as Utils from '../utils/jwt';
+
+import SearchInput from '../components/SearchInput';
 
 import {
     Button,
     Confirm,
     Dimmer,
     Divider,
-    Form,
     Grid,
     GridColumn,
     Header,
@@ -19,8 +19,7 @@ import {
     Loader,
     Message,
     Pagination,
-    Segment,
-    FormGroup
+    Segment
 } from 'semantic-ui-react';
 
 import './Study.css';
@@ -61,7 +60,7 @@ class Studies extends Component {
     }
 
     handleDelete(event) {
-        const jwt = helpers.getJwt();
+        const jwt = Utils.getJwt();
         const id = this.state.id;
 
         this.setState({ open: false });
@@ -103,7 +102,7 @@ class Studies extends Component {
     loadStudiesFromServer(page, search) {
         let headers = {};
         let studyListUrl = "";
-        const jwt = getJwt();
+        const jwt = Utils.getJwt();
 
         if (jwt) {
             headers = {
@@ -252,18 +251,7 @@ class Studies extends Component {
                 </GridColumn>
 
                 <GridColumn>
-                    <Form onSubmit={this.handleSubmit}>
-                        <FormGroup>
-                            <Form.Input
-                                name='search'
-                                className='search'
-                                placeholder='search'
-                                value={this.state.search}
-                                onChange={this.handleGenericChange}
-                            />
-                            <Form.Button type='submit'>Search</Form.Button>
-                        </FormGroup>
-                    </Form>
+                    <SearchInput search={this.state.search} onChange={this.handleGenericChange} onSubmit={this.handleSubmit} />
                 </GridColumn>
             </Grid>
 
