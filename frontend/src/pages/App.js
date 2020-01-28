@@ -16,7 +16,7 @@ import NewQuestion from './question/NewQuestion';
 import Questions from './Question';
 
 import Contact from './Contact'
-import { Route, BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
+import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import Authenticated from './app/Authenticated';
 import * as Utils from '../utils/jwt';
 import Error from './Error'
