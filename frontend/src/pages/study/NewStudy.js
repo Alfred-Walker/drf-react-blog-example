@@ -48,10 +48,14 @@ class NewStudy extends Component {
         this.setState({tags});
     }
 
-    handleToggleChange(event) {
+    handleToggleChange(e, { name, checked }) {
         this.setState({
-            [event.target.name]: event.target.checked
+            [name]: checked
         });
+        // see Semantic UI docs.
+        // https://react.semantic-ui.com/collections/form/#usage-capture-values
+        // console.log("name", name)
+        // console.log("checked", checked)
     }
 
     handleSubmit(event) {
@@ -91,7 +95,8 @@ class NewStudy extends Component {
             )
             .then(
                 result => {
-                    this.props.history.push('/study/list');
+                    console.log("is_public", is_public)
+                    this.props.history.push('/study');
                 }
             )
             .catch(

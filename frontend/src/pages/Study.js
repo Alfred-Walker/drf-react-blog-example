@@ -5,6 +5,7 @@ import TagsInput from 'react-tagsinput';
 import * as Utils from '../utils/jwt';
 
 import SearchInput from '../components/SearchInput';
+import TagList from './tag/TagList';
 
 import {
     Button,
@@ -32,11 +33,13 @@ class Studies extends Component {
         this.state = {
             open: false,
             studyList: undefined,
+            tagList: undefined,
             activePage: this.props.page,
             pageCount: 1,
             perPageCount: 2,
             totalStudyCount: 0,
-            search: ""
+            search: "",
+            tag: this.props.match.tag
         }
 
         this.tagsInputProps = {
@@ -49,6 +52,7 @@ class Studies extends Component {
         this.handlePageChange = this.handlePageChange.bind(this);
         this.handleShow = this.handleShow.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleTagClick = this.handleTagClick.bind(this);
     }
 
     handleCancel = () => this.setState({ open: false })
@@ -86,7 +90,7 @@ class Studies extends Component {
 
     handlePageChange(e, pageInfo) {
         this.setState({ activePage: pageInfo.activePage });
-        this.loadStudiesFromServer(pageInfo.activePage, this.state.search);
+        this.loadStudiesFromServer(pageInfo.activePage, this.state.search, this.state.tag);
     }
 
     handleShow(event) {
@@ -96,10 +100,15 @@ class Studies extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        this.loadStudiesFromServer(1, this.state.search);
+        this.loadStudiesFromServer(1, this.state.search, this.state.tag);
     }
 
-    loadStudiesFromServer(page, search) {
+    handleTagClick(event) {
+        this.setState({tag: event.target.name});
+        this.loadStudiesFromServer(1, this.state.search, event.target.name);
+    }
+
+    loadStudiesFromServer(page, search, tag) {
         let headers = {};
         let studyListUrl = "";
         const jwt = Utils.getJwt();
@@ -111,10 +120,18 @@ class Studies extends Component {
             };
         }
 
-        if (search) {
-            studyListUrl = this.props.studyListUrl + "?page=" + page + "&search=" + search;
+        if (tag) {
+            if (search) {
+                studyListUrl = this.props.studyListUrl + "?tag=" + tag + "&page=" + page + "&search=" + search;
+            } else {
+                studyListUrl = this.props.studyListUrl + "?tag=" + tag + "&page=" + page;
+            }
         } else {
-            studyListUrl = this.props.studyListUrl + "?page=" + page;
+            if (search) {
+                studyListUrl = this.props.studyListUrl + "?page=" + page + "&search=" + search;
+            } else {
+                studyListUrl = this.props.studyListUrl + "?page=" + page;
+            }
         }
 
         fetch(
@@ -147,8 +164,48 @@ class Studies extends Component {
             );
     }
 
+    loadRandomTagsFromServer(count) {
+        let headers = {};
+        let tagListUrl = "";
+        const jwt = Utils.getJwt();
+
+        if (jwt) {
+            headers = {
+                'Authorization': `JWT ${jwt}`,
+                'Content-Type': 'Application/json'
+            };
+        }
+
+        tagListUrl = this.props.tagListUrl + "random/?count=" + count;
+
+        fetch(
+            tagListUrl, {
+            method: 'GET',
+            headers: headers,
+            credentials: 'include'
+        }
+        )
+            .then(
+                response => (response.json())
+            )
+            .then(
+                result => {
+                    this.setState({
+                        tagList: result
+                    });
+                    console.log(result);
+                }
+            )
+            .catch(
+                err => {
+                    console.log("tags error", err);
+                }
+            );
+    }
+
     componentDidMount() {
         this.loadStudiesFromServer(this.props.page);
+        this.loadRandomTagsFromServer(10);
     }
 
     // quill editor without toolbar
@@ -201,7 +258,14 @@ class Studies extends Component {
         }
 
         return (
-            <Grid className='study' centered columns={1} doubling> {
+            <Grid className='study' centered columns={1} doubling>
+                <Grid.Column>
+                    <TagList 
+                        tags={this.state.tagList} 
+                        onClick={this.handleTagClick}
+                    />
+                </Grid.Column>
+            {
                 this.state.studyList.map(study =>
                     <Grid.Column key={study.id}>
                         <Segment>
@@ -227,9 +291,28 @@ class Studies extends Component {
                                     inputProps={this.tagsInputProps}
                                 />
                             </List>
+
                             <Button primary basic as="a" href="/">See all</Button>
-                            <Button as={Link} to={{ pathname: '/study/edit/' + study.id, state: { study: study } }} primary basic>Edit</Button>
-                            <Button name={study.id} onClick={this.handleShow} primary basic negative>Delete</Button>
+
+                            <Button 
+                                as={Link} 
+                                to={{ pathname: '/study/edit/' + study.id, state: { study: study } }} 
+                                primary 
+                                basic
+                            >
+                                Edit
+                            </Button>
+
+                            <Button 
+                                name={study.id} 
+                                onClick={this.handleShow} 
+                                primary 
+                                basic 
+                                negative
+                            >
+                                Delete
+                            </Button>
+
                             <Confirm
                                 open={this.state.open}
                                 content='Do you really want to delete?'
@@ -251,7 +334,11 @@ class Studies extends Component {
                 </GridColumn>
 
                 <GridColumn>
-                    <SearchInput search={this.state.search} onChange={this.handleGenericChange} onSubmit={this.handleSubmit} />
+                    <SearchInput 
+                        search={this.state.search} 
+                        onChange={this.handleGenericChange} 
+                        onSubmit={this.handleSubmit} 
+                    />
                 </GridColumn>
             </Grid>
 

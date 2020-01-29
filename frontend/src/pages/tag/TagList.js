@@ -5,13 +5,14 @@ import './TagList.css'
 
 
 const TagList = (props) => {
+    const key = 0;
     return (
-        <Segment fluid className='tag-list'>
-            <Icon name='hashtag' size='big' />
+        <Segment fluid="true" className='tag-list'>
+            {props.tags === undefined ? "No tags registered yet..." : <Icon name='hashtag' size='big' />}
             <List horizontal>
                 {
-                    props.tags.map(tag =>
-                        <List.Item key={tag.id}>
+                    props.tags.map((tag, index) =>
+                        <List.Item key={index}>
                             <Button name={tag.name} onClick={props.onClick} className='tag'>{tag.name}</Button>
                         </List.Item>
                     )
@@ -27,7 +28,7 @@ TagList.propTypes = {
 };
 
 TagList.defaultProps = {
-    tags: undefined,
+    tags: [],
     onClick: undefined
 };
 

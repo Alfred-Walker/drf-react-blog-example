@@ -24,7 +24,7 @@ class StudySerializer(serializers.ModelSerializer):
 
     def __init__(self, *args, **kwargs):
         super(StudySerializer, self).__init__(*args, **kwargs)
-        pprint(kwargs)
+        # pprint(kwargs)
 
     def create(self, validated_data):
         user = None
@@ -52,7 +52,7 @@ class StudySerializer(serializers.ModelSerializer):
             )
 
         for item in request.data['tags']:
-            tag, created = Tag.objects.get_or_create(name=item)
+            tag, created = Tag.objects.get_or_create(name=item, is_public=validated_data['is_public'])
             study.tags.add(tag)
 
         return study

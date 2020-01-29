@@ -5,6 +5,8 @@ import ReactQuill from 'react-quill';
 import TagsInput from 'react-tagsinput';
 import * as Utils from '../utils/jwt';
 
+import TagList from './tag/TagList';
+
 import {
     Button,
     Confirm,
@@ -31,10 +33,12 @@ class Questions extends Component {
         this.state = {
             open: false,
             questionList: undefined,
+            tagList: undefined,
             activePage: this.props.page,
             pageCount: 1,
             perPageCount: 2,
-            totalQuestionCount: 0
+            totalQuestionCount: 0,
+            tag: this.props.match.tag
         }
 
         this.tagsInputProps = {
@@ -46,6 +50,7 @@ class Questions extends Component {
         this.handleDelete = this.handleDelete.bind(this);
         this.handlePageChange = this.handlePageChange.bind(this);
         this.handleShow = this.handleShow.bind(this);
+        this.handleTagClick = this.handleTagClick.bind(this);
     }
 
     handleCancel = () => this.setState({ open: false })
@@ -81,7 +86,7 @@ class Questions extends Component {
 
     handlePageChange(e, pageInfo) {
         this.setState({ activePage: pageInfo.activePage });
-        this.loadQuestionsFromServer(pageInfo.activePage);
+        this.loadQuestionsFromServer(pageInfo.activePage, this.state.tag);
     }
 
     handleShow(event) {
@@ -89,8 +94,14 @@ class Questions extends Component {
         this.setState({ open: true, id: id })
     }
 
-    loadQuestionsFromServer(page) {
+    handleTagClick(event) {
+        this.setState({ tag: event.target.name });
+        this.loadQuestionsFromServer(1, event.target.name);
+    }
+
+    loadQuestionsFromServer(page, tag) {
         let headers = {};
+        let questionListUrl = "";
         const jwt = getJwt();
 
         if (jwt) {
@@ -100,7 +111,11 @@ class Questions extends Component {
             };
         }
 
-        const questionListUrl = this.props.questionListUrl + "?page=" + page;
+        if (tag) {
+            questionListUrl = this.props.questionListUrl + "?tag=" + tag + "&page=" + page;
+        } else {
+            questionListUrl = this.props.questionListUrl + "?page=" + page;
+        }
 
         fetch(
             questionListUrl, {
@@ -132,8 +147,48 @@ class Questions extends Component {
             );
     }
 
+    loadRandomTagsFromServer(count) {
+        let headers = {};
+        let tagListUrl = "";
+        const jwt = Utils.getJwt();
+
+        if (jwt) {
+            headers = {
+                'Authorization': `JWT ${jwt}`,
+                'Content-Type': 'Application/json'
+            };
+        }
+
+        tagListUrl = this.props.tagListUrl + "random/?count=" + count;
+
+        fetch(
+            tagListUrl, {
+            method: 'GET',
+            headers: headers,
+            credentials: 'include'
+        }
+        )
+            .then(
+                response => (response.json())
+            )
+            .then(
+                result => {
+                    this.setState({
+                        tagList: result
+                    });
+                    console.log(result);
+                }
+            )
+            .catch(
+                err => {
+                    console.log("tags error", err);
+                }
+            );
+    }
+
     componentDidMount() {
         this.loadQuestionsFromServer(this.props.page);
+        this.loadRandomTagsFromServer(10)
     }
 
     // quill editor without toolbar
@@ -186,45 +241,52 @@ class Questions extends Component {
         }
 
         return (
-            <Grid centered columns={1} doubling> {
-                this.state.questionList.map(question =>
-                    <Grid.Column key={question.id}>
-                        <Segment>
-                            <Header as="h1">
-                                {question.title}
-                            </Header>
-                            <Divider />
-                            <ReactQuill
-                                modules={this.modules}
-                                formats={this.formats}
-                                value={question.body}
-                                readOnly={true}
-                                theme={"snow"}
-                            />
-                            <p>
-                                {question.registered_date}
-                            </p>
-                            <p>{question.excerpt}</p>
-                            <List className="list-tag-horizontal">
-                                <TagsInput in
-                                    disabled={true}
-                                    value={question.tags}
-                                    inputProps={this.tagsInputProps}
+            <Grid centered columns={1} doubling>
+                <Grid.Column>
+                    <TagList
+                        tags={this.state.tagList}
+                        onClick={this.handleTagClick}
+                    />
+                </Grid.Column>
+                {
+                    this.state.questionList.map(question =>
+                        <Grid.Column key={question.id}>
+                            <Segment>
+                                <Header as="h1">
+                                    {question.title}
+                                </Header>
+                                <Divider />
+                                <ReactQuill
+                                    modules={this.modules}
+                                    formats={this.formats}
+                                    value={question.body}
+                                    readOnly={true}
+                                    theme={"snow"}
                                 />
-                            </List>
-                            <Button primary basic as="a" href="/">See all</Button>
-                            <Button as={Link} to={{ pathname: '/question/edit/' + question.id, state: { question: question } }} primary basic>Edit</Button>
-                            <Button name={question.id} onClick={this.handleShow} primary basic negative>Delete</Button>
-                            <Confirm
-                                open={this.state.open}
-                                content='Do you really want to delete?'
-                                onCancel={this.handleCancel}
-                                onConfirm={this.handleDelete}
-                            />
-                        </Segment>
-                    </Grid.Column>
-                )
-            }
+                                <p>
+                                    {question.registered_date}
+                                </p>
+                                <p>{question.excerpt}</p>
+                                <List className="list-tag-horizontal">
+                                    <TagsInput in
+                                        disabled={true}
+                                        value={question.tags}
+                                        inputProps={this.tagsInputProps}
+                                    />
+                                </List>
+                                <Button primary basic as="a" href="/">See all</Button>
+                                <Button as={Link} to={{ pathname: '/question/edit/' + question.id, state: { question: question } }} primary basic>Edit</Button>
+                                <Button name={question.id} onClick={this.handleShow} primary basic negative>Delete</Button>
+                                <Confirm
+                                    open={this.state.open}
+                                    content='Do you really want to delete?'
+                                    onCancel={this.handleCancel}
+                                    onConfirm={this.handleDelete}
+                                />
+                            </Segment>
+                        </Grid.Column>
+                    )
+                }
                 <Pagination
                     activePage={this.state.activePage}
                     onPageChange={this.handlePageChange}

@@ -13,10 +13,11 @@ class StudyViewSet(viewsets.ModelViewSet):
     # permission_classes = (AllowAny,)
     serializer_class = StudySerializer
 
-    # HTTP GET /study/list/
-    # HTTP GET /study/list/?search=
+    # HTTP GET /study/
+    # HTTP GET /study/?search=
     def get_queryset(self):
         search = self.request.query_params.get('search', '')
+        tag = self.request.query_params.get('tag', '')
 
         if search:
             if self.request.user.is_superuser:
@@ -34,8 +35,12 @@ class StudyViewSet(viewsets.ModelViewSet):
                 criteria = Q()
             else:
                 criteria = (Q(is_public=True) | Q(user_id=self.request.user.id))
+                print(tag)
 
-        queryset = Study.objects.filter(criteria).order_by('-registered_date')
+        if tag:
+            queryset = Study.objects.filter(criteria, Q(tags__name__exact=tag)).order_by('-registered_date')
+        else:
+            queryset = Study.objects.filter(criteria).order_by('-registered_date')
 
         return queryset
 
@@ -43,14 +48,14 @@ class StudyViewSet(viewsets.ModelViewSet):
     # Replace detail_route uses with @action(detail=True).
     # Replace list_route uses with @action(detail=False).
 
-    # HTTP GET /study/list/public/
+    # HTTP GET /study/public/
     @action(detail=False)
     def public(self, request):
         queryset = Study.objects.filter(is_public=True).order_by('-registered_date')
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
-    # HTTP GET /study/list/private/
+    # HTTP GET /study/private/
     @action(detail=False)
     def private(self, request):
         queryset = self.get_queryset().filter(is_public=False)

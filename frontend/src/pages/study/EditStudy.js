@@ -102,7 +102,7 @@ class EditStudy extends Component {
             )
             .then(
                 result => {
-                    this.props.history.push('/study/list');
+                    this.props.history.push('/study');
                 }
             )
             .catch(

@@ -1,6 +1,8 @@
 from django.db.models import Q
 from rest_framework import viewsets
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
+from rest_framework.response import Response
 
 from .serializers import *
 from .models import Tag
@@ -11,8 +13,8 @@ class TagViewSet(viewsets.ModelViewSet):
     # permission_classes = (AllowAny,)
     serializer_class = TagSerializer
 
-    # HTTP GET /tag/list/
-    # HTTP GET /tag/list/?search=
+    # HTTP GET /tag/
+    # HTTP GET /tag/?search=
     def get_queryset(self):
         search = self.request.query_params.get('search', '')
 
@@ -27,3 +29,18 @@ class TagViewSet(viewsets.ModelViewSet):
         queryset = Tag.objects.filter(criteria).order_by('name')
 
         return queryset
+
+    # HTTP GET /tag/random/
+    @action(detail=False)
+    def random(self, request):
+        count = self.request.query_params.get('count', '')
+
+        if count:
+            count = min(max(0, int(count)), 20)
+        else:
+            count = 10
+
+        queryset = self.get_queryset().filter(is_public=True).order_by('?')[:count]
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)

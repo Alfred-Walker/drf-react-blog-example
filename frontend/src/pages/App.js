@@ -57,35 +57,35 @@ class App extends Component {
 
         // verify existing token's life before POST
         const isExpired = Utils.isJwtExpired(token);
-        
+
         if (isExpired) {
             localStorage.clear();
             return;
         }
-            
+
         // refresh token
         fetch(
             'http://localhost:8000/jwt-auth/refresh/', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json; charset="utf-8"'},
-                body: JSON.stringify({token: token}),
-                credentials: 'include'
-            }
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset="utf-8"' },
+            body: JSON.stringify({ token: token }),
+            credentials: 'include'
+        }
         )
-        .then(
-            response => response.json()
-        )
-        .then(
-            result => {
-                // console.log("refresh success")
-                this.handleTokenRefreshSuccess(result);
-            }
-        )
-        .catch(err => {
+            .then(
+                response => response.json()
+            )
+            .then(
+                result => {
+                    // console.log("refresh success")
+                    this.handleTokenRefreshSuccess(result);
+                }
+            )
+            .catch(err => {
                 // console.log("token refresh failed", err);
                 this.handleTokenRefreshFailure();
             }
-        );
+            );
     }
 
     componentDidMount() {
@@ -133,7 +133,7 @@ class App extends Component {
                                     user={this.state.user}
                                     clearAuthInfo={this.clearAuthInfo}
                                 >
-                                    <NewStudy {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user}/>
+                                    <NewStudy {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} />
                                 </Authenticated>
                             )}
                             />
@@ -147,18 +147,25 @@ class App extends Component {
                                 </Authenticated>
                             )}
                             />
-                            <Route exact path="/study/list" render={props => (
-                                <Studies {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} page={1} studyListUrl="http://localhost:8000/study/" />
+                            <Route exact path="/study" render={props => (
+                                <Studies {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} page={1} studyListUrl="http://localhost:8000/study/" tagListUrl="http://localhost:8000/tag/" />
                             )}
                             />
-
+                            <Route exact path="/tag/:tag/study" render={props => (
+                                <Studies {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} page={1} studyListUrl="http://localhost:8000/study/" tagListUrl="http://localhost:8000/tag/" />
+                            )}
+                            />
+                            <Route exact path="/tag/:tag/question" render={props => (
+                                <Questions {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} page={1} questionListUrl="http://localhost:8000/question/" tagListUrl="http://localhost:8000/tag/" />
+                            )}
+                            />
                             <Route exact path="/question/new" render={props => (
                                 <Authenticated {...props}
                                     loggedInStatus={this.state.loggedInStatus}
                                     user={this.state.user}
                                     clearAuthInfo={this.clearAuthInfo}
                                 >
-                                    <NewQuestion {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user}/>
+                                    <NewQuestion {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} />
                                 </Authenticated>
                             )}
                             />
@@ -172,8 +179,8 @@ class App extends Component {
                                 </Authenticated>
                             )}
                             />
-                            <Route exact path="/question/list" render={props => (
-                                <Questions {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} page={1} questionListUrl="http://localhost:8000/question/" />
+                            <Route exact path="/question" render={props => (
+                                <Questions {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} page={1} questionListUrl="http://localhost:8000/question/" tagListUrl="http://localhost:8000/tag/" />
                             )}
                             />
 
@@ -195,11 +202,11 @@ class App extends Component {
                             />
                             <Route path="/500" render={props => (
                                 <Error {...props} errorCode={500} />
-                            )} 
+                            )}
                             />
                             <Route render={props => (
                                 <Error {...props} errorCode={404} />
-                            )} 
+                            )}
                             />
                         </Switch>
                     </Router>

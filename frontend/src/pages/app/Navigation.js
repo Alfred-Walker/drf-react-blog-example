@@ -10,8 +10,8 @@ function NavigationBar(props) {
         <Menu fixed='top' pointing>
             <Menu.Item as={NavLink} exact to="/" activeClassName="active" name="home"/>
             {props.loggedInStatus === "LOGGED_IN" ? <Menu.Item as={NavLink} to="/study/new" activeClassName="active" name="new"/> : <span></span>}
-            <Menu.Item as={NavLink} to="/study/list" activeClassName="active" name="studies"/>
-            <Menu.Item as={NavLink} to="/question/list" activeClassName="active" name="Questions"/>
+            <Menu.Item as={NavLink} exact to="/study" activeClassName="active" name="studies"/>
+            <Menu.Item as={NavLink} to="/question" activeClassName="active" name="Questions"/>
             <Menu.Item className="nav-right" name={props.user}/>
             {props.loggedInStatus === "LOGGED_IN" ? <span>{props.user}</span> : <span></span>}
             {props.loggedInStatus === "NOT_LOGGED_IN" ? <Menu.Item as={NavLink} to="/login" name="login"/> : <Menu.Item as={NavLink} to="/logout" name="logout"/>}

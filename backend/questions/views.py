@@ -11,10 +11,11 @@ class QuestionViewSet(viewsets.ModelViewSet):
     # permission_classes = (AllowAny,)
     serializer_class = QuestionSerializer
 
-    # HTTP GET /question/list/
-    # HTTP GET /question/list/?search=
+    # HTTP GET /question/
+    # HTTP GET /question/?search=
     def get_queryset(self):
         search = self.request.query_params.get('search', '')
+        tag = self.request.query_params.get('tag', '')
 
         if search:
             criteria = (
@@ -25,6 +26,9 @@ class QuestionViewSet(viewsets.ModelViewSet):
             criteria = Q()
             # criteria = (Q(user_id=self.request.user.id))
 
-        queryset = Question.objects.filter(criteria).order_by('-registered_date')
+        if tag:
+            queryset = Question.objects.filter(criteria, Q(tags__name__exact=tag)).order_by('-registered_date')
+        else:
+            queryset = Question.objects.filter(criteria).order_by('-registered_date')
 
         return queryset

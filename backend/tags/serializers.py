@@ -5,5 +5,5 @@ from .models import Tag
 class TagSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Tag
-        fields = ['name']
+        fields = ['name', 'is_public']
         # fields = '__all__'
