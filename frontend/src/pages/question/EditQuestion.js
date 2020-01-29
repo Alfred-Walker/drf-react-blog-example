@@ -90,7 +90,7 @@ class EditQuestion extends Component {
             )
             .then(
                 result => {
-                    this.props.history.push('/question/list');
+                    this.props.history.push('/question');
                 }
             )
             .catch(
