@@ -5,6 +5,7 @@ import ReactQuill from 'react-quill';
 import TagsInput from 'react-tagsinput';
 import * as Utils from '../utils/jwt';
 
+import SearchInput from '../components/SearchInput';
 import TagList from './tag/TagList';
 
 import {
@@ -38,6 +39,7 @@ class Questions extends Component {
             pageCount: 1,
             perPageCount: 2,
             totalQuestionCount: 0,
+            search: "",
             tag: this.props.match.tag
         }
 
@@ -46,17 +48,20 @@ class Questions extends Component {
             placeholder: ''
         }
 
-        this.handleChange = this.handleChange.bind(this);
+        this.handleGenericChange = this.handleGenericChange.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
         this.handlePageChange = this.handlePageChange.bind(this);
         this.handleShow = this.handleShow.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
         this.handleTagClick = this.handleTagClick.bind(this);
     }
 
     handleCancel = () => this.setState({ open: false })
 
-    handleChange(tags) {
-        this.setState({ tags });
+    handleGenericChange(event) {
+        this.setState({
+            [event.target.name]: event.target.value
+        });
     }
 
     handleDelete(event) {
@@ -86,7 +91,7 @@ class Questions extends Component {
 
     handlePageChange(e, pageInfo) {
         this.setState({ activePage: pageInfo.activePage });
-        this.loadQuestionsFromServer(pageInfo.activePage, this.state.tag);
+        this.loadQuestionsFromServer(pageInfo.activePage, this.state.search, this.state.tag);
     }
 
     handleShow(event) {
@@ -94,12 +99,17 @@ class Questions extends Component {
         this.setState({ open: true, id: id })
     }
 
-    handleTagClick(event) {
-        this.setState({ tag: event.target.name });
-        this.loadQuestionsFromServer(1, event.target.name);
+    handleSubmit(event) {
+        event.preventDefault();
+        this.loadQuestionsFromServer(1, this.state.search, this.state.tag);
     }
 
-    loadQuestionsFromServer(page, tag) {
+    handleTagClick(event) {
+        this.setState({ tag: event.target.name });
+        this.loadQuestionsFromServer(1, this.state.search, event.target.name);
+    }
+
+    loadQuestionsFromServer(page, search, tag) {
         let headers = {};
         let questionListUrl = "";
         const jwt = getJwt();
@@ -112,9 +122,17 @@ class Questions extends Component {
         }
 
         if (tag) {
-            questionListUrl = this.props.questionListUrl + "?tag=" + tag + "&page=" + page;
+            if (search) {
+                questionListUrl = this.props.questionListUrl + "?tag=" + tag + "&page=" + page + "&search=" + search;
+            } else {
+                questionListUrl = this.props.questionListUrl + "?tag=" + tag + "&page=" + page;
+            }
         } else {
-            questionListUrl = this.props.questionListUrl + "?page=" + page;
+            if (search) {
+                questionListUrl = this.props.questionListUrl + "?page=" + page + "&search=" + search;
+            } else {
+                questionListUrl = this.props.questionListUrl + "?page=" + page;
+            }
         }
 
         fetch(
@@ -176,7 +194,6 @@ class Questions extends Component {
                     this.setState({
                         tagList: result
                     });
-                    console.log(result);
                 }
             )
             .catch(
@@ -230,12 +247,12 @@ class Questions extends Component {
             return (
                 <GridColumn className='question-empty' >
                     <Header className='header'>&nbsp;NO DATA</Header>
-                    <Label className='label'>&nbsp;STUDY NOT FOUND</Label>
+                    <Label className='label'>&nbsp;QUESTION NOT FOUND</Label>
                     <Divider />
                     <Message className='message'>
                         There is no question accessible. <br />
                     </Message>
-                    <Button as={Link} to={{ pathname: '/question/new/' }} primary basic>ADD YOUR STUDY</Button>
+                    <Button as={Link} to={{ pathname: '/question/new/' }} primary basic>ADD YOUR QUESTION</Button>
                 </GridColumn>
             );
         }
@@ -287,12 +304,22 @@ class Questions extends Component {
                         </Grid.Column>
                     )
                 }
-                <Pagination
-                    activePage={this.state.activePage}
-                    onPageChange={this.handlePageChange}
-                    totalPages={this.state.pageCount}
-                    ellipsisItem={null}
-                />
+                <GridColumn>
+                    <Pagination
+                        activePage={this.state.activePage}
+                        onPageChange={this.handlePageChange}
+                        totalPages={this.state.pageCount}
+                        ellipsisItem={null}
+                    />
+                </GridColumn>
+
+                <GridColumn>
+                    <SearchInput
+                        search={this.state.search}
+                        onChange={this.handleGenericChange}
+                        onSubmit={this.handleSubmit}
+                    />
+                </GridColumn>
             </Grid>
         )
     }
