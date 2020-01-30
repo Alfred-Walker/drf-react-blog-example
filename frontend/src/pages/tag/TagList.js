@@ -8,7 +8,7 @@ const TagList = (props) => {
     const key = 0;
     return (
         <Segment fluid="true" className='tag-list'>
-            {props.tags === undefined ? "No tags registered yet..." : <Icon name='hashtag' size='big' />}
+            {props.tags === undefined ? "No tags registered yet..." : ""}
             <List horizontal>
                 {
                     props.tags.map((tag, index) =>
