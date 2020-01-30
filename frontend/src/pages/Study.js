@@ -15,12 +15,15 @@ import {
     Grid,
     GridColumn,
     Header,
+    Icon,
     Label,
     List,
     Loader,
+    Menu,
     Message,
     Pagination,
-    Segment
+    Segment,
+    Sidebar
 } from 'semantic-ui-react';
 
 import './Study.css';
@@ -104,7 +107,7 @@ class Studies extends Component {
     }
 
     handleTagClick(event) {
-        this.setState({tag: event.target.name});
+        this.setState({ tag: event.target.name });
         this.loadStudiesFromServer(1, this.state.search, event.target.name);
     }
 
@@ -258,90 +261,105 @@ class Studies extends Component {
         }
 
         return (
-            <Grid className='study' centered columns={1} doubling>
-                <Grid.Column>
-                    <TagList 
-                        tags={this.state.tagList} 
-                        onClick={this.handleTagClick}
-                    />
-                </Grid.Column>
-            {
-                this.state.studyList.map(study =>
-                    <Grid.Column key={study.id}>
-                        <Segment>
-                            <Header as="h1">
-                                {study.title}{study.is_public ? "" : <Label className="ui horizontal red">Private</Label>}
-                            </Header>
-                            <Divider />
-                            <ReactQuill
-                                modules={this.modules}
-                                formats={this.formats}
-                                value={study.body}
-                                readOnly={true}
-                                theme={"snow"}
-                            />
-                            <p>
-                                {study.registered_date}
-                            </p>
-                            <p>{study.excerpt}</p>
-                            <List className="list-tag-horizontal">
-                                <TagsInput in
-                                    disabled={true}
-                                    value={study.tags}
-                                    inputProps={this.tagsInputProps}
-                                />
-                            </List>
-
-                            <Button primary basic as="a" href="/">See all</Button>
-
-                            <Button 
-                                as={Link} 
-                                to={{ pathname: '/study/edit/' + study.id, state: { study: study } }} 
-                                primary 
-                                basic
-                            >
-                                Edit
-                            </Button>
-
-                            <Button 
-                                name={study.id} 
-                                onClick={this.handleShow} 
-                                primary 
-                                basic 
-                                negative
-                            >
-                                Delete
-                            </Button>
-
-                            <Confirm
-                                open={this.state.open}
-                                content='Do you really want to delete?'
-                                onCancel={this.handleCancel}
-                                onConfirm={this.handleDelete}
-                            />
-                        </Segment>
+            <Segment fluid='true' className='study'>
+                <Grid className='study' centered columns={1} doubling>
+                    <Grid.Column>
+                        <TagList
+                            tags={this.state.tagList}
+                            onClick={this.handleTagClick}
+                        />
                     </Grid.Column>
-                )
-            }
-                <GridColumn>
-                    <Pagination
-                        className='pagination'
-                        activePage={this.state.activePage}
-                        onPageChange={this.handlePageChange}
-                        totalPages={this.state.pageCount}
-                        ellipsisItem={null}
-                    />
-                </GridColumn>
+                    {
+                        this.state.studyList.map(study =>
+                            <Grid.Column key={study.id}>
+                                <Segment>
+                                    <Header as="h1">
+                                        {study.title}{study.is_public ? "" : <Label className="ui horizontal red">Private</Label>}
+                                    </Header>
+                                    <Divider />
+                                    <ReactQuill
+                                        modules={this.modules}
+                                        formats={this.formats}
+                                        value={study.body}
+                                        readOnly={true}
+                                        theme={"snow"}
+                                    />
+                                    <p>
+                                        {study.registered_date}
+                                    </p>
+                                    <p>{study.excerpt}</p>
+                                    <List className="list-tag-horizontal">
+                                        <TagsInput in
+                                            disabled={true}
+                                            value={study.tags}
+                                            inputProps={this.tagsInputProps}
+                                        />
+                                    </List>
 
-                <GridColumn>
-                    <SearchInput 
-                        search={this.state.search} 
-                        onChange={this.handleGenericChange} 
-                        onSubmit={this.handleSubmit} 
-                    />
-                </GridColumn>
-            </Grid>
+                                    <Button primary basic as="a" href="/">See all</Button>
 
+                                    <Button
+                                        as={Link}
+                                        to={{ pathname: '/study/edit/' + study.id, state: { study: study } }}
+                                        primary
+                                        basic
+                                    >
+                                        Edit
+                            </Button>
+
+                                    <Button
+                                        name={study.id}
+                                        onClick={this.handleShow}
+                                        primary
+                                        basic
+                                        negative
+                                    >
+                                        Delete
+                            </Button>
+
+                                    <Confirm
+                                        open={this.state.open}
+                                        content='Do you really want to delete?'
+                                        onCancel={this.handleCancel}
+                                        onConfirm={this.handleDelete}
+                                    />
+                                </Segment>
+                            </Grid.Column>
+                        )
+                    }
+                    <GridColumn>
+                        <Pagination
+                            className='pagination'
+                            activePage={this.state.activePage}
+                            onPageChange={this.handlePageChange}
+                            totalPages={this.state.pageCount}
+                            ellipsisItem={null}
+                        />
+                    </GridColumn>
+
+                    <GridColumn>
+                        <SearchInput
+                            search={this.state.search}
+                            onChange={this.handleGenericChange}
+                            onSubmit={this.handleSubmit}
+                        />
+                    </GridColumn>
+                </Grid>
+                <Sidebar
+                    as={Menu}
+                    animation='overlay'
+                    direction='bottom'
+                    icon='labeled'
+                    inverted
+                    vertical
+                    visible
+                    width='very thin'
+                >
+                    <Menu.Item as={Link} to={{ pathname: '/study/new/' }}>
+                        <Icon name='circle plus' />ADD STUDY
+                    </Menu.Item>
+                </Sidebar>
+            </Segment>
         )
     }
 }

@@ -64,6 +64,12 @@
   border: none;
 }
 
+/* Custom css for Question */
+.ui.segment.question {
+  border: none;
+  padding-bottom: 12em;
+}
+
 .question-empty {
   text-align: center;
   display: block;

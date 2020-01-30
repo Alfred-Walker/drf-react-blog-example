@@ -16,11 +16,14 @@ import {
     Grid,
     GridColumn,
     Header,
+    Icon,
     Label,
     List,
     Loader,
+    Menu,
     Message,
     Pagination,
+    Sidebar,
     Segment
 } from 'semantic-ui-react';
 
@@ -258,69 +261,85 @@ class Questions extends Component {
         }
 
         return (
-            <Grid centered columns={1} doubling>
-                <Grid.Column>
-                    <TagList
-                        tags={this.state.tagList}
-                        onClick={this.handleTagClick}
-                    />
-                </Grid.Column>
-                {
-                    this.state.questionList.map(question =>
-                        <Grid.Column key={question.id}>
-                            <Segment>
-                                <Header as="h1">
-                                    {question.title}
-                                </Header>
-                                <Divider />
-                                <ReactQuill
-                                    modules={this.modules}
-                                    formats={this.formats}
-                                    value={question.body}
-                                    readOnly={true}
-                                    theme={"snow"}
-                                />
-                                <p>
-                                    {question.registered_date}
-                                </p>
-                                <p>{question.excerpt}</p>
-                                <List className="list-tag-horizontal">
-                                    <TagsInput in
-                                        disabled={true}
-                                        value={question.tags}
-                                        inputProps={this.tagsInputProps}
+            <Segment fluid='true' className='question'>
+                <Grid centered columns={1} doubling>
+                    <Grid.Column>
+                        <TagList
+                            tags={this.state.tagList}
+                            onClick={this.handleTagClick}
+                        />
+                    </Grid.Column>
+                    {
+                        this.state.questionList.map(question =>
+                            <Grid.Column key={question.id}>
+                                <Segment>
+                                    <Header as="h1">
+                                        {question.title}
+                                    </Header>
+                                    <Divider />
+                                    <ReactQuill
+                                        modules={this.modules}
+                                        formats={this.formats}
+                                        value={question.body}
+                                        readOnly={true}
+                                        theme={"snow"}
                                     />
-                                </List>
-                                <Button primary basic as="a" href="/">See all</Button>
-                                <Button as={Link} to={{ pathname: '/question/edit/' + question.id, state: { question: question } }} primary basic>Edit</Button>
-                                <Button name={question.id} onClick={this.handleShow} primary basic negative>Delete</Button>
-                                <Confirm
-                                    open={this.state.open}
-                                    content='Do you really want to delete?'
-                                    onCancel={this.handleCancel}
-                                    onConfirm={this.handleDelete}
-                                />
-                            </Segment>
-                        </Grid.Column>
-                    )
-                }
-                <GridColumn>
-                    <Pagination
-                        activePage={this.state.activePage}
-                        onPageChange={this.handlePageChange}
-                        totalPages={this.state.pageCount}
-                        ellipsisItem={null}
-                    />
-                </GridColumn>
+                                    <p>
+                                        {question.registered_date}
+                                    </p>
+                                    <p>{question.excerpt}</p>
+                                    <List className="list-tag-horizontal">
+                                        <TagsInput in
+                                            disabled={true}
+                                            value={question.tags}
+                                            inputProps={this.tagsInputProps}
+                                        />
+                                    </List>
+                                    <Button primary basic as="a" href="/">See all</Button>
+                                    <Button as={Link} to={{ pathname: '/question/edit/' + question.id, state: { question: question } }} primary basic>Edit</Button>
+                                    <Button name={question.id} onClick={this.handleShow} primary basic negative>Delete</Button>
+                                    <Confirm
+                                        open={this.state.open}
+                                        content='Do you really want to delete?'
+                                        onCancel={this.handleCancel}
+                                        onConfirm={this.handleDelete}
+                                    />
+                                </Segment>
+                            </Grid.Column>
+                        )
+                    }
+                    <GridColumn>
+                        <Pagination
+                            activePage={this.state.activePage}
+                            onPageChange={this.handlePageChange}
+                            totalPages={this.state.pageCount}
+                            ellipsisItem={null}
+                        />
+                    </GridColumn>
 
-                <GridColumn>
-                    <SearchInput
-                        search={this.state.search}
-                        onChange={this.handleGenericChange}
-                        onSubmit={this.handleSubmit}
-                    />
-                </GridColumn>
-            </Grid>
+                    <GridColumn>
+                        <SearchInput
+                            search={this.state.search}
+                            onChange={this.handleGenericChange}
+                            onSubmit={this.handleSubmit}
+                        />
+                    </GridColumn>
+                </Grid>
+                <Sidebar
+                    as={Menu}
+                    animation='overlay'
+                    direction='bottom'
+                    icon='labeled'
+                    inverted
+                    vertical
+                    visible
+                    width='very thin'
+                >
+                    <Menu.Item as={Link} to={{ pathname: '/question/new/' }}>
+                        <Icon name='circle plus' />ADD QUESTION
+                    </Menu.Item>
+                </Sidebar>
+            </Segment>
         )
     }
 }

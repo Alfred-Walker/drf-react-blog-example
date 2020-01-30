@@ -64,6 +64,12 @@
   border: none;
 }
 
+/* Custom css for Study */
+.ui.segment.study {
+  border: none;
+  padding-bottom: 12em;
+}
+
 .study-empty {
   text-align: center;
   display: block;
