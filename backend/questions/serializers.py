@@ -1,13 +1,13 @@
 from rest_framework import serializers
 from .models import Question
 from tags.models import Tag
-from tags.serializers import TagSerializer
-from pprint import pprint
+from comments.serializers import CommentSerializer
 
 
 class QuestionSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='question-detail')
     tags = serializers.SlugRelatedField(many=True, read_only=True, slug_field='name', allow_null=True)
+    comment = CommentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Question
@@ -16,12 +16,12 @@ class QuestionSerializer(serializers.ModelSerializer):
             'url',
             'title',
             'body',
-            'tags'
+            'tags',
+            'comment'
         ]
 
     def __init__(self, *args, **kwargs):
         super(QuestionSerializer, self).__init__(*args, **kwargs)
-        # pprint(kwargs)
 
     def create(self, validated_data):
         user = None

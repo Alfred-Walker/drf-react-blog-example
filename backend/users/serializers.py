@@ -18,6 +18,12 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['url', 'email']
 
 
+class UserNicknameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['nickname']
+
+
 class UserDetailSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(many=False)
 

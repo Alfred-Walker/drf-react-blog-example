@@ -1,13 +1,13 @@
 from rest_framework import serializers
 from .models import Study
 from tags.models import Tag
-from tags.serializers import TagSerializer
-from pprint import pprint
+from comments.serializers import CommentSerializer
 
 
 class StudySerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='study-detail')
     tags = serializers.SlugRelatedField(many=True, read_only=True, slug_field='name', allow_null=True)
+    comment = CommentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Study
@@ -19,12 +19,12 @@ class StudySerializer(serializers.ModelSerializer):
             'tags',
             'review_cycle_in_minute',
             'notification_enabled',
-            'is_public'
+            'is_public',
+            'comment'
         ]
 
     def __init__(self, *args, **kwargs):
         super(StudySerializer, self).__init__(*args, **kwargs)
-        # pprint(kwargs)
 
     def create(self, validated_data):
         user = None
