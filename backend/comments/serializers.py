@@ -16,6 +16,7 @@ class CommentChildSerializer(serializers.ModelSerializer):
             'id',
             'user',
             'text',
+            'parent_comment',
             'is_public'
         ]
 
