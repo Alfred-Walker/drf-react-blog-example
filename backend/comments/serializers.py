@@ -13,6 +13,7 @@ class CommentChildSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = [
+            'id',
             'user',
             'text',
             'is_public'
@@ -26,8 +27,12 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = [
+            'id',
             'user',
             'text',
+            'parent_study',
+            'parent_question',
+            'parent_comment',
             'child_comment',
             'is_public',
         ]
@@ -54,7 +59,7 @@ class CommentSerializer(serializers.ModelSerializer):
         if request and hasattr(request, "user"):
             user = request.user
 
-        if is_number(request.data['parent_study']):
+        if request.data.get('parent_study', '') and is_number(request.data['parent_study']):
             parent_study = Study.objects.get(pk=request.data['parent_study'])
 
             if parent_study:
@@ -62,10 +67,10 @@ class CommentSerializer(serializers.ModelSerializer):
                 if parent_study.is_public and parent_study.user != user:
                     parent_study = None
 
-        if is_number(request.data['parent_question']):
+        if request.data.get('parent_question', '') and is_number(request.data['parent_question']):
             parent_question = Study.objects.get(pk=request.data['parent_question'])
 
-        if is_number(request.data['parent_comment']):
+        if request.data.get('parent_comment', '') and is_number(request.data['parent_comment']):
             parent_comment = Comment.objects.get(pk=request.data['parent_comment'])
 
         comment = Comment.objects.create(
