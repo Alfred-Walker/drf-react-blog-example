@@ -96,16 +96,11 @@ class CommentSerializer(serializers.ModelSerializer):
 
             if parent_study:
                 # only the author can make comment for private contents
-                if parent_study.is_public and parent_study.user != user:
+                if not parent_study.is_public and parent_study.user != user:
                     parent_study = None
 
         if request.data.get('parent_question', '') and is_number(request.data['parent_question']):
             parent_question = Question.objects.get(pk=request.data['parent_question'])
-
-            if parent_question:
-                # only the author can make comment for private contents
-                if parent_question.is_public and parent_question.user != user:
-                    parent_question = None
 
         if request.data.get('parent_comment', '') and is_number(request.data['parent_comment']):
             parent_comment = Comment.objects.get(pk=request.data['parent_comment'])
