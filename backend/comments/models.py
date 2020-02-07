@@ -18,6 +18,9 @@ class Comment(models.Model):
     # commented date
     created_date = models.DateTimeField(auto_now_add=True)
 
+    # is active or not (False when deleted)
+    is_active = models.BooleanField(default=True)
+
     # is public or not
     # (if a comment is not public, only the parent object's author and comment's author can read)
     is_public = models.BooleanField(default=False)

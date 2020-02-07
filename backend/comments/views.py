@@ -1,5 +1,7 @@
 from django.db.models import Q, F
-from rest_framework import viewsets
+from django.http import Http404
+from rest_framework import status, viewsets
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
 
 from .serializers import *
@@ -39,3 +41,14 @@ class CommentViewSet(viewsets.ModelViewSet):
         queryset = Comment.objects.filter(criteria_study).filter(criteria_question).annotate(child=F('parent_comment')).order_by('created_date')
 
         return queryset
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            instance.text = ""
+            instance.is_active = False
+            instance.save()
+        except Http404:
+            pass
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
