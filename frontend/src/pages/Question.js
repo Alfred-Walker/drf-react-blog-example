@@ -6,6 +6,7 @@ import TagsInput from 'react-tagsinput';
 import * as Utils from '../utils/jwt';
 
 import SearchInput from '../components/SearchInput';
+import CommentThreaded from './comment/CommentThreaded'
 import TagList from './tag/TagList';
 
 import {
@@ -305,6 +306,8 @@ class Questions extends Component {
                                         onConfirm={this.handleDelete}
                                     />
                                 </Segment>
+
+                                <CommentThreaded {...this.props} comments={question.comment} parent_question={question.id}></CommentThreaded>
                             </Grid.Column>
                         )
                     }
