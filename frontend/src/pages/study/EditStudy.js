@@ -50,10 +50,14 @@ class EditStudy extends Component {
         this.setState({tags});
     }
 
-    handleToggleChange(event) {
+    handleToggleChange(e, { name, checked }) {
         this.setState({
-            [event.target.name]: event.target.checked
+            [name]: checked
         });
+        // see Semantic UI docs.
+        // https://react.semantic-ui.com/collections/form/#usage-capture-values
+        // console.log("name", name)
+        // console.log("checked", checked)
     }
 
     handleSubmit(event) {
@@ -190,14 +194,14 @@ class EditStudy extends Component {
                     <Form.Field>
                         <Form.Checkbox
                             name='is_public'
-                            defaultChecked={this.state.is_public}
+                            checked={this.state.is_public}
                             onChange={this.handleToggleChange}
                             label='Is Public'
                             toggle
                         />
                         <Form.Checkbox
                             name='notification_enabled'
-                            defaultChecked={this.state.notification_enabled}
+                            checked={this.state.notification_enabled}
                             onChange={this.handleToggleChange}
                             label='Notification Enabled'
                             toggle
