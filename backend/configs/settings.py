@@ -161,14 +161,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
@@ -191,6 +190,7 @@ REST_FRAMEWORK = {
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 2,
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.AutoSchema',
+    'DATETIME_FORMAT': '%Y-%m-%d %H:%M:%S'
 }
 
 # Enable JWT authentication for django-rest-auth
