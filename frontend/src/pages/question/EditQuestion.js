@@ -23,9 +23,11 @@ class EditQuestion extends Component {
             id: props.location.state.question.id,
             title: props.location.state.question.title,
             body: props.location.state.question.body,
-            tags: props.location.state.question.tags
+            tags: props.location.state.question.tags,
+            submitEnabled: true
         }
 
+        this.checkSubmitEnabled = this.checkSubmitEnabled.bind(this);
         this.handleGenericChange = this.handleGenericChange.bind(this);
         this.handleEditorChange = this.handleEditorChange.bind(this);
         this.handleTagsChange = this.handleTagsChange.bind(this);
@@ -33,14 +35,28 @@ class EditQuestion extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    checkSubmitEnabled(title, body) {
+        if(!title || body.replace(/<(.|\n)*?>/g, '').trim().length === 0) {
+            // textarea is empty when all tags are removed
+            this.setState({ submitEnabled: false });
+        }
+        else{
+            this.setState({ submitEnabled: true });
+        }
+    }
+
     handleGenericChange(event) {
         this.setState({
             [event.target.name]: event.target.value
         });
+
+        if(event.target.name === "title")
+            this.checkSubmitEnabled(event.target.value, this.state.body);
     }
 
     handleEditorChange(value) {
         this.setState({ body: value })
+        this.checkSubmitEnabled(this.state.title, value);
     }
 
     handleTagsChange(tags) {
@@ -179,8 +195,11 @@ class EditQuestion extends Component {
                     <List className="list-checkbox-horizontal">
 
                     </List>
-
-                    <Button type='submit' color="blue">Submit</Button>
+                    {
+                        this.state.submitEnabled ? 
+                        <Button type='submit' color="blue">Submit</Button> :
+                        <Button type='submit' color="blue" disabled >Submit</Button>
+                    }
                 </Form>
             </div>
         )
