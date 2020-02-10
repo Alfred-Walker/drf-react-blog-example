@@ -8,16 +8,34 @@ import * as Utils from '../../utils/jwt'
 function CommentThreaded(props) {
   // Declare a new state variable, which we'll call "count" 
   const [replyToComment, setReplyToComment] = useState("");
+  const [replyToCommentEnabled, setReplyToCommentEnabled] = useState(false);
   const [replyToParent, setReplyToParent] = useState("");
+  const [replyToParentEnabled, setReplyToParentEnabled] = useState(false);
   const [activeComment, setActiveComment] = useState(-1);
   const [isPublicReply, setIsPublicReply] = useState(true);
 
+  const checkReplyToCommentEnabled = (text) => {
+    if (!text)
+      setReplyToCommentEnabled(false);
+    else
+      setReplyToCommentEnabled(true);
+  }
+
+  const checkReplyToParentEnabled = (text) => {
+    if (!text)
+      setReplyToParentEnabled(false);
+    else
+      setReplyToParentEnabled(true);
+  }
+
   const handleReplyToCommentChange = (event) => {
     setReplyToComment(event.target.value);
+    checkReplyToCommentEnabled(event.target.value);
   }
 
   const handleReplyToParentChange = (event) => {
     setReplyToParent(event.target.value);
+    checkReplyToParentEnabled(event.target.value);
   }
 
   const handleDeleteClick = (event) => {
@@ -48,6 +66,7 @@ function CommentThreaded(props) {
     const newComment = activeComment === e.target.name ? undefined : e.target.name
     setActiveComment(newComment);
     setReplyToComment("");
+    checkReplyToCommentEnabled("");
   }
 
   const handleSubmit = (event) => {
@@ -149,7 +168,11 @@ function CommentThreaded(props) {
                               toggle
                             />
                             <Form.TextArea onChange={handleReplyToCommentChange} />
-                            <Button content='Add Reply' labelPosition='left' icon='edit' primary />
+                            {
+                              replyToCommentEnabled ?
+                              <Button content='Add Reply' labelPosition='left' icon='edit' primary /> :
+                              <Button content='Add Reply' labelPosition='left' icon='edit' primary disabled />
+                            }
                           </Form>
                         </Accordion.Content>
                       </Accordion>
@@ -160,15 +183,15 @@ function CommentThreaded(props) {
               <Comment.Group>
                 {
                   comment.child_comment.map((child, childIndex) =>
-                    <ChildComment 
+                    <ChildComment
                       {...props}
-                      key={childIndex} 
-                      id={child.id} 
-                      user={child.user} 
-                      is_active={child.is_active} 
+                      key={childIndex}
+                      id={child.id}
+                      user={child.user}
+                      is_active={child.is_active}
                       is_public={child.is_public}
-                      created_date={child.created_date} 
-                      text={child.text} 
+                      created_date={child.created_date}
+                      text={child.text}
                     />
                   )
                 }
@@ -188,7 +211,11 @@ function CommentThreaded(props) {
           label='Is Public'
           toggle
         />
-        <Button content='Add Reply' labelPosition='left' icon='edit' primary />
+        {
+          replyToParentEnabled ?
+            <Button content='Add Reply' labelPosition='left' icon='edit' primary /> :
+            <Button content='Add Reply' labelPosition='left' icon='edit' primary disabled />
+        }
       </Form>
     </Comment.Group >
   )
