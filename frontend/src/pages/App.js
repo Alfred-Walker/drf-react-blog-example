@@ -6,7 +6,8 @@ import Logout from './Logout';
 import Registration from './Registration';
 import NavigationBar from './app/Navigation';
 
-import StudyInfo from './study/StudyInfo';
+import Home from './Home';
+
 import EditStudy from './study/EditStudy';
 import NewStudy from './study/NewStudy';
 import Studies from './Study';
@@ -124,7 +125,7 @@ class App extends Component {
                         <NavigationBar loggedInStatus={this.state.loggedInStatus} />
                         <Switch>
                             <Route exact path="/" render={props => (
-                                <StudyInfo {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} />
+                                <Home {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} />
                             )}
                             />
                             <Route exact path="/study/new" render={props => (
