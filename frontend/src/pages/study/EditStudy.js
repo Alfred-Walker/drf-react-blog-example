@@ -26,9 +26,11 @@ class EditStudy extends Component {
             tags: props.location.state.study.tags,
             is_public: props.location.state.study.is_public,
             notification_enabled: props.location.state.study.notification_enabled,
-            review_cycle_in_minute: props.location.state.study.review_cycle_in_minute
+            review_cycle_in_minute: props.location.state.study.review_cycle_in_minute,
+            submitEnabled: true
         }
 
+        this.checkSubmitEnabled = this.checkSubmitEnabled.bind(this);
         this.handleGenericChange = this.handleGenericChange.bind(this);
         this.handleEditorChange = this.handleEditorChange.bind(this);
         this.handleTagsChange = this.handleTagsChange.bind(this);
@@ -36,14 +38,28 @@ class EditStudy extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    checkSubmitEnabled(title, body) {
+        if(!title || body.replace(/<(.|\n)*?>/g, '').trim().length === 0) {
+            // textarea is empty when all tags are removed
+            this.setState({ submitEnabled: false });
+        }
+        else{
+            this.setState({ submitEnabled: true });
+        }
+    }
+
     handleGenericChange(event) {
         this.setState({
             [event.target.name]: event.target.value
         });
+
+        if(event.target.name === "title")
+            this.checkSubmitEnabled(event.target.value, this.state.body);
     }
 
     handleEditorChange(value) {
-        this.setState({ body: value })
+        this.setState({ body: value });
+        this.checkSubmitEnabled(this.state.title, value);
     }
 
     handleTagsChange(tags) {
@@ -210,8 +226,11 @@ class EditStudy extends Component {
                     <List className="list-checkbox-horizontal">
 
                     </List>
-
-                    <Button type='submit' color="blue">Submit</Button>
+                    {
+                        this.state.submitEnabled ? 
+                        <Button type='submit' color="blue">Submit</Button> :
+                        <Button type='submit' color="blue" disabled >Submit</Button>
+                    }
                 </Form>
             </div>
         )
