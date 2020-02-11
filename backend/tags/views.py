@@ -1,4 +1,4 @@
-from django.db.models import Q
+from django.db.models import Count, F, Q
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
@@ -29,6 +29,22 @@ class TagViewSet(viewsets.ModelViewSet):
         queryset = Tag.objects.filter(criteria).order_by('name')
 
         return queryset
+
+    # HTTP GET /tag/popular/
+    # return popular tags (at most 5)
+    @action(detail=False)
+    def popular(self, request):
+        count = 5
+        queryset = self.get_queryset()\
+                       .filter(is_public=True)\
+                       .annotate(study_count=Count('study')) \
+                       .annotate(question_count=Count('question')) \
+                       .annotate(total_count=F('study_count') + F('question_count')) \
+                       .order_by('-total_count')[:count]
+
+        serializer = self.get_serializer(queryset, many=True)
+
+        return Response(serializer.data)
 
     # HTTP GET /tag/random/
     @action(detail=False)
