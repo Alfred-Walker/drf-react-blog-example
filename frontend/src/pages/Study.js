@@ -285,8 +285,9 @@ class Studies extends Component {
                                         readOnly={true}
                                         theme={"snow"}
                                     />
+                                    <br />
                                     <p>
-                                        {study.registered_date}
+                                    <Icon name='user' />{study.user.nickname} &nbsp;&nbsp;/&nbsp;&nbsp; {study.registered_date}
                                     </p>
                                     <p>{study.excerpt}</p>
                                     <List className="list-tag-horizontal">

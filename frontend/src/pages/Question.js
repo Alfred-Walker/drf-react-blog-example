@@ -285,8 +285,9 @@ class Questions extends Component {
                                         readOnly={true}
                                         theme={"snow"}
                                     />
+                                    <br />
                                     <p>
-                                        {question.registered_date}
+                                        <Icon name='user' />{question.user.nickname} &nbsp;&nbsp;/&nbsp;&nbsp; {question.registered_date}
                                     </p>
                                     <p>{question.excerpt}</p>
                                     <List className="list-tag-horizontal">
