@@ -41,6 +41,7 @@ function Home(props) {
     const dummy_study_count = 123456;
     const dummy_question_count = 123456;
     const dummy_comment_count = 123456;
+    const dummy_tag_count = 123456;
 
     return (
         <Container>
@@ -103,6 +104,7 @@ function Home(props) {
                     study_count={dummy_study_count}
                     question_count={dummy_question_count}
                     comment_count={dummy_comment_count}
+                    tag_count={dummy_tag_count}
                 />
             </Segment>
         </Container>

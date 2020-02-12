@@ -10,6 +10,7 @@ function CountInfo(props) {
             <List.Item><Icon name='book' /> Study: { props.study_count.toLocaleString() } </List.Item>
             <List.Item><Icon name='question' /> Question: { props.question_count.toLocaleString() } </List.Item>
             <List.Item><Icon name='comment' /> Comment: { props.comment_count.toLocaleString() } </List.Item>
+            <List.Item><Icon name='tag' /> Tag: { props.comment_count.toLocaleString() } </List.Item>
         </List>
     )
 }
@@ -19,6 +20,7 @@ CountInfo.propTypes = {
     study_count: PropTypes.number,
     question_count: PropTypes.number,
     comment_count: PropTypes.number,
+    tag_count: PropTypes.number,
 };
 
 CountInfo.defaultProps = {
@@ -26,6 +28,7 @@ CountInfo.defaultProps = {
     study_count: 0,
     question_count: 0,
     comment_count: 0,
+    tag_count: 0,
 };
 
 export default CountInfo;
