@@ -2,10 +2,12 @@ from rest_framework import serializers
 from .models import Study
 from tags.models import Tag
 from comments.serializers import CommentSerializer
+from users.serializers import UserSerializer
 
 
 class StudySerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='study-detail')
+    user = UserSerializer(read_only=True)
     tags = serializers.SlugRelatedField(many=True, read_only=True, slug_field='name', allow_null=True)
     comment = CommentSerializer(many=True, read_only=True)
 
@@ -14,13 +16,16 @@ class StudySerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'url',
+            'user',
             'title',
             'body',
             'tags',
             'review_cycle_in_minute',
             'notification_enabled',
             'is_public',
-            'comment'
+            'comment',
+            'registered_date',
+            'last_review_date',
         ]
 
     def __init__(self, *args, **kwargs):
