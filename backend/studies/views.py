@@ -61,3 +61,23 @@ class StudyViewSet(viewsets.ModelViewSet):
         queryset = self.get_queryset().filter(is_public=False)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+    # HTTP GET /study/last/
+    @action(detail=False)
+    def last(self, request):
+        """
+            Most recent study written by request user
+        """
+        queryset = self.get_queryset().filter(user=self.request.user).order_by('-registered_date')[:1]
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    # HTTP GET /study/latest/
+    @action(detail=False)
+    def latest(self, request):
+        """
+            Latest public study
+        """
+        queryset = self.get_queryset().filter(is_public=True).order_by('-registered_date')[:1]
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
