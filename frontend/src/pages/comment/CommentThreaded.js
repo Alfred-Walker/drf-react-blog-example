@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types';
-import { Accordion, Button, Comment, Form, Header, Grid } from 'semantic-ui-react'
+import { Accordion, Button, Comment, Form, Header } from 'semantic-ui-react'
 import ChildComment from './ChildComment';
 import * as Utils from '../../utils/jwt'
 

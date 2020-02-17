@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types';
-import { Button, Icon, List, Segment } from 'semantic-ui-react'
+import { Button, List, Segment } from 'semantic-ui-react'
 import './TagList.css'
 
 
