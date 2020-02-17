@@ -5,13 +5,16 @@ import Summary from './summary/Summary';
 
 function LatestQuestion(props) {
     return (
+        props.question && props.question.user ?
         <Summary 
             id={props.question.id} 
             title={props.question.title}
             body={props.question.body}
-            created_date={props.question.created_date}
+            author={props.question.user.nickname}
+            created_date={props.question.registered_date}
             link_path={props.question_link_path + props.question.id}
-        />
+        /> : 
+        <Summary />
     )
 }
 

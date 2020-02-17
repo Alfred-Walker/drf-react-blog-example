@@ -15,7 +15,7 @@ function PopularTags(props) {
                             <Header as={Link} to={props.tag_link_path + tag.name} style={{ fontSize: '1.5em' }}>
                                 {tag.name}
                             </Header>
-                        <p style={{ fontSize: '1.33em' }}>x{tag.count.toLocaleString()}</p>
+                        <p style={{ fontSize: '1.33em' }}>x{tag.total_count.toLocaleString()}</p>
                         </Grid.Column>
                     )
                 }

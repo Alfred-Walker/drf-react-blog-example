@@ -1,20 +1,27 @@
 import React from 'react'
 import PropTypes from 'prop-types';
-import { Button, Divider, Header } from 'semantic-ui-react'
+import { Divider, Header, Icon } from 'semantic-ui-react'
 import { Link } from "react-router-dom";
+import './Summary.css'
 
 
 function Summary(props) {
     return (
         <div>
-            <Header as='h3' style={{ fontSize: '2em' }}>
+            <Header as={Link} to={{ pathname: props.link_path }} style={{ fontSize: '2em' }}>
                 {props.title}
             </Header>
             <Divider />
-            <p style={{ fontSize: '1.33em' }}>
-                {props.body}
+            <p className="excerpt">
+                {
+                    props.body.replace(/(<([^>]+)>)/ig, "")
+                }
             </p>
-            <Button as={Link} to={{ pathname: props.link_path }} primary basic>See Detail</Button>
+            {
+                props.author && props.created_date ?
+                    <p><Icon name='user' />{props.author} &nbsp;&nbsp;/&nbsp;&nbsp; {props.created_date}</p> 
+                    : <p> &nbsp; </p>
+            }
         </div>
     )
 }
@@ -23,15 +30,17 @@ Summary.propTypes = {
     id: PropTypes.number,
     title: PropTypes.string,
     body: PropTypes.string,
+    author: PropTypes.string,
     created_date: PropTypes.string,
     link_path: PropTypes.string
 };
 
 Summary.defaultProps = {
     id: undefined,
-    title: "title undefined",
-    body: "contents undefined",
-    created_date: "default_date",
+    title: "No study found...",
+    body: "There is no study accessible...",
+    author: "",
+    created_date: "",
     link_path: "/"
 };
 
