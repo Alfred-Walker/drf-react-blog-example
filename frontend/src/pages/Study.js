@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
-import ReactQuill from 'react-quill';
-import TagsInput from 'react-tagsinput';
 import * as Utils from '../utils/jwt';
-
 import SearchInput from '../components/SearchInput';
+import ReadOnlyQuillSegment from '../components/ReadOnlyQuillSegment'
 import CommentThreaded from './comment/CommentThreaded'
+
 import TagList from './tag/TagList';
 
 import {
@@ -18,7 +17,6 @@ import {
     Header,
     Icon,
     Label,
-    List,
     Loader,
     Menu,
     Message,
@@ -44,11 +42,6 @@ class Studies extends Component {
             totalStudyCount: 0,
             search: "",
             tag: this.props.match.tag
-        }
-
-        this.tagsInputProps = {
-            className: 'react-tagsinput-input',
-            placeholder: ''
         }
 
         this.handleGenericChange = this.handleGenericChange.bind(this);
@@ -197,7 +190,6 @@ class Studies extends Component {
                     this.setState({
                         tagList: result
                     });
-                    console.log(result);
                 }
             )
             .catch(
@@ -211,32 +203,6 @@ class Studies extends Component {
         this.loadStudiesFromServer(this.props.page);
         this.loadRandomTagsFromServer(10);
     }
-
-    // quill editor without toolbar
-    modules = {
-        toolbar: false,
-        clipboard: { matchVisual: false }
-    };
-
-    formats = [
-        "header",
-        "bold",
-        "italic",
-        "underline",
-        "strike",
-        "blockquote",
-        "size",
-        "color",
-        "list",
-        "bullet",
-        "indent",
-        "link",
-        "image",
-        "video",
-        "align",
-        "code",
-        "code-block"
-    ];
 
     render() {
         if (this.state.studyList === undefined) {
@@ -274,29 +240,14 @@ class Studies extends Component {
                         this.state.studyList.map(study =>
                             <Grid.Column key={study.id}>
                                 <Segment>
-                                    <Header as="h1">
-                                        {study.title}{study.is_public ? "" : <Label className="ui horizontal red">Private</Label>}
-                                    </Header>
-                                    <Divider />
-                                    <ReactQuill
-                                        modules={this.modules}
-                                        formats={this.formats}
-                                        value={study.body}
-                                        readOnly={true}
-                                        theme={"snow"}
+                                    <ReadOnlyQuillSegment 
+                                        is_public={study.is_public}
+                                        title={study.title}
+                                        body={study.body}
+                                        nickname={study.user.nickname}
+                                        registered_date={study.registered_date}
+                                        tags={study.tags}
                                     />
-                                    <br />
-                                    <p>
-                                    <Icon name='user' />{study.user.nickname} &nbsp;&nbsp;/&nbsp;&nbsp; {study.registered_date}
-                                    </p>
-                                    <p>{study.excerpt}</p>
-                                    <List className="list-tag-horizontal">
-                                        <TagsInput in
-                                            disabled={true}
-                                            value={study.tags}
-                                            inputProps={this.tagsInputProps}
-                                        />
-                                    </List>
 
                                     <Button primary basic as="a" href="/">See all</Button>
 
@@ -307,7 +258,7 @@ class Studies extends Component {
                                         basic
                                     >
                                         Edit
-                            </Button>
+                                    </Button>
 
                                     <Button
                                         name={study.id}
@@ -317,7 +268,7 @@ class Studies extends Component {
                                         negative
                                     >
                                         Delete
-                            </Button>
+                                    </Button>
 
                                     <Confirm
                                         open={this.state.open}
