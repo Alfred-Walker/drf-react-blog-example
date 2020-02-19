@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from "react-router-dom";
-import { Button, Confirm } from 'semantic-ui-react'
+import { Confirm } from 'semantic-ui-react'
 
 import CommentThreaded from '../comment/CommentThreaded'
+import CommandButtonGroup from '../../components/CommandButtonGroup';
 import ReadOnlyQuillSegment from '../../components/ReadOnlyQuillSegment';
 import * as Utils from '../../utils/jwt';
 
@@ -72,14 +72,12 @@ function StudyDetail(props) {
             );
     };
 
-    const onShow = (event) => {
-        const id = event.target.name;
+    const onShow = () => {
         setOpen(true);
     };
 
     const onStudyLoadSuccess = (result) => {
         setStudy(result);
-        console.log("onLastStudyLoadSuccess", result);
     }
 
     const onStudyLoadFailure = () => {
@@ -98,7 +96,7 @@ function StudyDetail(props) {
 
         if (!props.study)
             fetchStudyData(props.loggedInStatus, props.match.params.id);
-    }, [props.loggedInStatus, props.id]);
+    }, [props.loggedInStatus, props.match.params.id, props.study]);
 
     return (
         <div>
@@ -113,24 +111,13 @@ function StudyDetail(props) {
                             registered_date={study.registered_date}
                             tags={study.tags}
                         />
-                        <Button
-                            as={Link}
-                            to={{ pathname: '/study/edit/' + study.id, state: { study: study } }}
-                            primary
-                            basic
-                        >
-                            Edit
-                        </Button>
 
-                        <Button
-                            name={study.id}
-                            onClick={onShow}
-                            primary
-                            basic
-                            negative
-                        >
-                            Delete
-                        </Button>
+                        <CommandButtonGroup
+                            id_parent={study.id}
+                            edit_page_path={"/study/edit/" + study.id}
+                            state={{study: study}}
+                            onDeleteClick={onShow}
+                        />
 
                         <Confirm
                             open={open}
