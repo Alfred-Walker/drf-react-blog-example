@@ -13,6 +13,7 @@ import EditStudy from './study/EditStudy';
 import NewStudy from './study/NewStudy';
 import Studies from './Study';
 
+import QuestionDetail from './question/QuestionDetail';
 import EditQuestion from './question/EditQuestion';
 import NewQuestion from './question/NewQuestion';
 import Questions from './Question';
@@ -154,12 +155,12 @@ class App extends Component {
                                 <Studies {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} page={1} studyListUrl="http://localhost:8000/study/" tagListUrl="http://localhost:8000/tag/" />
                             )}
                             />
-                            <Route exact path="/tag/:tag/study" render={props => (
-                                <Studies {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} page={1} studyListUrl="http://localhost:8000/study/" tagListUrl="http://localhost:8000/tag/" />
-                            )}
-                            />
                             <Route exact path="/study/:id" render={props => (
                                 <StudyDetail {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} study={props.location.study} />
+                            )}
+                            />
+                            <Route exact path="/tag/:tag/study" render={props => (
+                                <Studies {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} page={1} studyListUrl="http://localhost:8000/study/" tagListUrl="http://localhost:8000/tag/" />
                             )}
                             />
                             <Route exact path="/tag/:tag/question" render={props => (
@@ -190,7 +191,10 @@ class App extends Component {
                                 <Questions {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} page={1} questionListUrl="http://localhost:8000/question/" tagListUrl="http://localhost:8000/tag/" />
                             )}
                             />
-
+                            <Route exact path="/question/:id" render={props => (
+                                <QuestionDetail {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} question={props.location.question} />
+                            )}
+                            />
                             <Route exact path="/contact" render={props => (
                                 <Contact {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} />
                             )}
