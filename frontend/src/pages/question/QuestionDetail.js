@@ -89,9 +89,7 @@ function QuestionDetail(props) {
         function fetchQuestionData(loggedInStatus, id) {
             // TODO: Need to pass url from 'App.js' to 'QuestionDetail.js' via props
             // TODO: All urls must be managed at one place together
-            if (loggedInStatus === 'LOGGED_IN') {
-                loadDataFromServer("http://localhost:8000/question/" + id, onQuestionLoadSuccess, onQuestionLoadFailure);
-            }
+            loadDataFromServer("http://localhost:8000/question/" + id, onQuestionLoadSuccess, onQuestionLoadFailure);
         }
 
         if (!props.question)

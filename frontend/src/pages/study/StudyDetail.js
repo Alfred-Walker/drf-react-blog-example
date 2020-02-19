@@ -89,14 +89,14 @@ function StudyDetail(props) {
         function fetchStudyData(loggedInStatus, id) {
             // TODO: Need to pass url from 'App.js' to 'StudyDetail.js' via props
             // TODO: All urls must be managed at one place together
-            if (loggedInStatus === 'LOGGED_IN') {
-                loadDataFromServer("http://localhost:8000/study/" + id, onStudyLoadSuccess, onStudyLoadFailure);
-            }
+            loadDataFromServer("http://localhost:8000/study/" + id, onStudyLoadSuccess, onStudyLoadFailure);
         }
 
         if (!props.study)
             fetchStudyData(props.loggedInStatus, props.match.params.id);
-    }, [props.loggedInStatus, props.match.params.id, props.study]);
+
+        console.log(props.user);
+    }, [props.loggedInStatus, props.match.params.id, props.study, props.user]);
 
     return (
         <div>
@@ -111,7 +111,7 @@ function StudyDetail(props) {
                             registered_date={study.registered_date}
                             tags={study.tags}
                         />
-
+                        {study.user.email === props.user.email ? "same" : "??"}
                         <CommandButtonGroup
                             id_parent={study.id}
                             edit_page_path={"/study/edit/" + study.id}
