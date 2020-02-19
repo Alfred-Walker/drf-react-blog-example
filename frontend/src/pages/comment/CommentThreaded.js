@@ -137,8 +137,8 @@ function CommentThreaded(props) {
 
       {
         props.comments.map((comment, index) =>
-          <Comment.Group threaded>
-            <Comment key={index}>
+          <Comment.Group threaded key={index}>
+            <Comment>
               <Comment.Avatar as='a' src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
               <Comment.Content>
                 <Comment.Author as='a'>{comment.user.nickname}</Comment.Author>
