@@ -157,7 +157,7 @@ function CommentThreaded(props) {
                           <a name={comment.id} className="ui small header" onClick={handleReplyClick}>Reply</a>
                           <a name={comment.id} className="ui small red header" onClick={handleDeleteClick}>Delete</a>
                         </Accordion.Title>
-                        <Accordion.Content active={activeComment == comment.id}>
+                        <Accordion.Content active={activeComment === comment.id}>
                           <Form name="commentReply" reply onSubmit={handleSubmit}>
                             <Form.Checkbox
                               name='isPublic'
