@@ -8,6 +8,7 @@ import NavigationBar from './app/Navigation';
 
 import Home from './Home';
 
+import StudyDetail from './study/StudyDetail';
 import EditStudy from './study/EditStudy';
 import NewStudy from './study/NewStudy';
 import Studies from './Study';
@@ -21,6 +22,7 @@ import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import Authenticated from './app/Authenticated';
 import * as Utils from '../utils/jwt';
 import Error from './Error'
+
 
 
 
@@ -154,6 +156,10 @@ class App extends Component {
                             />
                             <Route exact path="/tag/:tag/study" render={props => (
                                 <Studies {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} page={1} studyListUrl="http://localhost:8000/study/" tagListUrl="http://localhost:8000/tag/" />
+                            )}
+                            />
+                            <Route exact path="/study/:id" render={props => (
+                                <StudyDetail {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} study={props.location.study} />
                             )}
                             />
                             <Route exact path="/tag/:tag/question" render={props => (
