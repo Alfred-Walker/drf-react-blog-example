@@ -10,12 +10,12 @@ function PopularTags(props) {
         <Grid celled='internally' columns='equal' stackable>
             <Grid.Row textAlign='center'>
                 {
-                    props.tags.map(tag=>
-                        <Grid.Column style={{ paddingBottom: '1em', paddingTop: '1em' }}>
+                    props.tags.map((tag, index)=>
+                        <Grid.Column key={index} style={{ paddingBottom: '1em', paddingTop: '1em' }}>
                             <Header as={Link} to={props.tag_link_path + tag.name} style={{ fontSize: '1.5em' }}>
                                 {tag.name}
                             </Header>
-                        <p style={{ fontSize: '1.33em' }}>x{tag.total_count.toLocaleString()}</p>
+                            <p style={{ fontSize: '1.33em' }}>x{tag.total_count.toLocaleString()}</p>
                         </Grid.Column>
                     )
                 }
