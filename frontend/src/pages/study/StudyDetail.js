@@ -95,7 +95,6 @@ function StudyDetail(props) {
         if (!props.study)
             fetchStudyData(props.loggedInStatus, props.match.params.id);
 
-        console.log(props.user);
     }, [props.loggedInStatus, props.match.params.id, props.study, props.user]);
 
     return (
@@ -111,13 +110,17 @@ function StudyDetail(props) {
                             registered_date={study.registered_date}
                             tags={study.tags}
                         />
-                        {study.user.email === props.user.email ? "same" : "??"}
-                        <CommandButtonGroup
-                            id_parent={study.id}
-                            edit_page_path={"/study/edit/" + study.id}
-                            state={{study: study}}
-                            onDeleteClick={onShow}
-                        />
+                        
+                        {
+                            props.user && study.user && study.user.id === props.user.id ?
+                                <CommandButtonGroup
+                                    id_parent={study.id}
+                                    edit_page_path={"/study/edit/" + study.id}
+                                    state={{study: study}}
+                                    onDeleteClick={onShow}
+                                />
+                            : ""
+                        }
 
                         <Confirm
                             open={open}
