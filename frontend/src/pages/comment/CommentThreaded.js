@@ -157,7 +157,7 @@ function CommentThreaded(props) {
                           <a name={comment.id} className="ui small header" onClick={handleReplyClick}>Reply</a>
                           <a name={comment.id} className="ui small red header" onClick={handleDeleteClick}>Delete</a>
                         </Accordion.Title>
-                        <Accordion.Content active={activeComment === comment.id}>
+                        <Accordion.Content active={activeComment === comment.id.toString()}>
                           <Form name="commentReply" reply onSubmit={handleSubmit}>
                             <Form.Checkbox
                               name='isPublic'
@@ -201,22 +201,26 @@ function CommentThreaded(props) {
         )
       }
 
-      <Form name="parentReply" reply onSubmit={handleSubmit}>
-        <Form.TextArea onChange={handleReplyToParentChange} value={replyToParent} />
-        <Form.Checkbox
-          name='isPublic'
-          checked={isPublicReply}
-          defaultChecked={isPublicReply}
-          onChange={handleToggleChange}
-          label='Is Public'
-          toggle
-        />
-        {
-          replyToParentEnabled ?
-            <Button content='Add Reply' labelPosition='left' icon='edit' primary /> :
-            <Button content='Add Reply' labelPosition='left' icon='edit' primary disabled />
-        }
-      </Form>
+      {
+        props.loggedInStatus === "LOGGED_IN" ?
+          <Form name="parentReply" reply onSubmit={handleSubmit}>
+          <Form.TextArea onChange={handleReplyToParentChange} value={replyToParent} />
+          <Form.Checkbox
+            name='isPublic'
+            checked={isPublicReply}
+            defaultChecked={isPublicReply}
+            onChange={handleToggleChange}
+            label='Is Public'
+            toggle
+          />
+          {
+            replyToParentEnabled ?
+              <Button content='Add Reply' labelPosition='left' icon='edit' primary /> :
+              <Button content='Add Reply' labelPosition='left' icon='edit' primary disabled />
+          }
+        </Form>
+        : <p>Only loggined user can write comments.</p>
+      }
     </Comment.Group >
   )
 }
