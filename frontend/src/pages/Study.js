@@ -42,9 +42,9 @@ class Studies extends Component {
             perPageCount: 2,
             totalStudyCount: 0,
             search: "",
-            tag: this.props.match.tag
+            tag: this.props.match.params.tag
         }
-
+        
         this.onGenericChange = this.onGenericChange.bind(this);
         this.onDelete = this.onDelete.bind(this);
         this.onPageChange = this.onPageChange.bind(this);
@@ -201,7 +201,7 @@ class Studies extends Component {
     }
 
     componentDidMount() {
-        this.loadStudiesFromServer(this.props.page);
+        this.loadStudiesFromServer(this.props.page, undefined, this.props.match.params.tag);
         this.loadRandomTagsFromServer(10);
     }
 
