@@ -4,7 +4,7 @@ from . import views
 
 
 router = DefaultRouter()
-router.register('', views.TagViewSet, base_name='tag')
+router.register('', views.TagViewSet, basename='tag')
 
 urlpatterns = [
     path('', include(router.urls))

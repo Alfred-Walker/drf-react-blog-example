@@ -4,7 +4,7 @@ from . import views
 
 
 router = DefaultRouter()
-router.register('', views.IndicatorViewSet, base_name='indicator')
+router.register('', views.IndicatorViewSet, basename='indicator')
 
 urlpatterns = [
     path('', include(router.urls))

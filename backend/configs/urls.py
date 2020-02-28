@@ -30,8 +30,8 @@ from .views import GoogleLogin, KakaoLogin
 # In the latest DRF, you need to explicitly set base_name in your viewset url
 # (if you don't have queryset defined)
 router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet, base_name='users')
-router.register(r'groups', views.GroupViewSet, base_name='groups')
+router.register(r'users', views.UserViewSet, basename='users')
+router.register(r'groups', views.GroupViewSet, basename='groups')
 
 schema_view = get_schema_view(
    openapi.Info(
