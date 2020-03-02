@@ -61,3 +61,21 @@ class StudySerializer(serializers.ModelSerializer):
             study.tags.add(tag)
 
         return study
+
+
+class StudySummarySerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='study-detail')
+    user = UserSerializer(read_only=True)
+    tags = serializers.SlugRelatedField(many=True, read_only=True, slug_field='name', allow_null=True)
+
+    class Meta:
+        model = Study
+        fields = [
+            'id',
+            'url',
+            'user',
+            'title',
+            'tags',
+            'is_public',
+            'registered_date',
+        ]
