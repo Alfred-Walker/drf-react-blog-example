@@ -12,7 +12,7 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get_queryset(self):
-        if self.request.user.is_superuser:
+        if self.request.user.is_admin:
             return User.objects.all().order_by('-date_joined')
         else:
             return User.objects.filter(id=self.request.user.id).order_by('-date_joined')
