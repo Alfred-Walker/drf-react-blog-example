@@ -80,11 +80,11 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
 
     # custom user app
-    'users',
-    'studies',
-    'tags',
-    'questions',
-    'comments',
+    'users.apps.UsersConfig',
+    'studies.apps.StudiesConfig',
+    'tags.apps.TagsConfig',
+    'questions.apps.QuestionsConfig',
+    'comments.apps.CommentsConfig',
 
     # CORS for React (Cross-Origin Resource Sharing)
     'corsheaders',
