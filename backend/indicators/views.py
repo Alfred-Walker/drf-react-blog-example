@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from users.models import User
@@ -15,7 +16,7 @@ class IndicatorViewSet(viewsets.ViewSet):
     """
         A simple ViewSet to provide several indicators such as each model's row count.
     """
-    serializer_class = IndicatorSerializer
+    permission_classes = (AllowAny,)
 
     # HTTP GET /indicator/count/
     # return the number of rows for each model
@@ -35,6 +36,4 @@ class IndicatorViewSet(viewsets.ViewSet):
                 "all_tag_count": all_tag_count,
         }
 
-        serializer = IndicatorSerializer(data, many=False)
-
-        return Response(serializer.data)
+        return Response(data)
