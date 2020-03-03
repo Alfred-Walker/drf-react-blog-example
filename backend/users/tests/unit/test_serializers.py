@@ -9,7 +9,9 @@ from users.serializers import (UserSerializer,
 
 from users.tests.factories import UserFactory
 
-
+# The serializer.data property is only valid if you have a saved instance to serializer.
+# Either call serializer.save() or use serializer.validated_data to access date prior to saving.
+# https://github.com/encode/django-rest-framework/issues/2964#issuecomment-138396361
 @pytest.mark.django_db
 class TestUserSerializer:
     def test_expected_fields(self):
@@ -20,10 +22,6 @@ class TestUserSerializer:
         user_data = factory.build(dict, FACTORY_CLASS=UserFactory)
         serializer = UserSerializer(data=user_data, context={'request': None})
         is_valid = serializer.is_valid()
-
-        # The serializer.data property is only valid if you have a saved instance to serializer.
-        # Either call serializer.save() or use serializer.validated_data to access date prior to saving.
-        # https://github.com/encode/django-rest-framework/issues/2964#issuecomment-138396361
 
         print("Errors: ", serializer.errors)
         assert is_valid, "serializer validation test"
@@ -41,10 +39,6 @@ class TestUserNicknameSerializer:
         serializer = UserNicknameSerializer(data=user_data)
         is_valid = serializer.is_valid()
 
-        # The serializer.data property is only valid if you have a saved instance to serializer.
-        # Either call serializer.save() or use serializer.validated_data to access date prior to saving.
-        # https://github.com/encode/django-rest-framework/issues/2964#issuecomment-138396361
-
         print("Errors: ", serializer.errors)
         assert is_valid, "serializer validation test"
         assert serializer.validated_data.keys() == set(['nickname'])
@@ -60,10 +54,6 @@ class TestUserDetailSerializer:
         user_data = factory.build(dict, FACTORY_CLASS=UserFactory)
         serializer = UserDetailSerializer(data=user_data)
         is_valid = serializer.is_valid()
-
-        # The serializer.data property is only valid if you have a saved instance to serializer.
-        # Either call serializer.save() or use serializer.validated_data to access date prior to saving.
-        # https://github.com/encode/django-rest-framework/issues/2964#issuecomment-138396361
 
         print("Errors: ", serializer.errors)
         assert is_valid, "serializer validation test"
@@ -82,10 +72,6 @@ class TestUserRegistrationSerializerWithToken:
         serializer = UserRegistrationSerializerWithToken(data=user_data)
         is_valid = serializer.is_valid()
 
-        # The serializer.data property is only valid if you have a saved instance to serializer.
-        # Either call serializer.save() or use serializer.validated_data to access date prior to saving.
-        # https://github.com/encode/django-rest-framework/issues/2964#issuecomment-138396361
-
         print("Errors: ", serializer.errors)
         assert is_valid, "serializer validation test"
         assert serializer.validated_data.keys() == set(['email', 'password1', 'password2'])
@@ -97,10 +83,6 @@ class TestUserRegistrationSerializerWithToken:
         serializer = UserRegistrationSerializerWithToken(data=user_data)
         is_valid = serializer.is_valid()
 
-        # The serializer.data property is only valid if you have a saved instance to serializer.
-        # Either call serializer.save() or use serializer.validated_data to access date prior to saving.
-        # https://github.com/encode/django-rest-framework/issues/2964#issuecomment-138396361
-
         print("Errors: ", serializer.errors)
         assert not is_valid, "serializer validation test"
         # assert False, "dumb assert to make PyTest print my stuff"
@@ -111,10 +93,6 @@ class TestUserRegistrationSerializerWithToken:
         serializer = UserRegistrationSerializerWithToken(data=user_data)
         is_valid = serializer.is_valid()
 
-        # The serializer.data property is only valid if you have a saved instance to serializer.
-        # Either call serializer.save() or use serializer.validated_data to access date prior to saving.
-        # https://github.com/encode/django-rest-framework/issues/2964#issuecomment-138396361
-
         print("Errors: ", serializer.errors)
         assert not is_valid, "serializer validation test"
         # assert False, "dumb assert to make PyTest print my stuff"
@@ -124,10 +102,6 @@ class TestUserRegistrationSerializerWithToken:
         user_data = {'password1': 'qwqert13', 'password2': 'qwqert1444', 'email': "test@test.com"}
         serializer = UserRegistrationSerializerWithToken(data=user_data)
         is_valid = serializer.is_valid()
-
-        # The serializer.data property is only valid if you have a saved instance to serializer.
-        # Either call serializer.save() or use serializer.validated_data to access date prior to saving.
-        # https://github.com/encode/django-rest-framework/issues/2964#issuecomment-138396361
 
         print("Errors: ", serializer.errors)
         assert not is_valid, "serializer validation test"
