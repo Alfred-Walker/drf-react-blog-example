@@ -7,6 +7,12 @@ from rest_framework.response import Response
 from .serializers import *
 from .models import Tag
 
+from studies.serializers import StudySummarySerializer
+from questions.serializers import QuestionSummarySerializer
+
+
+from itertools import chain
+
 
 class TagViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,)
@@ -37,8 +43,8 @@ class TagViewSet(viewsets.ModelViewSet):
         count = 5
         queryset = self.get_queryset()\
                        .filter(is_public=True)\
-                       .annotate(study_count=Count('study')) \
-                       .annotate(question_count=Count('question')) \
+                       .annotate(study_count=Count('studies')) \
+                       .annotate(question_count=Count('questions')) \
                        .annotate(total_count=F('study_count') + F('question_count')) \
                        .order_by('-total_count')[:count]
 
@@ -60,3 +66,18 @@ class TagViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+    # HTTP GET /tag/related/
+    @action(detail=False)
+    def related(self, request):
+        tag_name = self.request.query_params.get('name', '')
+        tag = self.get_queryset().get(name=tag_name, is_public=True)
+        if tag:
+            studies = tag.studies.all()
+            questions = tag.questions.all()
+            study_serializer = StudySummarySerializer(studies, many=True, context={'request': request})
+            question_serializer = QuestionSummarySerializer(questions, many=True, context={'request': request})
+
+            return Response({"study": study_serializer.data, "question": question_serializer.data})
+        else:
+            return Response(chain([{"study": []}], [{"question": []}]))
