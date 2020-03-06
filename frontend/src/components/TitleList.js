@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
+    Divider,
     Header,
     List,
     Pagination,
@@ -17,6 +18,7 @@ function TitleList(props) {
 
     const loadItemsFromServer = (urlWithoutPage, page, callbackOnSuccess, callbackOnError) => {
         let headers = {};
+        let url = urlWithoutPage
         const jwt = Utils.getJwt();
 
         if (jwt) {
@@ -26,8 +28,12 @@ function TitleList(props) {
             };
         }
 
+        if (props.showPagination) {
+            url += "&page=" + page
+        }
+
         fetch(
-            urlWithoutPage + "&page=" + page, {
+            url, {
             method: 'GET',
             headers: headers,
             credentials: 'include'
@@ -77,31 +83,35 @@ function TitleList(props) {
 
     return (
         <div>
-            <Header as='h3'>{props.header}</Header>
-            
+            <Header as='h3' style={{ fontSize: '2em' }}>{props.header}</Header>
+            <Divider />
             <List divided relaxed>
-            {
-                list && list.length != 0 ?
-                list.map((item, index) =>
-                        <List.Item key={index} as={Link} to={props.itemPath + item.id}>
-                            <List.Icon name={props.icon} size='large' verticalAlign='middle' />
-                            <List.Content>
-                                <List.Header as='a'>{item.title}</List.Header>
-                                <List.Description as='a'>{item.registered_date}</List.Description>
-                            </List.Content>
-                        </List.Item>
-                )
-                : "No items found..."
-            }
+                {
+                    list && list.length != 0 ?
+                        list.map((item, index) =>
+                            <List.Item key={index} as={Link} to={props.itemPath + item.id}>
+                                <List.Icon name={props.icon} size='large' verticalAlign='middle' />
+                                <List.Content>
+                                    <List.Header as='a'>{item.title}</List.Header>
+                                    <List.Description as='a'>{item.registered_date}</List.Description>
+                                </List.Content>
+                            </List.Item>
+                        )
+                        : "No items found..."
+                }
             </List>
 
-            <Pagination
-                            className='pagination'
-                            activePage={activePage}
-                            onPageChange={onPageChange}
-                            totalPages={pageCount}
-                            ellipsisItem={null}
-                        />
+            {
+                props.showPagination ?
+                    <Pagination
+                        className='pagination'
+                        activePage={activePage}
+                        onPageChange={onPageChange}
+                        totalPages={pageCount}
+                        ellipsisItem={null}
+                    />
+                    : ""
+            }
         </div>
     )
 }
@@ -111,7 +121,8 @@ TitleList.propTypes = {
     itemPath: PropTypes.string,
     perPageCount: PropTypes.number,
     header: PropTypes.string,
-    icon: PropTypes.string
+    icon: PropTypes.string,
+    showPagination: PropTypes.bool
 };
 
 TitleList.defaultProps = {
@@ -119,7 +130,8 @@ TitleList.defaultProps = {
     itemPath: "/",
     perPageCount: 10,
     header: "List Items",
-    icon: "file alternate"
+    icon: "file alternate",
+    showPagination: true
 };
 
 export default TitleList;
