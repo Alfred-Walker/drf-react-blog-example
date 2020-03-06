@@ -49,9 +49,37 @@ class QuestionViewSet(viewsets.ModelViewSet):
     @action(detail=False)
     def latest(self, request):
         """
-            Latest registered question
+            Single latest registered question
         """
         # queryset = self.get_queryset().order_by('-registered_date')[:1]
         queryset = self.get_queryset().first()
         serializer = self.get_serializer(queryset, many=False)
+        return Response(serializer.data)
+
+    # HTTP GET /question/latest/
+    @action(detail=False)
+    def latest(self, request):
+        """
+            Single latest registered question
+        """
+        # queryset = self.get_queryset().order_by('-registered_date')[:1]
+        queryset = self.get_queryset().first()
+        serializer = self.get_serializer(queryset, many=False)
+        return Response(serializer.data)
+
+    # HTTP GET /tag/question/
+    @action(detail=False)
+    def recent(self, request):
+        """
+            Multiple questions ordered by registered date
+        """
+        queryset = self.get_queryset().order_by('-registered_date')
+        page = self.paginate_queryset(queryset)
+
+        if page is not None:
+            serializer = QuestionSummarySerializer(page, many=True, context={'request': request})
+            return self.get_paginated_response(serializer.data)
+
+        serializer = QuestionSummarySerializer(queryset, many=True, context={'request': request})
+
         return Response(serializer.data)

@@ -81,3 +81,20 @@ class StudyViewSet(viewsets.ModelViewSet):
         queryset = self.get_queryset().filter(is_public=True).order_by('-registered_date').first()
         serializer = self.get_serializer(queryset, many=False)
         return Response(serializer.data)
+
+    # HTTP GET /tag/question/
+    @action(detail=False)
+    def recent(self, request):
+        """
+            Multiple questions ordered by registered date
+        """
+        queryset = self.get_queryset().order_by('-registered_date')
+        page = self.paginate_queryset(queryset)
+
+        if page is not None:
+            serializer = StudySummarySerializer(page, many=True, context={'request': request})
+            return self.get_paginated_response(serializer.data)
+
+        serializer = StudySummarySerializer(queryset, many=True, context={'request': request})
+
+        return Response(serializer.data)
