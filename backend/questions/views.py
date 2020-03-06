@@ -67,7 +67,7 @@ class QuestionViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=False)
         return Response(serializer.data)
 
-    # HTTP GET /tag/question/
+    # HTTP GET /question/recent/
     @action(detail=False)
     def recent(self, request):
         """
