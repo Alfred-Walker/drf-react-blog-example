@@ -18,6 +18,8 @@ import EditQuestion from './question/EditQuestion';
 import NewQuestion from './question/NewQuestion';
 import Questions from './Question';
 
+import Tags from './Tag';
+
 import Contact from './Contact'
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import Authenticated from './app/Authenticated';
@@ -81,12 +83,10 @@ class App extends Component {
             )
             .then(
                 result => {
-                    // console.log("refresh success")
                     this.handleTokenRefreshSuccess(result);
                 }
             )
             .catch(err => {
-                // console.log("token refresh failed", err);
                 this.handleTokenRefreshFailure();
             }
             );
@@ -128,118 +128,191 @@ class App extends Component {
                         <NavigationBar loggedInStatus={this.state.loggedInStatus} />
                         <Switch>
                             <Route exact path="/" render={props => (
-                                <Home {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} />
+                                <Home
+                                    {...props}
+                                    loggedInStatus={this.state.loggedInStatus}
+                                    user={this.state.user}
+                                />
                             )}
                             />
                             <Route exact path="/study/new" render={props => (
-                                <Authenticated {...props}
+                                <Authenticated
+                                    {...props}
                                     loggedInStatus={this.state.loggedInStatus}
                                     user={this.state.user}
                                     clearAuthInfo={this.clearAuthInfo}
                                 >
-                                    <NewStudy {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} />
+                                    <NewStudy
+                                        {...props}
+                                        loggedInStatus={this.state.loggedInStatus}
+                                        user={this.state.user}
+                                    />
                                 </Authenticated>
                             )}
                             />
                             <Route exact path="/study/edit/:id" render={props => (
-                                <Authenticated {...props}
+                                <Authenticated
+                                    {...props}
                                     loggedInStatus={this.state.loggedInStatus}
                                     user={this.state.user}
                                     clearAuthInfo={this.clearAuthInfo}
                                 >
-                                    <EditStudy {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} study={props.location.study} />
+                                    <EditStudy
+                                        {...props}
+                                        loggedInStatus={this.state.loggedInStatus}
+                                        user={this.state.user}
+                                        study={props.location.study}
+                                    />
                                 </Authenticated>
                             )}
                             />
                             <Route exact path="/study" render={props => (
-                                <Studies {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} page={1} studyListUrl="http://localhost:8000/study/" tagListUrl="http://localhost:8000/tag/" />
+                                <Studies
+                                    {...props}
+                                    loggedInStatus={this.state.loggedInStatus}
+                                    user={this.state.user}
+                                    page={1}
+                                    studyListUrl="http://localhost:8000/study/"
+                                    tagListUrl="http://localhost:8000/tag/"
+                                />
                             )}
                             />
                             <Route exact path="/study/:id" render={props => (
-                                <StudyDetail {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} study={props.location.study} />
+                                <StudyDetail
+                                    {...props}
+                                    loggedInStatus={this.state.loggedInStatus}
+                                    user={this.state.user}
+                                    study={props.location.study}
+                                />
+                            )}
+                            />
+                            <Route exact path="/tag/:tag" render={props => (
+                                <Tags
+                                    {...props}
+                                    loggedInStatus={this.state.loggedInStatus}
+                                    user={this.state.user}
+                                    page={1}
+                                    studyListUrl="http://localhost:8000/study/"
+                                    taggedStudyUrl="http://localhost:8000/tag/study?tag="
+                                    taggedQuestionUrl="http://localhost:8000/tag/question?tag="
+                                    studyItemPath="/study/"
+                                    questionItemPath="/question/"
+                                />
                             )}
                             />
                             <Route exact path="/tag/:tag/study" render={props => (
-                                <Studies {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} page={1} studyListUrl="http://localhost:8000/study/" tagListUrl="http://localhost:8000/tag/" />
+                                <Studies
+                                    {...props}
+                                    loggedInStatus={this.state.loggedInStatus}
+                                    user={this.state.user}
+                                    page={1}
+                                    studyListUrl="http://localhost:8000/study/"
+                                    tagListUrl="http://localhost:8000/tag/"
+                                />
                             )}
                             />
                             <Route exact path="/tag/:tag/question" render={props => (
-                                <Questions {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} page={1} questionListUrl="http://localhost:8000/question/" tagListUrl="http://localhost:8000/tag/" />
+                                <Questions
+                                    {...props}
+                                    loggedInStatus={this.state.loggedInStatus}
+                                    user={this.state.user}
+                                    page={1}
+                                    questionListUrl="http://localhost:8000/question/"
+                                    tagListUrl="http://localhost:8000/tag/"
+                                />
                             )}
                             />
                             <Route exact path="/question/new" render={props => (
-                                <Authenticated {...props}
+                                <Authenticated
+                                    {...props}
                                     loggedInStatus={this.state.loggedInStatus}
                                     user={this.state.user}
                                     clearAuthInfo={this.clearAuthInfo}
                                 >
-                                    <NewQuestion {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} />
+                                    <NewQuestion
+                                        {...props}
+                                        loggedInStatus={this.state.loggedInStatus}
+                                        user={this.state.user}
+                                    />
                                 </Authenticated>
                             )}
                             />
                             <Route exact path="/question/edit/:id" render={props => (
-                                <Authenticated {...props}
+                                <Authenticated
+                                    {...props}
                                     loggedInStatus={this.state.loggedInStatus}
                                     user={this.state.user}
                                     clearAuthInfo={this.clearAuthInfo}
                                 >
-                                    <EditQuestion {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} question={props.location.question} />
+                                    <EditQuestion
+                                        {...props}
+                                        loggedInStatus={this.state.loggedInStatus}
+                                        user={this.state.user}
+                                        question={props.location.question}
+                                    />
                                 </Authenticated>
                             )}
                             />
                             <Route exact path="/question" render={props => (
-                                <Questions {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} page={1} questionListUrl="http://localhost:8000/question/" tagListUrl="http://localhost:8000/tag/" />
+                                <Questions
+                                    {...props}
+                                    loggedInStatus={this.state.loggedInStatus}
+                                    user={this.state.user}
+                                    page={1}
+                                    questionListUrl="http://localhost:8000/question/"
+                                    tagListUrl="http://localhost:8000/tag/"
+                                />
                             )}
                             />
                             <Route exact path="/question/:id" render={props => (
-                                <QuestionDetail {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} question={props.location.question} />
+                                <QuestionDetail
+                                    {...props}
+                                    loggedInStatus={this.state.loggedInStatus}
+                                    user={this.state.user}
+                                    question={props.location.question} />
                             )}
                             />
                             <Route exact path="/contact" render={props => (
-                                <Contact {...props} loggedInStatus={this.state.loggedInStatus} user={this.state.user} />
+                                <Contact
+                                    {...props}
+                                    loggedInStatus={this.state.loggedInStatus}
+                                    user={this.state.user} />
                             )}
                             />
                             <Route exact path="/login" render={props => (
-                                <Login {...props} handleLogin={this.handleLogin} />
+                                <Login
+                                    {...props}
+                                    handleLogin={this.handleLogin} />
                             )}
                             />
                             <Route exact path="/logout" render={props => (
-                                <Logout {...props} handleLogout={this.handleLogout} />
+                                <Logout
+                                    {...props}
+                                    handleLogout={this.handleLogout} />
                             )}
                             />
                             <Route exact path="/registration" render={props => (
-                                <Registration {...props} loggedInStatus={this.state.loggedInStatus} />
+                                <Registration
+                                    {...props}
+                                    loggedInStatus={this.state.loggedInStatus} />
                             )}
                             />
                             <Route path="/500" render={props => (
-                                <Error {...props} errorCode={500} />
+                                <Error
+                                    {...props}
+                                    errorCode={500} />
                             )}
                             />
                             <Route render={props => (
-                                <Error {...props} errorCode={404} />
+                                <Error
+                                    {...props}
+                                    errorCode={404} />
                             )}
                             />
                         </Switch>
                     </Router>
                 </div>
             </div >
-            /*
-            <div>
-            {
-            Object.keys(this.state.response).map((key) => {
-               const ret = <div>Key: {key}, Value: {key === "results" && this.state.response[key] ? this.state.response[key].map((result) => {
-               const ret = <div>{ result ? Object.keys(result).map((study) => {
-                   return result[study];
-               }) : "None" }</div>;
-               return ret;
-            })
-            : this.state.response[key]}</div>;
-            return ret;
-            })
-            }
-
-            </div>
-            */
         );
     }
 }
