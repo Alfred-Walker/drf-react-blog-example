@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Confirm } from 'semantic-ui-react'
-
+import PropTypes from 'prop-types';
 import CommentThreaded from '../comment/CommentThreaded'
 import CommandButtonGroup from '../../components/CommandButtonGroup';
 import ReadOnlyQuillSegment from '../../components/ReadOnlyQuillSegment';
@@ -131,4 +131,19 @@ function QuestionDetail(props) {
         </div>
     )
 }
+
+QuestionDetail.propTypes = {
+    history: PropTypes.object,
+    loggedInStatus: PropTypes.string,
+    user: PropTypes.object,
+    question: PropTypes.object,
+};
+
+QuestionDetail.defaultProps = {
+    history: undefined,
+    loggedInStatus: "NOT_LOGGED_IN",
+    user: undefined,
+    question: undefined,
+};
+
 export default QuestionDetail;

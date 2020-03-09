@@ -1,5 +1,6 @@
 import React from 'react';
 import { Menu } from 'semantic-ui-react'
+import PropTypes from 'prop-types';
 import { NavLink } from "react-router-dom";
 import './Navigation.css';
 
@@ -20,5 +21,13 @@ function NavigationBar(props) {
         </Menu>
     )
 }
+
+NavigationBar.propTypes = {
+    loggedInStatus: PropTypes.string,
+};
+
+NavigationBar.defaultProps = {
+    loggedInStatus: "NOT_LOGGED_IN",
+};
 
 export default NavigationBar;

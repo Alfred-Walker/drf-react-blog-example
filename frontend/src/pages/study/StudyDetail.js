@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Confirm } from 'semantic-ui-react'
-
+import PropTypes from 'prop-types';
 import CommentThreaded from '../comment/CommentThreaded'
 import CommandButtonGroup from '../../components/CommandButtonGroup';
 import ReadOnlyQuillSegment from '../../components/ReadOnlyQuillSegment';
@@ -136,4 +136,19 @@ function StudyDetail(props) {
         </div>
     )
 }
+
+StudyDetail.propTypes = {
+    history: PropTypes.object,
+    loggedInStatus: PropTypes.string,
+    user: PropTypes.object,
+    study: PropTypes.object,
+};
+
+StudyDetail.defaultProps = {
+    history: undefined,
+    loggedInStatus: "NOT_LOGGED_IN",
+    user: undefined,
+    study: undefined,
+};
+
 export default StudyDetail;

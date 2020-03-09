@@ -5,7 +5,7 @@ import {
     Grid,
     Segment
 } from 'semantic-ui-react'
-
+import PropTypes from 'prop-types';
 import PopularTags from './home/PopularTags';
 import CountInfo from './home/CountInfo';
 import TitleList from '../components/TitleList'
@@ -173,4 +173,17 @@ function Home(props) {
         </Container>
     )
 }
+
+Home.propTypes = {
+    history: PropTypes.object,
+    loggedInStatus: PropTypes.string,
+    user: PropTypes.object,
+};
+
+Home.defaultProps = {
+    history: undefined,
+    loggedInStatus: "NOT_LOGGED_IN",
+    user: undefined,
+};
+
 export default Home;
