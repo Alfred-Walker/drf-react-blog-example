@@ -51,6 +51,9 @@ class StudyViewSet(viewsets.ModelViewSet):
     # HTTP GET /study/public/
     @action(detail=False)
     def public(self, request):
+        """
+            A whole public studies
+        """
         queryset = Study.objects.filter(is_public=True).order_by('-registered_date')
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
@@ -58,6 +61,12 @@ class StudyViewSet(viewsets.ModelViewSet):
     # HTTP GET /study/private/
     @action(detail=False)
     def private(self, request):
+        """
+            A list of non-public studies written by request user
+        """
+        if not request.user.is_authenticated:
+            return Response('Unauthorized request.', status=401)
+
         queryset = self.get_queryset().filter(is_public=False)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
@@ -68,6 +77,9 @@ class StudyViewSet(viewsets.ModelViewSet):
         """
             Most recent study written by request user
         """
+        if not request.user.is_authenticated:
+            return Response('Unauthorized request.', status=401)
+
         queryset = self.get_queryset().filter(user=self.request.user).order_by('-registered_date').first()
         serializer = self.get_serializer(queryset, many=False)
         return Response(serializer.data)
@@ -89,6 +101,26 @@ class StudyViewSet(viewsets.ModelViewSet):
             Multiple questions ordered by registered date
         """
         queryset = self.get_queryset().order_by('-registered_date')
+        page = self.paginate_queryset(queryset)
+
+        if page is not None:
+            serializer = StudySummarySerializer(page, many=True, context={'request': request})
+            return self.get_paginated_response(serializer.data)
+
+        serializer = StudySummarySerializer(queryset, many=True, context={'request': request})
+
+        return Response(serializer.data)
+
+    # HTTP GET /question/recent/
+    @action(detail=False)
+    def my(self, request):
+        """
+            Studies written by the request user
+        """
+        if not request.user.is_authenticated:
+            return Response('Unauthorized request.', status=401)
+
+        queryset = self.get_queryset().filter(user=request.user).order_by('-registered_date')
         page = self.paginate_queryset(queryset)
 
         if page is not None:

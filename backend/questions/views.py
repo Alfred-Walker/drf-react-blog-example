@@ -41,18 +41,10 @@ class QuestionViewSet(viewsets.ModelViewSet):
         """
             Most recent question written by request user
         """
-        queryset = self.get_queryset().filter(user=self.request.user).order_by('-registered_date').first()
-        serializer = self.get_serializer(queryset, many=False)
-        return Response(serializer.data)
+        if not request.user.is_authenticated:
+            return Response('Unauthorized request.', status=401)
 
-    # HTTP GET /question/latest/
-    @action(detail=False)
-    def latest(self, request):
-        """
-            Single latest registered question
-        """
-        # queryset = self.get_queryset().order_by('-registered_date')[:1]
-        queryset = self.get_queryset().first()
+        queryset = self.get_queryset().filter(user=self.request.user).order_by('-registered_date').first()
         serializer = self.get_serializer(queryset, many=False)
         return Response(serializer.data)
 
@@ -74,6 +66,26 @@ class QuestionViewSet(viewsets.ModelViewSet):
             Multiple questions ordered by registered date
         """
         queryset = self.get_queryset().order_by('-registered_date')
+        page = self.paginate_queryset(queryset)
+
+        if page is not None:
+            serializer = QuestionSummarySerializer(page, many=True, context={'request': request})
+            return self.get_paginated_response(serializer.data)
+
+        serializer = QuestionSummarySerializer(queryset, many=True, context={'request': request})
+
+        return Response(serializer.data)
+
+    # HTTP GET /question/recent/
+    @action(detail=False)
+    def my(self, request):
+        """
+            Questions written by the request user
+        """
+        if not request.user.is_authenticated:
+            return Response('Unauthorized request.', status=401)
+
+        queryset = self.get_queryset().filter(user=request.user).order_by('-registered_date')
         page = self.paginate_queryset(queryset)
 
         if page is not None:
