@@ -6,21 +6,14 @@ import {
     Segment
 } from 'semantic-ui-react'
 
-import LastStudy from './home/LastStudy'
-import LastQuestion from './home/LastQuestion'
-import LatestStudy from './home/LatestStudy'
-import LatestQuestion from './home/LatestQuestion'
 import PopularTags from './home/PopularTags';
 import CountInfo from './home/CountInfo';
+import TitleList from '../components/TitleList'
 
 import * as Utils from '../utils/jwt';
 
 
 function Home(props) {
-    const [lastStudy, setLastStudy] = useState(undefined);
-    const [lastQuestion, setLastQuestion] = useState(undefined);
-    const [latestStudy, setLatestStudy] = useState(undefined);
-    const [latestQuestion, setLatestQuestion] = useState(undefined);
     const [popularTags, setPopularTags] = useState(undefined);
     const [countInfo, setCountInfo] = useState(undefined);
 
@@ -59,42 +52,6 @@ function Home(props) {
             );
     }
 
-    const onLastStudyLoadSuccess = (result) => {
-        setLastStudy(result);
-        // console.log("onLastStudyLoadSuccess");
-    }
-
-    const onLastStudyLoadFailure = () => {
-        // console.log("onLastStudyLoadFailure");
-    }
-
-    const onLastQuestionLoadSuccess = (result) => {
-        setLastQuestion(result);
-        // console.log("onLastQuestionLoadSuccess", result);
-    }
-
-    const onLastQuestionLoadFailure = () => {
-        // console.log("onLastQuestionLoadFailure");
-    }
-
-    const onLatestStudyLoadSuccess = (result) => {
-        setLatestStudy(result);
-        // console.log("onLastStudyLoadSuccess");
-    }
-
-    const onLatestStudyLoadFailure = () => {
-        // console.log("onLastStudyLoadFailure");
-    }
-
-    const onLatestQuestionLoadSuccess = (result) => {
-        setLatestQuestion(result);
-        // console.log("onLastQuestionLoadSuccess");
-    }
-
-    const onLatestQuestionLoadFailure = () => {
-        // console.log("onLastQuestionLoadFailure");
-    }
-
     const onPopularTagsLoadSuccess = (result) => {
         setPopularTags(result);
     }
@@ -116,13 +73,6 @@ function Home(props) {
         function fetchData(loggedInStatus) {
             // TODO: Need to pass url from 'App.js' to 'Home.js' via props
             // TODO: All urls must be managed at one place together
-            if (loggedInStatus === 'LOGGED_IN') {
-                loadDataFromServer("http://localhost:8000/study/last/", onLastStudyLoadSuccess, onLastStudyLoadFailure);
-                loadDataFromServer("http://localhost:8000/question/last/", onLastQuestionLoadSuccess, onLastQuestionLoadFailure);
-            }
-
-            loadDataFromServer("http://localhost:8000/study/latest/", onLatestStudyLoadSuccess, onLatestStudyLoadFailure);
-            loadDataFromServer("http://localhost:8000/question/latest/", onLatestQuestionLoadSuccess, onLatestQuestionLoadFailure);
             loadDataFromServer("http://localhost:8000/tag/popular/", onPopularTagsLoadSuccess, onPopularTagsLoadFailure);
             loadDataFromServer("http://localhost:8000/indicator/count/", onCountInfoLoadSuccess, onCountInfoLoadFailure);
         }
@@ -133,40 +83,62 @@ function Home(props) {
     return (
         <Container>
             <Segment style={{ padding: '3em 0em 8em 0em', border: 'none' }} vertical>
-                <Grid container stackable verticalAlign='top'>
+                <Grid columns={2} container stackable verticalAlign='top'>
+                    <Grid.Row>
+                        <Grid.Column>
+                            <TitleList
+                                {...props}
+                                url="http://localhost:8000/study/recent"
+                                itemPath="/study/"
+                                perPageCount={10}
+                                header="Recent Studies"
+                                showPagination={false}
+                            />
+                        </Grid.Column>
+                        <br />
+                        <br />
+                        <Grid.Column>
+                            <TitleList
+                                {...props}
+                                url="http://localhost:8000/question/recent"
+                                itemPath="/question/"
+                                perPageCount={10}
+                                header="Recent Questions"
+                                showPagination={false}
+                                icon="question"
+                            />
+                        </Grid.Column>
+                    </Grid.Row>
                     {
                         props.loggedInStatus === 'LOGGED_IN' ?
                             <Grid.Row>
-                                <Grid.Column width={8}>
-                                    <LastStudy
-                                        study={lastStudy}
-                                        study_link_path='/study/'
+                                <Grid.Column>
+                                    <TitleList
+                                        {...props}
+                                        url="http://localhost:8000/study/my"
+                                        itemPath="/study/"
+                                        perPageCount={10}
+                                        header="My Studies"
+                                        showPagination={false}
                                     />
                                 </Grid.Column>
-                                <Grid.Column width={8}>
-                                    <LastQuestion
-                                        question={lastQuestion}
-                                        question_link_path='/question/'
+                                <br />
+                                <br />
+                                <Grid.Column>
+                                    <TitleList
+                                        {...props}
+                                        url="http://localhost:8000/question/my"
+                                        itemPath="/question/"
+                                        perPageCount={10}
+                                        header="My Questions"
+                                        showPagination={false}
+                                        icon="question"
                                     />
                                 </Grid.Column>
                             </Grid.Row> : ""
                     }
-                    <Grid.Row></Grid.Row>
-                    <Grid.Row>
-                        <Grid.Column width={8}>
-                            <LatestStudy
-                                study={latestStudy}
-                                study_link_path='/study/'
-                            />
-                        </Grid.Column>
-                        <Grid.Column width={8}>
-                            <LatestQuestion
-                                question={latestQuestion}
-                                question_link_path='/question/'
-                            />
-                        </Grid.Column>
-                    </Grid.Row>
                 </Grid>
+
             </Segment>
             <Divider
                 as='h4'
