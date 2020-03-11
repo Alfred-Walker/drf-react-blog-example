@@ -5,6 +5,7 @@ import * as Utils from '../../utils/jwt'
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './EditStudy.css'
+import { CSRFToken } from '../../utils/csrf';
 
 
 /* References */
@@ -88,15 +89,7 @@ class EditStudy extends Component {
             notification_enabled,
             review_cycle_in_minute
         } = this.state;
-        console.log(tags);
-        console.log(JSON.stringify({
-            title: title,
-            body: body,
-            tags: tags,
-            is_public: is_public,
-            notification_enabled: notification_enabled,
-            review_cycle_in_minute: review_cycle_in_minute
-        }));
+        
         event.preventDefault();
 
         fetch(
@@ -176,6 +169,7 @@ class EditStudy extends Component {
                 <Header as="h2">Edit</Header>
                 <Divider />
                 <Form onSubmit={this.handleSubmit}>
+                    <CSRFToken />
                     <Form.Field>
                         <label>Title</label>
                         <input

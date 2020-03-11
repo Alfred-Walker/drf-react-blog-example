@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types';
 import { Comment } from 'semantic-ui-react'
 import * as Utils from '../../utils/jwt'
+import { CSRFToken } from '../../utils/csrf';
 
 
 function ChildComment(props) {
@@ -42,7 +43,7 @@ function ChildComment(props) {
                 </Comment.Metadata>
                 <Comment.Text>{props.text}</Comment.Text>
                 {
-                    props.is_active  && props.loggedInStatus === "LOGGED_IN" ?
+                    props.is_active && props.loggedInStatus === "LOGGED_IN" ?
                         <Comment.Actions>
                             <a className="ui small red header" onClick={handleDeleteClick}>Delete</a>
                         </Comment.Actions>

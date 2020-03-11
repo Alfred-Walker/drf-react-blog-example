@@ -5,6 +5,7 @@ import * as Utils from '../../utils/jwt'
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './NewStudy.css'
+import { CSRFToken } from '../../utils/csrf';
 
 /* References */
 // 1. react-tagsinput
@@ -111,7 +112,6 @@ class NewStudy extends Component {
             )
             .then(
                 result => {
-                    console.log("is_public", is_public)
                     this.props.history.push('/study');
                 }
             )
@@ -165,6 +165,7 @@ class NewStudy extends Component {
             <div className="form">
                 <Header as="h2">New Study</Header>
                 <Form onSubmit={this.handleSubmit}>
+                    <CSRFToken />
                     <Form.Field>
                         <label>Title</label>
                         <input

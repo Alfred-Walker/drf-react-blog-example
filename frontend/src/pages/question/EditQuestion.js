@@ -5,7 +5,7 @@ import * as Utils from '../../utils/jwt'
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './EditQuestion.css'
-
+import { CSRFToken } from '../../utils/csrf';
 
 /* References */
 // 1. react-tagsinput
@@ -78,12 +78,7 @@ class EditQuestion extends Component {
             body,
             tags
         } = this.state;
-        console.log(tags);
-        console.log(JSON.stringify({
-            title: title,
-            body: body,
-            tags: tags
-        }));
+        
         event.preventDefault();
 
         fetch(
@@ -160,6 +155,7 @@ class EditQuestion extends Component {
                 <Header as="h2">Edit</Header>
                 <Divider />
                 <Form onSubmit={this.handleSubmit}>
+                    <CSRFToken />
                     <Form.Field>
                         <label>Title</label>
                         <input

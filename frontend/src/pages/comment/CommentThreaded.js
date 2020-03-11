@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Accordion, Button, Comment, Form, Header } from 'semantic-ui-react'
 import ChildComment from './ChildComment';
 import * as Utils from '../../utils/jwt'
+import { CSRFToken } from '../../utils/csrf';
 
 
 function CommentThreaded(props) {
@@ -159,6 +160,7 @@ function CommentThreaded(props) {
                         </Accordion.Title>
                         <Accordion.Content active={activeComment === comment.id.toString()}>
                           <Form name="commentReply" reply onSubmit={handleSubmit}>
+                            <CSRFToken />
                             <Form.Checkbox
                               name='isPublic'
                               checked={isPublicReply}
@@ -170,8 +172,8 @@ function CommentThreaded(props) {
                             <Form.TextArea onChange={handleReplyToCommentChange} />
                             {
                               replyToCommentEnabled ?
-                              <Button content='Add Reply' labelPosition='left' icon='edit' primary /> :
-                              <Button content='Add Reply' labelPosition='left' icon='edit' primary disabled />
+                                <Button content='Add Reply' labelPosition='left' icon='edit' primary /> :
+                                <Button content='Add Reply' labelPosition='left' icon='edit' primary disabled />
                             }
                           </Form>
                         </Accordion.Content>
@@ -204,22 +206,23 @@ function CommentThreaded(props) {
       {
         props.loggedInStatus === "LOGGED_IN" ?
           <Form name="parentReply" reply onSubmit={handleSubmit}>
-          <Form.TextArea onChange={handleReplyToParentChange} value={replyToParent} />
-          <Form.Checkbox
-            name='isPublic'
-            checked={isPublicReply}
-            defaultChecked={isPublicReply}
-            onChange={handleToggleChange}
-            label='Is Public'
-            toggle
-          />
-          {
-            replyToParentEnabled ?
-              <Button content='Add Reply' labelPosition='left' icon='edit' primary /> :
-              <Button content='Add Reply' labelPosition='left' icon='edit' primary disabled />
-          }
-        </Form>
-        : <p>Only loggined user can write comments.</p>
+            <CSRFToken />
+            <Form.TextArea onChange={handleReplyToParentChange} value={replyToParent} />
+            <Form.Checkbox
+              name='isPublic'
+              checked={isPublicReply}
+              defaultChecked={isPublicReply}
+              onChange={handleToggleChange}
+              label='Is Public'
+              toggle
+            />
+            {
+              replyToParentEnabled ?
+                <Button content='Add Reply' labelPosition='left' icon='edit' primary /> :
+                <Button content='Add Reply' labelPosition='left' icon='edit' primary disabled />
+            }
+          </Form>
+          : <p>Only loggined user can write comments.</p>
       }
     </Comment.Group >
   )
