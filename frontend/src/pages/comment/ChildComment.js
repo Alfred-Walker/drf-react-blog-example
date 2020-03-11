@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types';
 import { Comment } from 'semantic-ui-react'
 import * as Utils from '../../utils/jwt'
-import { CSRFToken } from '../../utils/csrf';
 
 
 function ChildComment(props) {
