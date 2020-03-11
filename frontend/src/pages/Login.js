@@ -10,7 +10,8 @@ class Login extends Component {
 
         this.state = {
             email: undefined,
-            password: undefined
+            password: undefined,
+            error: undefined
         };
 
         this.handleGeneralChange = this.handleGeneralChange.bind(this);
@@ -47,9 +48,13 @@ class Login extends Component {
             )
             .then(
                 result => {
-                    Utils.setJwt(result.token);
-                    this.props.handleLogin(result);
-                    this.props.history.push('/');
+                    if(result.token) {
+                        Utils.setJwt(result.token);
+                        this.props.handleLogin(result);
+                        this.props.history.push('/');
+                    } else {
+                        this.setState({'error': result})
+                    }
                 }
             )
             .catch(
@@ -64,6 +69,7 @@ class Login extends Component {
                 handleSubmit={this.handleSubmit}
                 email={this.state.email}
                 password={this.state.password}
+                error={this.state.error}
             />
         );
     }

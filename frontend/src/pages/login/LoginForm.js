@@ -8,6 +8,8 @@ import {
     Message,
     Segment
 } from 'semantic-ui-react'
+import { CSRFToken } from '../../utils/csrf';
+import ErrorMessage from '../../components/ErrorMessage'
 
 
 const LoginForm = (props) => {
@@ -18,6 +20,7 @@ const LoginForm = (props) => {
                     Login to your account
                     </Header>
                 <Form size='large' onSubmit={props.handleSubmit}>
+                    <CSRFToken />
                     <Segment stacked>
                         <Form.Input
                             name='email'
@@ -29,6 +32,11 @@ const LoginForm = (props) => {
                             placeholder='E-mail address'
                             required
                         />
+                        {
+                            props.error ?
+                                <ErrorMessage list={props.error.email} />
+                                : ""
+                        }
                         <Form.Input
                             fluid
                             name='password'
@@ -40,6 +48,16 @@ const LoginForm = (props) => {
                             placeholder='Password'
                             required
                         />
+                        {
+                            props.error ?
+                                <ErrorMessage list={props.error.password1} />
+                                : ""
+                        }
+                        {
+                            props.error ?
+                                <ErrorMessage list={props.error.non_field_errors} />
+                                : ""
+                        }
 
                         <Button color='teal' fluid size='large'>
                             Login
@@ -55,17 +73,19 @@ const LoginForm = (props) => {
 }
 
 LoginForm.propTypes = {
-    handleChange: PropTypes.func, 
+    handleChange: PropTypes.func,
     handleSubmit: PropTypes.func,
     email: PropTypes.string,
-    password: PropTypes.string
+    password: PropTypes.string,
+    error: PropTypes.object
 };
 
 LoginForm.defaultProps = {
-    handleChange: undefined, 
+    handleChange: undefined,
     handleSubmit: undefined,
     email: "",
-    password: ""
+    password: "",
+    error: undefined
 };
 
 export default LoginForm;

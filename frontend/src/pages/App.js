@@ -41,6 +41,7 @@ class App extends Component {
         this.clearAuthInfo = this.clearAuthInfo.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
         this.handleLogout = this.handleLogout.bind(this);
+        this.handleRegistration = this.handleRegistration.bind(this);
         this.handleTokenRefreshSuccess = this.handleTokenRefreshSuccess.bind(this);
     }
 
@@ -106,6 +107,14 @@ class App extends Component {
 
     handleLogout(data) {
         this.clearAuthInfo();
+    }
+
+    handleRegistration(data) {
+        localStorage.setItem("jwt-token", data.token);
+        this.setState({
+            loggedInStatus: "LOGGED_IN",
+            user: data.user
+        });
     }
 
     handleTokenRefreshSuccess(data) {
@@ -294,7 +303,7 @@ class App extends Component {
                             <Route exact path="/registration" render={props => (
                                 <Registration
                                     {...props}
-                                    loggedInStatus={this.state.loggedInStatus} />
+                                    handleRegistration={this.handleRegistration} />
                             )}
                             />
                             <Route path="/500" render={props => (

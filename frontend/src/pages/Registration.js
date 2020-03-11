@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
-import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react'
+import PropTypes from 'prop-types';
+import RegistrationForm from './registration/RegistrationForm';
+import * as Utils from '../utils/jwt';
+import * as CSRF from '../utils/csrf';
 
 
 class Registration extends Component {
@@ -10,14 +13,15 @@ class Registration extends Component {
             email: "",
             password: "",
             password_confirmation: "",
-            registrationErrors: ""
+            registrationErrors: "",
+            error: undefined
         };
 
-        this.handleChange = this.handleChange.bind(this);
+        this.handleGeneralChange = this.handleGeneralChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChange(event) {
+    handleGeneralChange(event) {
         this.setState({
             [event.target.name]: event.target.value
         });
@@ -30,18 +34,34 @@ class Registration extends Component {
             password_confirmation
         } = this.state
 
+        var csrftoken = CSRF.getCookie('csrftoken');
+
         fetch(
-            'http://localhost:8000/jwt-auth/', {
+            'http://localhost:8000/rest-auth/registration/', {
                 method: 'POST',
-                headers: {'Content-Type':'application/json; charset="utf-8"'},
+                headers: {'Content-Type':'application/json; charset="utf-8"', 'X-CSRFToken': csrftoken},
                 body: JSON.stringify({
                     email: email,
-                    password: password,
+                    password1: password,
+                    password2: password_confirmation
                 }),
                 credentials: 'include'
             }
         )
-        .then(response => console.log("registration response", response.json()))
+        .then(
+            response => (response.json())
+        )
+        .then(
+            result => {
+                if(result.token) {
+                    Utils.setJwt(result.token);
+                    this.props.handleRegistration(result);
+                    this.props.history.push('/');
+                } else {
+                    this.setState({'error': result})
+                }
+            }
+        )
         .catch(err => console.log("registration error", err));
         
         event.preventDefault();
@@ -50,58 +70,26 @@ class Registration extends Component {
 
     render() {
         return (
-            <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
-                <Grid.Column style={{ maxWidth: 450 }}>
-                    <Header as='h2' color='teal' textAlign='center'>
-                        Register your account
-                    </Header>
-                    <Form size='large' onSubmit={this.handleSubmit}>
-                        <Segment stacked>
-                            <Form.Input
-                                name='email'
-                                type='email'
-                                fluid icon='user'
-                                iconPosition='left'
-                                placeholder='E-mail address'
-                                onChange={this.handleChange}
-                                value={this.state.email}
-                                required
-                            />
-                            <Form.Input
-                                fluid
-                                name='password'
-                                type='password'
-                                icon='lock'
-                                iconPosition='left'
-                                placeholder='Password'
-                                onChange={this.handleChange}
-                                value={this.state.password}
-                                required
-                            />
-                            <Form.Input
-                                fluid
-                                name='password_confirmation'
-                                type='password'
-                                icon='lock'
-                                iconPosition='left'
-                                placeholder='Password Confirmation'
-                                onChange={this.handleChange}
-                                value={this.state.password_confirmation}
-                                required
-                            />
-
-                            <Button color='teal' fluid size='large'>
-                                Sign Up
-                            </Button>
-                        </Segment>
-                    </Form>
-                    <Message>
-                        Any problems? Please <a href='/contact'>contact</a> us, then we can help you better.
-                    </Message>
-                </Grid.Column>
-            </Grid>
+            <RegistrationForm
+                handleChange={this.handleGeneralChange}
+                handleSubmit={this.handleSubmit}
+                email={this.state.email}
+                password={this.state.password}
+                password_confirmation={this.state.password_confirmation}
+                error={this.state.error}
+            />
         );
     }
 }
+
+Registration.propTypes = {
+    history: PropTypes.object,
+    handleRegistration: PropTypes.func
+};
+
+Registration.defaultProps = {
+    history: undefined,
+    handleRegistration: undefined
+};
 
 export default Registration;
