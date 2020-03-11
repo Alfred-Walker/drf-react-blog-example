@@ -62,7 +62,6 @@ function TitleList(props) {
 
     const onListLoadSuccess = (result) => {
         if (result) {
-            console.log(result)
             setList(result.results);
             setPageCount(Math.ceil(result.count / props.perPageCount))
         }
@@ -92,8 +91,8 @@ function TitleList(props) {
                             <List.Item key={index} as={Link} to={props.itemPath + item.id}>
                                 <List.Icon name={props.icon} size='large' verticalAlign='middle' />
                                 <List.Content>
-                                    <List.Header as='a'>{item.title}</List.Header>
-                                    <List.Description as='a'>{item.registered_date}</List.Description>
+                                    <List.Header>{item.title}</List.Header>
+                                    <List.Description>{item.registered_date}</List.Description>
                                 </List.Content>
                             </List.Item>
                         )
