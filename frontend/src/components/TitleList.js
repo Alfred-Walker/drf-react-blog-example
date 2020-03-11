@@ -86,7 +86,7 @@ function TitleList(props) {
             <Divider />
             <List divided relaxed>
                 {
-                    list && list.length != 0 ?
+                    list && list.length !== 0 ?
                         list.map((item, index) =>
                             <List.Item key={index} as={Link} to={props.itemPath + item.id}>
                                 <List.Icon name={props.icon} size='large' verticalAlign='middle' />
