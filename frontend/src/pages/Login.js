@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import LoginForm from './login/LoginForm';
 import * as Utils from '../utils/jwt';
+import * as CSRF from '../utils/csrf';
 
 
 class Login extends Component {
@@ -32,10 +33,12 @@ class Login extends Component {
 
         event.preventDefault();
 
+        var csrftoken = CSRF.getCookie('csrftoken');
+
         fetch(
             'http://localhost:8000/jwt-auth/', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json; charset="utf-8"' },
+            headers: { 'Content-Type': 'application/json; charset="utf-8"', 'X-CSRFToken': csrftoken },
             body: JSON.stringify({
                 email: email,
                 password: password,
