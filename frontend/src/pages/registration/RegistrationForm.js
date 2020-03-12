@@ -38,6 +38,21 @@ const RegistrationForm = (props) => {
                                 : ""
                         }
                         <Form.Input
+                            name='nickname'
+                            type='nickname'
+                            fluid icon='user'
+                            iconPosition='left'
+                            placeholder='Nickname'
+                            onChange={props.handleChange}
+                            value={props.nickname}
+                            required
+                        />
+                        {
+                            props.error ?
+                                <ErrorMessage list={props.error.nickname} />
+                                : ""
+                        }
+                        <Form.Input
                             fluid
                             name='password'
                             type='password'
@@ -94,6 +109,7 @@ RegistrationForm.propTypes = {
     handleChange: PropTypes.func,
     handleSubmit: PropTypes.func,
     email: PropTypes.string,
+    nickname: PropTypes.string,
     password: PropTypes.string,
     password_confirmation: PropTypes.string,
     error: PropTypes.object
@@ -103,6 +119,7 @@ RegistrationForm.defaultProps = {
     handleChange: undefined,
     handleSubmit: undefined,
     email: "",
+    nickname: "",
     password: "",
     password_confirmation: "",
     error: undefined

@@ -11,6 +11,7 @@ class Registration extends Component {
 
         this.state = {
             email: "",
+            nickname: "",
             password: "",
             password_confirmation: "",
             registrationErrors: "",
@@ -30,6 +31,7 @@ class Registration extends Component {
     handleSubmit(event) {
         const {
             email,
+            nickname,
             password,
             password_confirmation
         } = this.state
@@ -42,6 +44,7 @@ class Registration extends Component {
                 headers: {'Content-Type':'application/json; charset="utf-8"', 'X-CSRFToken': csrftoken},
                 body: JSON.stringify({
                     email: email,
+                    nickname: nickname,
                     password1: password,
                     password2: password_confirmation
                 }),
@@ -74,6 +77,7 @@ class Registration extends Component {
                 handleChange={this.handleGeneralChange}
                 handleSubmit={this.handleSubmit}
                 email={this.state.email}
+                nickname={this.state.nickname}
                 password={this.state.password}
                 password_confirmation={this.state.password_confirmation}
                 error={this.state.error}
