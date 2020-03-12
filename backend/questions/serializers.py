@@ -40,12 +40,27 @@ class QuestionSerializer(serializers.ModelSerializer):
             body=validated_data['body']
         )
 
-        # TODO: Fix Tag model to support both private and public
         for item in request.data['tags']:
             tag, created = Tag.objects.get_or_create(name=item, is_public=True)
             question.tags.add(tag)
 
         return question
+
+    def update(self, question, validated_data):
+        question.title = validated_data.get('title', question.body)
+        question.body = validated_data.get('body', question.body)
+
+        tags_to_update = self.initial_data.get('tags')
+
+        if tags_to_update:
+            tags = []
+            for tag in tags_to_update:
+                tag, created = Tag.objects.get_or_create(name=tag, is_public=True)
+                tags.append(tag)
+
+        question.tags.set(tags)
+
+        return super(QuestionSerializer, self).update(question, validated_data)
 
 
 class QuestionSummarySerializer(serializers.ModelSerializer):
