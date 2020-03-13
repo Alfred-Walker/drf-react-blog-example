@@ -32,6 +32,10 @@ def get_private(key, privates_json=privates):
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FRONT_DIR = os.path.abspath(os.path.join(BASE_DIR, '../frontend'))
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# media file URL prefix
+MEDIA_URL = '/media/'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
