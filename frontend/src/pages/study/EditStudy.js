@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import { Button, Divider, Form, Header, List } from 'semantic-ui-react'
 import TagsInput from 'react-tagsinput';
-import * as Utils from '../../utils/jwt'
+import * as jwtUtils from '../../utils/jwt'
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './EditStudy.css'
 import { CSRFToken } from '../../utils/csrf';
+import { QuillFormats, QuillModules } from './quill/Editor'
 
 
 /* References */
@@ -19,6 +20,10 @@ import { CSRFToken } from '../../utils/csrf';
 class EditStudy extends Component {
     constructor(props) {
         super(props);
+
+        // reference for the ReactQuill
+        // https://reactjs.org/docs/refs-and-the-dom.html
+        this.editorRef = React.createRef();
 
         this.state = {
             id: props.location.state.study.id,
@@ -77,22 +82,60 @@ class EditStudy extends Component {
         // console.log("checked", checked)
     }
 
-    handleSubmit(event) {
-        const jwt = Utils.getJwt();
+    fetchFormData(formData) {
+        const jwt = jwtUtils.getJwt();
+
+        return fetch(
+            'http://localhost:8000/image/', {
+            method: 'POST',
+            headers: {
+                'Authorization': `JWT ${jwt}`,
+            },
+            body: formData,
+            credentials: 'include'
+        }
+        )
+    }
+
+    fetchStudyData(quillEditor, imgUrls, state) {
+        var editor = quillEditor;
+        var contents = editor.getContents();
+        var ops = contents.ops;
+
+        if (ops && imgUrls) {
+            var index = 0;
+
+            // assign new image src urls to existing image urls
+            for (var op in ops) {
+                if (ops[op].insert && ops[op].insert.image) {
+                    ops[op].insert.image = imgUrls[index];
+                    index += 1;
+                }
+            }
+
+            // assign modified ops
+            contents.ops = ops;
+
+            // apply modified contents
+            editor.setContents(contents);
+        }
+
+        const jwt = jwtUtils.getJwt();
 
         const {
             id,
             title,
-            body,
             tags,
             is_public,
             notification_enabled,
             review_cycle_in_minute
-        } = this.state;
-        
-        event.preventDefault();
+        } = state;
 
-        fetch(
+        // update body html
+        const body = editor.root.innerHTML;
+        this.setState({ body: body });
+
+        return fetch(
             'http://localhost:8000/study/'+id+"/", {
             method: 'PUT',
             headers: {
@@ -113,55 +156,53 @@ class EditStudy extends Component {
             .then(
                 response => (response.json())
             )
-            .then(
-                result => {
-                    this.props.history.push('/study');
-                }
-            )
-            .catch(
-                err => console.log("login error", err)
-            );
     }
 
-    modules = {
-        toolbar: {
-          container: [
-            ["bold", "italic", "underline", "strike", "blockquote"],
-            [{ size: ["small", false, "large", "huge"] }, { color: [] }],
-            [
-              { list: "ordered" },
-              { list: "bullet" },
-              { indent: "-1" },
-              { indent: "+1" },
-              { align: [] }
-            ],
-            ["link", "image", "video", "code-block"],
-            ["clean"]
-          ],
-          handlers: { image: this.imageHandler }
-        },
-        clipboard: { matchVisual: false }
-      };
+    getBase64EncodedUrls(quillEditor) {
+        var editor = quillEditor;
+        const contents = editor.getContents();
 
-    formats = [
-        "header",
-        "bold",
-        "italic",
-        "underline",
-        "strike",
-        "blockquote",
-        "size",
-        "color",
-        "list",
-        "bullet",
-        "indent",
-        "link",
-        "image",
-        "video",
-        "align",
-        "code",
-        "code-block"
-    ];
+        var ops = contents.ops;
+        var base64Encoded = new Array;
+
+        if (ops) {
+            for (var op in ops) {
+                if (ops[op].insert && ops[op].insert.image) {
+                    base64Encoded.push(ops[op].insert.image);
+                }
+            }
+        }
+
+        return base64Encoded;
+    }
+
+    handleSubmit(event) {
+        event.preventDefault();
+
+        var quillEditor = this.editorRef.getEditor();
+        var base64Encoded = this.getBase64EncodedUrls(quillEditor);
+        
+        Promise.all(base64Encoded.map(imgSrcUrl => fetch(imgSrcUrl)))
+            .then(responses => Promise.all(responses.map(res => res.blob()))
+                .then(blobs => {
+                    var formData = new FormData();
+                    blobs.map(blob => formData.append('images', blob));
+                    return formData;
+                }
+                )
+                .then(formData => this.fetchFormData(formData))
+                .then(response => response.json())
+                .then(results => {
+                    var urls = results.images.map(image => image.file_url);
+
+                    this.fetchStudyData(quillEditor, urls, this.state)
+                        .then(result => this.props.history.push('/study'))
+                        .catch(err => console.log("fetchStudyData error: ", err))
+                })
+
+                .catch(err => console.log("fetchFormData error: ", err))
+            )
+    }
 
     render() {
         return (
@@ -185,11 +226,12 @@ class EditStudy extends Component {
                             className='study-edit'
                             name='body'
                             theme='snow'
-                            modules={this.modules}
-                            formats={this.formats}
+                            modules={QuillModules}
+                            formats={QuillFormats}
                             placeholder='Contents'
                             value={this.state.body}
                             onChange={this.handleEditorChange}
+                            ref={(r) => { this.editorRef = r }}
                         />
                     </Form.Field>
                     <Form.Field>
