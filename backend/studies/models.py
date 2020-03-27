@@ -1,12 +1,14 @@
 from django.db import models
 from users.models import User
 from tags.models import Tag
+from images.models import Image
 
 
 # Create your models here.
 class Study(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tag, blank=True, related_name="studies")
+    images = models.ManyToManyField(Image, blank=True, related_name="studies")
 
     title = models.CharField(
         max_length=255,
