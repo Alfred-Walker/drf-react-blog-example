@@ -6,6 +6,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './NewQuestion.css'
 import { CSRFToken } from '../../utils/csrf';
+import { QuillFormats, QuillModules } from './quill/Editor'
 
 /* References */
 // 1. react-tagsinput
@@ -107,46 +108,6 @@ class NewQuestion extends Component {
             );
     }
 
-    modules = {
-        toolbar: {
-          container: [
-            ["bold", "italic", "underline", "strike", "blockquote"],
-            [{ size: ["small", false, "large", "huge"] }, { color: [] }],
-            [
-              { list: "ordered" },
-              { list: "bullet" },
-              { indent: "-1" },
-              { indent: "+1" },
-              { align: [] }
-            ],
-            ["link", "image", "video", "code-block"],
-            ["clean"]
-          ],
-          handlers: { image: this.imageHandler }
-        },
-        clipboard: { matchVisual: false }
-      };
-
-      formats = [
-        "header",
-        "bold",
-        "italic",
-        "underline",
-        "strike",
-        "blockquote",
-        "size",
-        "color",
-        "list",
-        "bullet",
-        "indent",
-        "link",
-        "image",
-        "video",
-        "align",
-        "code",
-        "code-block"
-      ];
-
     render() {
         return (
             <div className="form">
@@ -168,8 +129,8 @@ class NewQuestion extends Component {
                             className='question-new'
                             name='body'
                             theme='snow'
-                            modules={this.modules}
-                            formats={this.formats}
+                            modules={QuillModules}
+                            formats={QuillFormats}
                             placeholder='Contents'
                             value={this.state.body}
                             onChange={this.handleEditorChange}

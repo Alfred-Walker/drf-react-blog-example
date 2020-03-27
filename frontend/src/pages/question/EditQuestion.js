@@ -6,6 +6,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './EditQuestion.css'
 import { CSRFToken } from '../../utils/csrf';
+import { QuillFormats, QuillModules } from './quill/Editor'
 
 /* References */
 // 1. react-tagsinput
@@ -171,8 +172,8 @@ class EditQuestion extends Component {
                             className='question-edit'
                             name='body'
                             theme='snow'
-                            modules={this.modules}
-                            formats={this.formats}
+                            modules={QuillModules}
+                            formats={QuillFormats}
                             placeholder='Contents'
                             value={this.state.body}
                             onChange={this.handleEditorChange}
