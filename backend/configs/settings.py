@@ -89,6 +89,7 @@ INSTALLED_APPS = [
     'tags.apps.TagsConfig',
     'questions.apps.QuestionsConfig',
     'comments.apps.CommentsConfig',
+    'images.apps.ImagesConfig',
 
     # CORS for React (Cross-Origin Resource Sharing)
     'corsheaders',
