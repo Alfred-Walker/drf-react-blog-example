@@ -73,12 +73,12 @@ class StudySerializer(serializers.ModelSerializer):
         tags_to_update = self.initial_data.get('tags')
 
         if tags_to_update:
-            tags = []
+            temp = []
             for tag in tags_to_update:
                 tag, created = Tag.objects.get_or_create(name=tag, is_public=validated_data['is_public'])
-                tags.append(tag)
+                temp.append(tag)
 
-        study.tags.set(tags)
+            study.tags.set(temp)
 
         return super(StudySerializer, self).update(study, validated_data)
 
