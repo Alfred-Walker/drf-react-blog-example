@@ -13,7 +13,9 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.conf.urls import url
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from drf_yasg import openapi
@@ -73,8 +75,11 @@ urlpatterns = [
     path('question/', include('questions.urls')),
     path('comment/', include('comments.urls')),
     path('indicator/', include('indicators.urls')),
+    path('image/', include('images.urls')),
 
     url(r'^jwt-auth/$', obtain_jwt_token),
     url(r'^jwt-auth/refresh/$', refresh_jwt_token),
     url(r'^jwt-auth/verify/$', verify_jwt_token),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
