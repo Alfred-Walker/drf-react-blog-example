@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Divider, Form, Header, List } from 'semantic-ui-react'
+import { Button, Divider, Form, Header, List, Message } from 'semantic-ui-react'
 import TagsInput from 'react-tagsinput';
 import * as jwtUtils from '../../utils/jwt'
 import ReactQuill from 'react-quill';
@@ -7,6 +7,8 @@ import 'react-quill/dist/quill.snow.css';
 import './EditQuestion.css'
 import { CSRFToken } from '../../utils/csrf';
 import { QuillFormats, QuillModules } from './quill/Editor'
+import ErrorMessage from '../../components/ErrorMessage'
+
 
 /* References */
 // 1. react-tagsinput
@@ -29,7 +31,8 @@ class EditQuestion extends Component {
             title: props.location.state.question.title,
             body: props.location.state.question.body,
             tags: props.location.state.question.tags,
-            submitEnabled: true
+            submitEnabled: true,
+            error: undefined
         }
 
         this.checkSubmitEnabled = this.checkSubmitEnabled.bind(this);
@@ -38,14 +41,25 @@ class EditQuestion extends Component {
         this.handleTagsChange = this.handleTagsChange.bind(this);
         this.handleToggleChange = this.handleToggleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleImageInsert = this.handleImageInsert.bind(this);
+    }
+
+    componentDidMount() {
+        var quillEditor = this.editorRef.getEditor();
+        quillEditor.getModule('toolbar')
+            .addHandler('image', () => this.handleImageInsert());
+
+        this.initialInput = JSON.stringify(quillEditor.getContents());
     }
 
     checkSubmitEnabled(title, body) {
-        if(!title || body.replace(/<(.|\n)*?>/g, '').trim().length === 0) {
-            // textarea is empty when all tags are removed
+        var editor = this.editorRef.getEditor();
+        var contents = editor.getContents();
+
+        if (!title || JSON.stringify(contents) === this.initialInput) {
             this.setState({ submitEnabled: false });
         }
-        else{
+        else {
             this.setState({ submitEnabled: true });
         }
     }
@@ -55,7 +69,7 @@ class EditQuestion extends Component {
             [event.target.name]: event.target.value
         });
 
-        if(event.target.name === "title")
+        if (event.target.name === "title")
             this.checkSubmitEnabled(event.target.value, this.state.body);
     }
 
@@ -65,7 +79,7 @@ class EditQuestion extends Component {
     }
 
     handleTagsChange(tags) {
-        this.setState({tags});
+        this.setState({ tags });
     }
 
     handleToggleChange(e, { name, checked }) {
@@ -76,6 +90,38 @@ class EditQuestion extends Component {
         // https://react.semantic-ui.com/collections/form/#usage-capture-values
         // console.log("name", name)
         // console.log("checked", checked)
+    }
+
+    handleError(header, contents) {
+        this.setState({ error: { 'header': header, 'contents': contents } });
+    }
+
+    handleImageInsert() {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+        input.click();
+
+        input.onchange = () => {
+            const file = input.files[0];
+
+            // file type is only image
+            if (/^image\//.test(file.type)) {
+                var reader = new FileReader();
+
+                reader.onload = () => {
+                    const range = this.editorRef.getEditor().getSelection();
+                    this.editorRef.getEditor().insertEmbed(range.index, 'image', reader.result);
+                }
+
+                reader.readAsDataURL(file);
+            } else {
+                this.handleError('Upload Error', 'You could only upload images.');
+                console.error('You could only upload images.');
+            }
+        };
+
+        this.checkSubmitEnabled(this.state.title, this.state.body);
     }
 
     fetchFormData(formData) {
@@ -129,7 +175,7 @@ class EditQuestion extends Component {
         this.setState({ body: body });
 
         return fetch(
-            'http://localhost:8000/question/'+id+"/", {
+            'http://localhost:8000/question/' + id + "/", {
             method: 'PUT',
             headers: {
                 'Authorization': `JWT ${jwt}`,
@@ -173,25 +219,25 @@ class EditQuestion extends Component {
         var base64Encoded = this.getBase64EncodedUrls(quillEditor);
 
         Promise.all(base64Encoded.map(imgSrcUrl => fetch(imgSrcUrl)))
-        .then(responses => Promise.all(responses.map(res => res.blob()))
-            .then(blobs => {
-                var formData = new FormData();
-                blobs.map(blob => formData.append('images', blob));
-                return formData;
-            }
+            .then(responses => Promise.all(responses.map(res => res.blob()))
+                .then(blobs => {
+                    var formData = new FormData();
+                    blobs.map(blob => formData.append('images', blob));
+                    return formData;
+                }
+                )
+                .then(formData => this.fetchFormData(formData))
+                .then(response => response.json())
+                .then(results => {
+                    var urls = results.images.map(image => image.file_url);
+
+                    this.fetchQuestionData(quillEditor, urls, this.state)
+                        .then(result => this.props.history.push('/question'))
+                        .catch(err => console.log("fetchQuestionData error: ", err))
+                })
+
+                .catch(err => console.log("fetchFormData error: ", err))
             )
-            .then(formData => this.fetchFormData(formData))
-            .then(response => response.json())
-            .then(results => {
-                var urls = results.images.map(image => image.file_url);
-
-                this.fetchQuestionData(quillEditor, urls, this.state)
-                    .then(result => this.props.history.push('/question'))
-                    .catch(err => console.log("fetchQuestionData error: ", err))
-            })
-
-            .catch(err => console.log("fetchFormData error: ", err))
-        )
     }
 
     render() {
@@ -233,16 +279,22 @@ class EditQuestion extends Component {
                             addKeys={[9, 13, 188]}
                             onlyUnique={true} />
                     </Form.Field>
-                    
+
                     <List className="list-checkbox-horizontal">
 
                     </List>
                     {
-                        this.state.submitEnabled ? 
-                        <Button type='submit' color="blue">Submit</Button> :
-                        <Button type='submit' color="blue" disabled >Submit</Button>
+                        this.state.submitEnabled ?
+                            <Button type='submit' color="blue">Submit</Button> :
+                            <Button type='submit' color="blue" disabled >Submit</Button>
                     }
                 </Form>
+
+                {
+                    this.state.error ?
+                        <ErrorMessage header={this.state.error.header} contents={this.state.error.contents} />
+                        : ""
+                }
             </div>
         )
     }

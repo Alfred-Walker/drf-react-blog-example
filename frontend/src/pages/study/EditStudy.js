@@ -7,6 +7,7 @@ import 'react-quill/dist/quill.snow.css';
 import './EditStudy.css'
 import { CSRFToken } from '../../utils/csrf';
 import { QuillFormats, QuillModules } from './quill/Editor'
+import ErrorMessage from '../../components/ErrorMessage'
 
 
 /* References */
@@ -33,7 +34,8 @@ class EditStudy extends Component {
             is_public: props.location.state.study.is_public,
             notification_enabled: props.location.state.study.notification_enabled,
             review_cycle_in_minute: props.location.state.study.review_cycle_in_minute,
-            submitEnabled: true
+            submitEnabled: true,
+            error: undefined
         }
 
         this.checkSubmitEnabled = this.checkSubmitEnabled.bind(this);
@@ -42,14 +44,25 @@ class EditStudy extends Component {
         this.handleTagsChange = this.handleTagsChange.bind(this);
         this.handleToggleChange = this.handleToggleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleImageInsert = this.handleImageInsert.bind(this);
+    }
+
+    componentDidMount() {
+        var quillEditor = this.editorRef.getEditor();
+        quillEditor.getModule('toolbar')
+            .addHandler('image', () => this.handleImageInsert());
+
+        this.initialInput = JSON.stringify(quillEditor.getContents());
     }
 
     checkSubmitEnabled(title, body) {
-        if(!title || body.replace(/<(.|\n)*?>/g, '').trim().length === 0) {
-            // textarea is empty when all tags are removed
+        var editor = this.editorRef.getEditor();
+        var contents = editor.getContents();
+
+        if (!title || JSON.stringify(contents) === this.initialInput) {
             this.setState({ submitEnabled: false });
         }
-        else{
+        else {
             this.setState({ submitEnabled: true });
         }
     }
@@ -59,7 +72,7 @@ class EditStudy extends Component {
             [event.target.name]: event.target.value
         });
 
-        if(event.target.name === "title")
+        if (event.target.name === "title")
             this.checkSubmitEnabled(event.target.value, this.state.body);
     }
 
@@ -69,7 +82,7 @@ class EditStudy extends Component {
     }
 
     handleTagsChange(tags) {
-        this.setState({tags});
+        this.setState({ tags });
     }
 
     handleToggleChange(e, { name, checked }) {
@@ -80,6 +93,38 @@ class EditStudy extends Component {
         // https://react.semantic-ui.com/collections/form/#usage-capture-values
         // console.log("name", name)
         // console.log("checked", checked)
+    }
+
+    handleError(header, contents) {
+        this.setState({ error: { 'header': header, 'contents': contents } });
+    }
+
+    handleImageInsert() {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+        input.click();
+
+        input.onchange = () => {
+            const file = input.files[0];
+
+            // file type is only image
+            if (/^image\//.test(file.type)) {
+                var reader = new FileReader();
+
+                reader.onload = () => {
+                    const range = this.editorRef.getEditor().getSelection();
+                    this.editorRef.getEditor().insertEmbed(range.index, 'image', reader.result);
+                }
+
+                reader.readAsDataURL(file);
+            } else {
+                this.handleError('Upload Error', 'You could only upload images.');
+                console.error('You could only upload images.');
+            }
+        };
+
+        this.checkSubmitEnabled(this.state.title, this.state.body);
     }
 
     fetchFormData(formData) {
@@ -136,7 +181,7 @@ class EditStudy extends Component {
         this.setState({ body: body });
 
         return fetch(
-            'http://localhost:8000/study/'+id+"/", {
+            'http://localhost:8000/study/' + id + "/", {
             method: 'PUT',
             headers: {
                 'Authorization': `JWT ${jwt}`,
@@ -181,7 +226,7 @@ class EditStudy extends Component {
 
         var quillEditor = this.editorRef.getEditor();
         var base64Encoded = this.getBase64EncodedUrls(quillEditor);
-        
+
         Promise.all(base64Encoded.map(imgSrcUrl => fetch(imgSrcUrl)))
             .then(responses => Promise.all(responses.map(res => res.blob()))
                 .then(blobs => {
@@ -263,11 +308,17 @@ class EditStudy extends Component {
 
                     </List>
                     {
-                        this.state.submitEnabled ? 
-                        <Button type='submit' color="blue">Submit</Button> :
-                        <Button type='submit' color="blue" disabled >Submit</Button>
+                        this.state.submitEnabled ?
+                            <Button type='submit' color="blue">Submit</Button> :
+                            <Button type='submit' color="blue" disabled >Submit</Button>
                     }
                 </Form>
+
+                {
+                    this.state.error ?
+                        <ErrorMessage header={this.state.error.header} contents={this.state.error.contents} />
+                        : ""
+                }
             </div>
         )
     }

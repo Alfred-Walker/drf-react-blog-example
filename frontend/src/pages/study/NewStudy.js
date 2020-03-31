@@ -7,6 +7,7 @@ import 'react-quill/dist/quill.snow.css';
 import './NewStudy.css'
 import { CSRFToken } from '../../utils/csrf';
 import { QuillFormats, QuillModules } from './quill/Editor'
+import ErrorMessage from '../../components/ErrorMessage'
 
 
 /* References */
@@ -32,7 +33,8 @@ class NewStudy extends Component {
             is_public: true,
             notification_enabled: false,
             review_cycle_in_minute: 12,
-            submitEnabled: false
+            submitEnabled: false,
+            error: undefined
         }
 
         this.checkSubmitEnabled = this.checkSubmitEnabled.bind(this);
@@ -41,11 +43,22 @@ class NewStudy extends Component {
         this.handleTagsChange = this.handleTagsChange.bind(this);
         this.handleToggleChange = this.handleToggleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleImageInsert = this.handleImageInsert.bind(this);
+    }
+
+    componentDidMount() {
+        var quillEditor = this.editorRef.getEditor();
+        quillEditor.getModule('toolbar')
+            .addHandler('image', () => this.handleImageInsert());
+
+        this.initialInput = JSON.stringify(quillEditor.getContents());
     }
 
     checkSubmitEnabled(title, body) {
-        if (!title || body.replace(/<(.|\n)*?>/g, '').trim().length === 0) {
-            // textarea is empty when all tags are removed
+        var editor = this.editorRef.getEditor();
+        var contents = editor.getContents();
+
+        if (!title || JSON.stringify(contents) === this.initialInput) {
             this.setState({ submitEnabled: false });
         }
         else {
@@ -79,6 +92,38 @@ class NewStudy extends Component {
         // https://react.semantic-ui.com/collections/form/#usage-capture-values
         // console.log("name", name)
         // console.log("checked", checked)
+    }
+
+    handleError(header, contents) {
+        this.setState({ error: { 'header': header, 'contents': contents } });
+    }
+
+    handleImageInsert() {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+        input.click();
+
+        input.onchange = () => {
+            const file = input.files[0];
+
+            // file type is only image
+            if (/^image\//.test(file.type)) {
+                var reader = new FileReader();
+
+                reader.onload = () => {
+                    const range = this.editorRef.getEditor().getSelection();
+                    this.editorRef.getEditor().insertEmbed(range.index, 'image', reader.result);
+                }
+
+                reader.readAsDataURL(file);
+            } else {
+                this.handleError('Upload Error', 'You could only upload images.');
+                console.error('You could only upload images.');
+            }
+        };
+
+        this.checkSubmitEnabled(this.state.title, this.state.body);
     }
 
     fetchFormData(formData) {
@@ -264,8 +309,13 @@ class NewStudy extends Component {
                             <Button type='submit' color="blue">Submit</Button> :
                             <Button type='submit' color="blue" disabled >Submit</Button>
                     }
-
                 </Form>
+
+                {
+                    this.state.error ?
+                        <ErrorMessage header={this.state.error.header} contents={this.state.error.contents} />
+                        : ""
+                }
             </div>
         )
     }
