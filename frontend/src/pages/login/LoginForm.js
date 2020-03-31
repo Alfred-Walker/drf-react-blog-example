@@ -9,7 +9,7 @@ import {
     Segment
 } from 'semantic-ui-react'
 import { CSRFToken } from '../../utils/csrf';
-import ErrorMessage from '../../components/ErrorMessage'
+import ErrorMessageList from '../../components/ErrorMessageList'
 
 
 const LoginForm = (props) => {
@@ -34,7 +34,7 @@ const LoginForm = (props) => {
                         />
                         {
                             props.error ?
-                                <ErrorMessage list={props.error.email} />
+                                <ErrorMessageList list={props.error.email} />
                                 : ""
                         }
                         <Form.Input
@@ -50,12 +50,12 @@ const LoginForm = (props) => {
                         />
                         {
                             props.error ?
-                                <ErrorMessage list={props.error.password1} />
+                                <ErrorMessageList list={props.error.password1} />
                                 : ""
                         }
                         {
                             props.error ?
-                                <ErrorMessage list={props.error.non_field_errors} />
+                                <ErrorMessageList list={props.error.non_field_errors} />
                                 : ""
                         }
 

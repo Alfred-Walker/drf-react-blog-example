@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Message } from 'semantic-ui-react'
 
 
-const ErrorMessage = (props) => {
+const ErrorMessageList = (props) => {
     return (
         props.list ?
             <Message
@@ -14,12 +14,12 @@ const ErrorMessage = (props) => {
     )
 }
 
-ErrorMessage.propTypes = {
+ErrorMessageList.propTypes = {
     list: PropTypes.array,
 };
 
-ErrorMessage.defaultProps = {
+ErrorMessageList.defaultProps = {
     list: undefined,
 };
 
-export default ErrorMessage;
+export default ErrorMessageList;
