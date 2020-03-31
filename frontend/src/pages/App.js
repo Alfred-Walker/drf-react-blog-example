@@ -312,6 +312,18 @@ class App extends Component {
                                     errorCode={500} />
                             )}
                             />
+                            <Route path="/401" render={props => (
+                                <Error
+                                    {...props}
+                                    errorCode={401} />
+                            )}
+                            />
+                            <Route path="/403" render={props => (
+                                <Error
+                                    {...props}
+                                    errorCode={403} />
+                            )}
+                            />
                             <Route render={props => (
                                 <Error
                                     {...props}
