@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { Button, Form, Header, List } from 'semantic-ui-react'
 import TagsInput from 'react-tagsinput';
-import * as jwtUtils from '../../utils/jwt';
+import base64Util from '../../utils/base64'
+import handleHttpResponseError from '../../utils/httpResponseError';
+import jwtUtil from '../../utils/jwt';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './NewStudy.css'
@@ -127,7 +129,7 @@ class NewStudy extends Component {
     }
 
     fetchFormData(formData) {
-        const jwt = jwtUtils.getJwt();
+        const jwt = jwtUtil.getJwt();
 
         return fetch(
             'http://localhost:8000/image/', {
@@ -139,6 +141,11 @@ class NewStudy extends Component {
             credentials: 'include'
         }
         )
+            .catch(
+                error => {
+                    throw new Error(error);
+                }
+            )
     }
 
     fetchStudyData(quillEditor, imgUrls, state) {
@@ -164,7 +171,7 @@ class NewStudy extends Component {
             editor.setContents(contents);
         }
 
-        const jwt = jwtUtils.getJwt();
+        const jwt = jwtUtil.getJwt();
 
         const {
             title,
@@ -196,55 +203,35 @@ class NewStudy extends Component {
             credentials: 'include'
         }
         )
-            .then(
-                response => (response.json())
-            )
-    }
-
-    getBase64EncodedUrls(quillEditor) {
-        var editor = quillEditor;
-        const contents = editor.getContents();
-
-        var ops = contents.ops;
-        var base64Encoded = new Array;
-
-        if (ops) {
-            for (var op in ops) {
-                if (ops[op].insert && ops[op].insert.image) {
-                    base64Encoded.push(ops[op].insert.image);
+            .catch(
+                error => {
+                    throw new Error(error);
                 }
-            }
-        }
-
-        return base64Encoded;
+            )
     }
 
     handleSubmit(event) {
         event.preventDefault();
 
         var quillEditor = this.editorRef.getEditor();
-        var base64Encoded = this.getBase64EncodedUrls(quillEditor);
+        var base64Encoded = base64Util.getBase64UrlsFromContents(quillEditor);
 
         Promise.all(base64Encoded.map(imgSrcUrl => fetch(imgSrcUrl)))
-            .then(responses => Promise.all(responses.map(res => res.blob()))
-                .then(blobs => {
-                    var formData = new FormData();
-                    blobs.map(blob => formData.append('images', blob));
-                    return formData;
-                }
-                )
-                .then(formData => this.fetchFormData(formData))
-                .then(response => response.json())
-                .then(results => {
-                    var urls = results.images.map(image => image.file_url);
+            .then(responses => base64Util.getImgBlobs(responses))
+            .then(blobs => base64Util.getFormDataForBlobs(blobs, 'images'))
+            .then(formData => this.fetchFormData(formData))
+            .then(handleHttpResponseError)
+            .then(response => response.json())
+            .then(results => {
+                var urls = results.images.map(image => image.file_url);
 
-                    this.fetchStudyData(quillEditor, urls, this.state)
-                        .then(result => this.props.history.push('/study'))
-                        .catch(err => console.log("fetchStudyData error: ", err))
-                })
-
-                .catch(err => console.log("fetchFormData error: ", err))
-            )
+                this.fetchStudyData(quillEditor, urls, this.state)
+                    .then(handleHttpResponseError)
+                    .then(response => response.json())
+                    .then(() => this.props.history.push('/study'))
+                    .catch(error => console.error("fetchStudyData error: ", error))
+            })
+            .catch(error => this.props.history.push('/' + error.message))
     }
 
     render() {
