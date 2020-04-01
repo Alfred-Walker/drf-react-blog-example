@@ -309,25 +309,25 @@ class App extends Component {
                             <Route path="/500" render={props => (
                                 <Error
                                     {...props}
-                                    errorCode={500} />
+                                    errorCode={'500'} />
                             )}
                             />
                             <Route path="/401" render={props => (
                                 <Error
                                     {...props}
-                                    errorCode={401} />
+                                    errorCode={'401'} />
                             )}
                             />
                             <Route path="/403" render={props => (
                                 <Error
                                     {...props}
-                                    errorCode={403} />
+                                    errorCode={'403'} />
                             )}
                             />
                             <Route render={props => (
                                 <Error
                                     {...props}
-                                    errorCode={404} />
+                                    errorCode={'404'} />
                             )}
                             />
                         </Switch>
