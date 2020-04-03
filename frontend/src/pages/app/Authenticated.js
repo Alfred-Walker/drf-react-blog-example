@@ -1,39 +1,35 @@
 import React, { Component } from 'react';
 import * as helpers from '../../utils/jwt';
+import { Dimmer, Loader } from 'semantic-ui-react'
+import handleHttpResponseError from '../../utils/httpResponseError';
 
 
 class Authenticated extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            user: undefined
-        }
+        this.state = { isLoading: true };
     }
 
     handleVerificationSuccess() {
-        console.log("token verified for an authenticated component")
+        this.setState({ isLoading: false });
     }
 
     handleVerificationFailure(err) {
-        console.log("token verification failed: ", err);
         this.props.clearAuthInfo();
         this.props.history.push('/login');
     }
 
     componentDidMount() {
         const token = helpers.getJwt();
-        const user = this.props.user;
-        this.setState({user})
 
-        if(!token || !user) {
+        if (!token) {
             this.props.history.push('/login');
             return;
         }
 
-        // verify existing token's life before POST
         var isExpired = helpers.isJwtExpired(token);
-        
+
         if (isExpired) {
             localStorage.clear();
             this.props.history.push('/login');
@@ -42,34 +38,30 @@ class Authenticated extends Component {
 
         fetch(
             "http://localhost:8000/jwt-auth/verify/", {
-                method: 'POST',
-                headers: {'Authorization': `JWT ${token}`, 'Content-Type':'application/json; charset="utf-8"'},
-                body: JSON.stringify({
-                    token: token,
-                }),
-                credentials: 'include'
-            }
+            method: 'POST',
+            headers: { 'Authorization': `JWT ${token}`, 'Content-Type': 'application/json; charset="utf-8"' },
+            body: JSON.stringify({
+                token: token,
+            }),
+            credentials: 'include'
+        }
         )
-        .then(
-            response => (response.json())
-        )
-        .then(
-            result => {
-                this.handleVerificationSuccess();
-            }
-        )
-        .catch(
-            // TODO: need better catch. 
-            err => {
-                this.handleVerificationFailure(err);
-            }
-        );
+            .then(handleHttpResponseError)
+            .then(response => response.json())
+            .then(result => this.handleVerificationSuccess())
+            .catch(
+                err => {
+                    this.handleVerificationFailure(err);
+                }
+            );
     }
 
     render() {
-        if(this.state.user === undefined) {
+        if (this.state.isLoading) {
             return (
-                <div><h1>Loading...</h1></div>
+                <Dimmer active>
+                    <Loader>Loading</Loader>
+                </Dimmer>
             );
         }
 
