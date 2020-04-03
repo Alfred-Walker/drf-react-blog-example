@@ -17,7 +17,7 @@ const Unauthorized = (props) => {
             <Header size='huge' className='header' > 401 </Header>
             <Label className='label' > UNAUTHORIZED ACCESS </Label>
             <Divider />
-            <Message className='message negative' > You have attempted to access a page for which you ar not authorized. </Message>
+            <Message className='message negative' > You have attempted to access a page for which you are not authorized. </Message>
             <Button className='button' onClick={props.history.goBack} primary basic> BACK </Button>
         </GridColumn>
     )
