@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { getJwt } from '../utils/jwt';
 import { Link } from "react-router-dom";
-import ReactQuill from 'react-quill';
-import TagsInput from 'react-tagsinput';
 import * as Utils from '../utils/jwt';
-
 import SearchInput from '../components/SearchInput';
+import CommandButtonGroup from '../components/CommandButtonGroup';
+import ReadOnlyQuillSegment from '../components/ReadOnlyQuillSegment'
 import CommentThreaded from './comment/CommentThreaded'
+
 import TagList from './tag/TagList';
 
 import {
@@ -19,7 +19,6 @@ import {
     Header,
     Icon,
     Label,
-    List,
     Loader,
     Menu,
     Message,
@@ -52,23 +51,23 @@ class Questions extends Component {
             placeholder: ''
         }
 
-        this.handleGenericChange = this.handleGenericChange.bind(this);
-        this.handleDelete = this.handleDelete.bind(this);
-        this.handlePageChange = this.handlePageChange.bind(this);
-        this.handleShow = this.handleShow.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleTagClick = this.handleTagClick.bind(this);
+        this.onGenericChange = this.onGenericChange.bind(this);
+        this.onDelete = this.onDelete.bind(this);
+        this.onPageChange = this.onPageChange.bind(this);
+        this.onShow = this.onShow.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
+        this.onTagClick = this.onTagClick.bind(this);
     }
 
-    handleCancel = () => this.setState({ open: false })
+    onCancel = () => this.setState({ open: false })
 
-    handleGenericChange(event) {
+    onGenericChange(event) {
         this.setState({
             [event.target.name]: event.target.value
         });
     }
 
-    handleDelete(event) {
+    onDelete(event) {
         const jwt = Utils.getJwt();
         const id = this.state.id;
 
@@ -85,30 +84,26 @@ class Questions extends Component {
             credentials: 'include'
         }
         )
-            .then(
-                response => this.loadQuestionsFromServer(1)
-            )
-            .catch(
-                err => console.log("delete error", err)
-            );
+            .then(response => this.loadQuestionsFromServer(1))
+            .catch(err => console.log("delete error", err));
     }
 
-    handlePageChange(e, pageInfo) {
+    onPageChange(e, pageInfo) {
         this.setState({ activePage: pageInfo.activePage });
         this.loadQuestionsFromServer(pageInfo.activePage, this.state.search, this.state.tag);
     }
 
-    handleShow(event) {
+    onShow(event) {
         const id = event.target.name;
         this.setState({ open: true, id: id })
     }
 
-    handleSubmit(event) {
+    onSubmit(event) {
         event.preventDefault();
         this.loadQuestionsFromServer(1, this.state.search, this.state.tag);
     }
 
-    handleTagClick(event) {
+    onTagClick(event) {
         this.setState({ tag: event.target.name });
         this.loadQuestionsFromServer(1, this.state.search, event.target.name);
     }
@@ -212,32 +207,6 @@ class Questions extends Component {
         this.loadRandomTagsFromServer(10)
     }
 
-    // quill editor without toolbar
-    modules = {
-        toolbar: false,
-        clipboard: { matchVisual: false }
-    };
-
-    formats = [
-        "header",
-        "bold",
-        "italic",
-        "underline",
-        "strike",
-        "blockquote",
-        "size",
-        "color",
-        "list",
-        "bullet",
-        "indent",
-        "link",
-        "image",
-        "video",
-        "align",
-        "code",
-        "code-block"
-    ];
-
     render() {
         if (this.state.questionList === undefined) {
             return (
@@ -267,44 +236,38 @@ class Questions extends Component {
                     <Grid.Column>
                         <TagList
                             tags={this.state.tagList}
-                            onClick={this.handleTagClick}
+                            onClick={this.onTagClick}
                         />
                     </Grid.Column>
                     {
                         this.state.questionList.map(question =>
                             <Grid.Column key={question.id}>
                                 <Segment>
-                                    <Header as="h1">
-                                        {question.title}
-                                    </Header>
-                                    <Divider />
-                                    <ReactQuill
-                                        modules={this.modules}
-                                        formats={this.formats}
-                                        value={question.body}
-                                        readOnly={true}
-                                        theme={"snow"}
+                                    <ReadOnlyQuillSegment
+                                        is_public={true}
+                                        title={question.title}
+                                        body={question.body}
+                                        nickname={question.user.nickname}
+                                        registered_date={question.registered_date}
+                                        tags={question.tags}
                                     />
-                                    <br />
-                                    <p>
-                                        <Icon name='user' />{question.user.nickname} &nbsp;&nbsp;/&nbsp;&nbsp; {question.registered_date}
-                                    </p>
-                                    <p>{question.excerpt}</p>
-                                    <List className="list-tag-horizontal">
-                                        <TagsInput in
-                                            disabled={true}
-                                            value={question.tags}
-                                            inputProps={this.tagsInputProps}
-                                        />
-                                    </List>
-                                    <Button primary basic as="a" href="/">See all</Button>
-                                    <Button as={Link} to={{ pathname: '/question/edit/' + question.id, state: { question: question } }} primary basic>Edit</Button>
-                                    <Button name={question.id} onClick={this.handleShow} primary basic negative>Delete</Button>
+
+                                    {
+                                        this.props.user && question.user && question.user.id === this.props.user.id ?
+                                            <CommandButtonGroup
+                                                id_parent={question.id}
+                                                edit_page_path={"/question/edit/" + question.id}
+                                                state={{ question: question }}
+                                                onDeleteClick={this.onShow}
+                                            />
+                                            : ""
+                                    }
+
                                     <Confirm
                                         open={this.state.open}
                                         content='Do you really want to delete?'
-                                        onCancel={this.handleCancel}
-                                        onConfirm={this.handleDelete}
+                                        onCancel={this.onCancel}
+                                        onConfirm={this.onDelete}
                                     />
                                 </Segment>
 
@@ -315,7 +278,7 @@ class Questions extends Component {
                     <GridColumn>
                         <Pagination
                             activePage={this.state.activePage}
-                            onPageChange={this.handlePageChange}
+                            onPageChange={this.onPageChange}
                             totalPages={this.state.pageCount}
                             ellipsisItem={null}
                         />
@@ -324,8 +287,8 @@ class Questions extends Component {
                     <GridColumn>
                         <SearchInput
                             search={this.state.search}
-                            onChange={this.handleGenericChange}
-                            onSubmit={this.handleSubmit}
+                            onChange={this.onGenericChange}
+                            onSubmit={this.onSubmit}
                         />
                     </GridColumn>
                 </Grid>
