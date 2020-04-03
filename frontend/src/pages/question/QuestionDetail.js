@@ -4,16 +4,17 @@ import PropTypes from 'prop-types';
 import CommentThreaded from '../comment/CommentThreaded'
 import CommandButtonGroup from '../../components/CommandButtonGroup';
 import ReadOnlyQuillSegment from '../../components/ReadOnlyQuillSegment';
-import * as Utils from '../../utils/jwt';
+import handleHttpResponseError from '../../utils/httpResponseError';
+import * as jwtUtil from '../../utils/jwt';
 
 
 function QuestionDetail(props) {
     const [question, setQuestion] = useState(undefined);
     const [open, setOpen] = useState(false);
 
-    const loadDataFromServer = (url, callbackOnSuccess, callbackOnError) => {
+    const loadDataFromServer = (url, callbackOnSuccess) => {
         let headers = {};
-        const jwt = Utils.getJwt();
+        const jwt = jwtUtil.getJwt();
 
         if (jwt) {
             headers = {
@@ -29,26 +30,20 @@ function QuestionDetail(props) {
             credentials: 'include'
         }
         )
-            .then(
-                response => (response.json())
-            )
+            .then(handleHttpResponseError)
+            .then(response => response.json())
             .then(
                 result => {
                     callbackOnSuccess(result);
                 }
             )
-            .catch(
-                // TODO: need better catch.
-                err => {
-                    callbackOnError();
-                }
-            );
+            .catch(error => this.props.history.push('/' + error.message));
     }
 
     const onCancel = () => { setOpen(false) };
 
     const onDelete = (event) => {
-        const jwt = Utils.getJwt();
+        const jwt = jwtUtil.getJwt();
         const id = question.id;
 
         setOpen(false);
@@ -64,12 +59,9 @@ function QuestionDetail(props) {
             credentials: 'include'
         }
         )
-            .then(
-                response => { props.history.push('/question/'); }
-            )
-            .catch(
-                err => console.log("delete error", err)
-            );
+            .then(handleHttpResponseError)
+            .then(response => { props.history.push('/question/'); })
+            .catch(error => this.props.history.push('/' + error.message));
     };
 
     const onShow = () => {
@@ -80,16 +72,12 @@ function QuestionDetail(props) {
         setQuestion(result);
     }
 
-    const onQuestionLoadFailure = () => {
-        // console.log("onLastQuestionLoadFailure");
-    }
-
     // similar to componentDidMount & componentDidUpdate of class components
     useEffect(() => {
         function fetchQuestionData(loggedInStatus, id) {
             // TODO: Need to pass url from 'App.js' to 'QuestionDetail.js' via props
             // TODO: All urls must be managed at one place together
-            loadDataFromServer("http://localhost:8000/question/" + id, onQuestionLoadSuccess, onQuestionLoadFailure);
+            loadDataFromServer("http://localhost:8000/question/" + id, onQuestionLoadSuccess);
         }
 
         if (!props.question)
@@ -110,12 +98,16 @@ function QuestionDetail(props) {
                             tags={question.tags}
                         />
 
-                        <CommandButtonGroup
-                            id_parent={question.id}
-                            edit_page_path={"/question/edit/" + question.id}
-                            state={{question: question}}
-                            onDeleteClick={onShow}
-                        />
+                        {
+                            props.user && question.user && question.user.id === props.user.id ?
+                                <CommandButtonGroup
+                                    id_parent={question.id}
+                                    edit_page_path={"/question/edit/" + question.id}
+                                    state={{ question: question }}
+                                    onDeleteClick={onShow}
+                                />
+                                : ""
+                        }
 
                         <Confirm
                             open={open}
@@ -126,7 +118,6 @@ function QuestionDetail(props) {
                         <CommentThreaded {...props} comments={question.comment} parent_question={question.id}></CommentThreaded>
                     </div>
                     : ""
-                    // TODO: contents to show when the fetch failed need to be added
             }
         </div>
     )

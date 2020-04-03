@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { getJwt } from '../utils/jwt';
 import { Link } from "react-router-dom";
-import * as Utils from '../utils/jwt';
+import handleHttpResponseError from '../utils/httpResponseError';
+import * as jwtUtil from '../utils/jwt';
 import SearchInput from '../components/SearchInput';
 import CommandButtonGroup from '../components/CommandButtonGroup';
 import ReadOnlyQuillSegment from '../components/ReadOnlyQuillSegment'
@@ -68,7 +69,7 @@ class Questions extends Component {
     }
 
     onDelete(event) {
-        const jwt = Utils.getJwt();
+        const jwt = jwtUtil.getJwt();
         const id = this.state.id;
 
         this.setState({ open: false });
@@ -141,9 +142,8 @@ class Questions extends Component {
             credentials: 'include'
         }
         )
-            .then(
-                response => (response.json())
-            )
+            .then(handleHttpResponseError)
+            .then(response => response.json())
             .then(
                 result => {
                     this.setState({
@@ -155,19 +155,13 @@ class Questions extends Component {
                     });
                 }
             )
-            .catch(
-                // TODO: need better catch.
-                err => {
-                    console.log("questions error", err);
-                    this.props.history.push('/');
-                }
-            );
+            .catch(error => this.props.history.push('/' + error.message));
     }
 
     loadRandomTagsFromServer(count) {
         let headers = {};
         let tagListUrl = "";
-        const jwt = Utils.getJwt();
+        const jwt = jwtUtil.getJwt();
 
         if (jwt) {
             headers = {
@@ -185,9 +179,8 @@ class Questions extends Component {
             credentials: 'include'
         }
         )
-            .then(
-                response => (response.json())
-            )
+            .then(handleHttpResponseError)
+            .then(response => response.json())
             .then(
                 result => {
                     this.setState({
@@ -195,11 +188,7 @@ class Questions extends Component {
                     });
                 }
             )
-            .catch(
-                err => {
-                    console.log("tags error", err);
-                }
-            );
+            .catch(error => this.props.history.push('/' + error.message));
     }
 
     componentDidMount() {
