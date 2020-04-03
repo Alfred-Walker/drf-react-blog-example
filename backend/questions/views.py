@@ -35,6 +35,12 @@ class QuestionViewSet(viewsets.ModelViewSet):
 
         return queryset
 
+    # HTTP GET /question/123456(id)
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
     # HTTP GET /question/last/
     @action(detail=False)
     def last(self, request):
@@ -76,7 +82,7 @@ class QuestionViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data)
 
-    # HTTP GET /question/recent/
+    # HTTP GET /question/my/
     @action(detail=False)
     def my(self, request):
         """
@@ -95,3 +101,20 @@ class QuestionViewSet(viewsets.ModelViewSet):
         serializer = QuestionSummarySerializer(queryset, many=True, context={'request': request})
 
         return Response(serializer.data)
+
+    # HTTP GET /question/12345(id)/edit/
+    @action(detail=True)
+    def edit(self, request, pk):
+        """
+            Retrieve instance to edit
+        """
+        if not request.user.is_authenticated:
+            return Response('Unauthorized request.', status=401)
+
+        instance = Question.objects.get(pk=pk)
+        serializer = self.get_serializer(instance)
+
+        if request.user == instance.user or request.user.is_superuser:
+            return Response(serializer.data)
+
+        return Response('Access forbidden.', status=403)
