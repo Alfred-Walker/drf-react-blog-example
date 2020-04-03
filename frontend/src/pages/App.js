@@ -98,7 +98,6 @@ class App extends Component {
     }
 
     handleLogin(data) {
-        localStorage.setItem("jwt-token", data.token);
         this.setState({
             loggedInStatus: "LOGGED_IN",
             user: data.user
