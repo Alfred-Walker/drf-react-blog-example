@@ -52,13 +52,12 @@ class QuestionSerializer(serializers.ModelSerializer):
 
         tags_to_update = self.initial_data.get('tags')
 
-        if tags_to_update:
-            tags = []
-            for tag in tags_to_update:
-                tag, created = Tag.objects.get_or_create(name=tag, is_public=True)
-                tags.append(tag)
+        temp = []
+        for tag in tags_to_update:
+            tag, created = Tag.objects.get_or_create(name=tag, is_public=True)
+            temp.append(tag)
 
-        question.tags.set(tags)
+        question.tags.set(temp)
 
         return super(QuestionSerializer, self).update(question, validated_data)
 
