@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import LoginForm from './login/LoginForm';
-import * as Utils from '../utils/jwt';
+import * as jwtUtil from '../utils/jwt';
 import * as CSRF from '../utils/csrf';
 
 
@@ -52,9 +52,11 @@ class Login extends Component {
             .then(
                 result => {
                     if(result.token) {
-                        Utils.setJwt(result.token);
+                        jwtUtil.setJwt(result.token);
                         this.props.handleLogin(result);
-                        this.props.history.push('/');
+
+                        // TODO: need to fix for the case when users hit login page directly
+                        this.props.history.goBack();
                     } else {
                         this.setState({'error': result})
                     }
