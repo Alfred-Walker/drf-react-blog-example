@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Divider, Form, Header, List } from 'semantic-ui-react'
+import { Button, Dimmer, Divider, Form, Header, List, Loader } from 'semantic-ui-react'
 import TagsInput from 'react-tagsinput';
 import base64Util from '../../utils/base64'
 import handleHttpResponseError from '../../utils/httpResponseError';
@@ -29,12 +29,25 @@ class EditQuestion extends Component {
         this.editorRef = React.createRef();
 
         this.state = {
-            id: props.location.state.question.id,
-            title: props.location.state.question.title,
-            body: props.location.state.question.body,
-            tags: props.location.state.question.tags,
-            submitEnabled: true,
+            id: props.match.params.id,
+            title: "",
+            body: "",
+            tags: [],
+            submitEnabled: false,
+            isLoading: true,
             error: undefined
+        }
+
+        if (props.location.state) {
+            this.state = {
+                id: props.location.state.question.id,
+                title: props.location.state.question.title,
+                body: props.location.state.question.body,
+                tags: props.location.state.question.tags,
+                submitEnabled: true,
+                isLoading: false,
+                error: undefined
+            }
         }
 
         this.checkSubmitEnabled = this.checkSubmitEnabled.bind(this);
@@ -47,6 +60,9 @@ class EditQuestion extends Component {
     }
 
     componentDidMount() {
+        if (this.state.isLoading)
+            this.loadStudyFromServer('http://localhost:8000/question/' + this.props.match.params.id + '/edit/')
+
         var quillEditor = this.editorRef.getEditor();
         quillEditor.getModule('toolbar')
             .addHandler('image', () => this.handleImageInsert());
@@ -58,12 +74,10 @@ class EditQuestion extends Component {
         var editor = this.editorRef.getEditor();
         var contents = editor.getContents();
 
-        if (!title || JSON.stringify(contents) === this.initialInput) {
+        if (!title || JSON.stringify(contents) === this.initialInput)
             this.setState({ submitEnabled: false });
-        }
-        else {
+        else
             this.setState({ submitEnabled: true });
-        }
     }
 
     handleGenericChange(event) {
@@ -144,6 +158,43 @@ class EditQuestion extends Component {
                     throw new Error(error);
                 }
             )
+    }
+
+    loadQuestionFromServer(url) {
+        let headers = {};
+        let fetchUrl = url;
+        const jwt = jwtUtil.getJwt();
+
+        console.log(jwt);
+
+        if (jwt) {
+            headers = {
+                'Authorization': `JWT ${jwt}`,
+                'Content-Type': 'Application/json'
+            };
+        }
+
+        fetch(
+            fetchUrl, {
+            method: 'GET',
+            headers: headers,
+            credentials: 'include'
+        }
+        )
+            .then(handleHttpResponseError)
+            .then(response => response.json())
+            .then(
+                result => {
+                    this.setState({
+                        title: result.title,
+                        body: result.body,
+                        tags: result.tags,
+                        submitEnabled: true,
+                    });
+                }
+            )
+            .then(this.setState({ isLoading: false }))
+            .catch(error => this.props.history.push('/' + error.message));
     }
 
     fetchQuestionData(quillEditor, imgUrls, state) {
@@ -230,59 +281,68 @@ class EditQuestion extends Component {
 
     render() {
         return (
-            <div className="form">
-                <Header as="h2">Edit</Header>
-                <Divider />
-                <Form onSubmit={this.handleSubmit}>
-                    <CSRFToken />
-                    <Form.Field>
-                        <label>Title</label>
-                        <input
-                            name='title'
-                            placeholder='Title'
-                            value={this.state.title}
-                            onChange={this.handleGenericChange}
-                        />
-                    </Form.Field>
-                    <Form.Field>
-                        <label>Contents</label>
-                        <ReactQuill
-                            className='question-edit'
-                            name='body'
-                            theme='snow'
-                            modules={QuillModules}
-                            formats={QuillFormats}
-                            placeholder='Contents'
-                            value={this.state.body}
-                            onChange={this.handleEditorChange}
-                            ref={(r) => { this.editorRef = r }}
-                        />
-                    </Form.Field>
-                    <Form.Field>
-                        <label>Tags</label>
-                        <TagsInput
-                            name='tagsInput'
-                            value={this.state.tags}
-                            onChange={this.handleTagsChange}
-                            addKeys={[9, 13, 188]}
-                            onlyUnique={true} />
-                    </Form.Field>
-
-                    <List className="list-checkbox-horizontal">
-
-                    </List>
-                    {
-                        this.state.submitEnabled ?
-                            <Button type='submit' color="blue">Submit</Button> :
-                            <Button type='submit' color="blue" disabled >Submit</Button>
-                    }
-                </Form>
-
+            <div>
                 {
-                    this.state.error ?
-                        <ErrorMessage header={this.state.error.header} contents={this.state.error.contents} />
-                        : ""
+                    this.state === null || this.state.isLoading ?
+                        <Dimmer active>
+                            <Loader>Loading</Loader>
+                        </Dimmer> : ""
                 }
+
+                <div className="form">
+                    <Header as="h2">Edit</Header>
+                    <Divider />
+                    <Form onSubmit={this.handleSubmit}>
+                        <CSRFToken />
+                        <Form.Field>
+                            <label>Title</label>
+                            <input
+                                name='title'
+                                placeholder='Title'
+                                value={this.state.title}
+                                onChange={this.handleGenericChange}
+                            />
+                        </Form.Field>
+                        <Form.Field>
+                            <label>Contents</label>
+                            <ReactQuill
+                                className='question-edit'
+                                name='body'
+                                theme='snow'
+                                modules={QuillModules}
+                                formats={QuillFormats}
+                                placeholder='Contents'
+                                value={this.state.body}
+                                onChange={this.handleEditorChange}
+                                ref={(r) => { this.editorRef = r }}
+                            />
+                        </Form.Field>
+                        <Form.Field>
+                            <label>Tags</label>
+                            <TagsInput
+                                name='tagsInput'
+                                value={this.state.tags}
+                                onChange={this.handleTagsChange}
+                                addKeys={[9, 13, 188]}
+                                onlyUnique={true} />
+                        </Form.Field>
+
+                        <List className="list-checkbox-horizontal">
+
+                        </List>
+                        {
+                            this.state.submitEnabled ?
+                                <Button type='submit' color="blue">Submit</Button> :
+                                <Button type='submit' color="blue" disabled >Submit</Button>
+                        }
+                    </Form>
+
+                    {
+                        this.state.error ?
+                            <ErrorMessage header={this.state.error.header} contents={this.state.error.contents} />
+                            : ""
+                    }
+                </div>
             </div>
         )
     }

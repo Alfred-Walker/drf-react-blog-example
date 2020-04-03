@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Divider, Form, Header, List } from 'semantic-ui-react'
+import { Button, Dimmer, Divider, Form, Header, List, Loader } from 'semantic-ui-react'
 import TagsInput from 'react-tagsinput';
 import handleHttpResponseError from '../../utils/httpResponseError';
 import base64Util from '../../utils/base64'
@@ -29,15 +29,31 @@ class EditStudy extends Component {
         this.editorRef = React.createRef();
 
         this.state = {
-            id: props.location.state.study.id,
-            title: props.location.state.study.title,
-            body: props.location.state.study.body,
-            tags: props.location.state.study.tags,
-            is_public: props.location.state.study.is_public,
-            notification_enabled: props.location.state.study.notification_enabled,
-            review_cycle_in_minute: props.location.state.study.review_cycle_in_minute,
-            submitEnabled: true,
+            id: props.match.params.id,
+            title: "",
+            body: "",
+            tags: [],
+            is_public: false,
+            notification_enabled: false,
+            review_cycle_in_minute: 12,
+            submitEnabled: false,
+            isLoading: true,
             error: undefined
+        }
+
+        if (props.location.state) {
+            this.state = {
+                id: props.location.state.study.id,
+                title: props.location.state.study.title,
+                body: props.location.state.study.body,
+                tags: props.location.state.study.tags,
+                is_public: props.location.state.study.is_public,
+                notification_enabled: props.location.state.study.notification_enabled,
+                review_cycle_in_minute: props.location.state.study.review_cycle_in_minute,
+                submitEnabled: true,
+                isLoading: false,
+                error: undefined
+            }
         }
 
         this.checkSubmitEnabled = this.checkSubmitEnabled.bind(this);
@@ -50,6 +66,9 @@ class EditStudy extends Component {
     }
 
     componentDidMount() {
+        if (this.state.isLoading)
+            this.loadStudyFromServer('http://localhost:8000/study/' + this.props.match.params.id + '/edit/')
+
         var quillEditor = this.editorRef.getEditor();
         quillEditor.getModule('toolbar')
             .addHandler('image', () => this.handleImageInsert());
@@ -61,12 +80,10 @@ class EditStudy extends Component {
         var editor = this.editorRef.getEditor();
         var contents = editor.getContents();
 
-        if (!title || JSON.stringify(contents) === this.initialInput) {
+        if (!title || JSON.stringify(contents) === this.initialInput)
             this.setState({ submitEnabled: false });
-        }
-        else {
+        else
             this.setState({ submitEnabled: true });
-        }
     }
 
     handleGenericChange(event) {
@@ -147,6 +164,46 @@ class EditStudy extends Component {
                     throw new Error(error);
                 }
             )
+    }
+
+    loadStudyFromServer(url) {
+        let headers = {};
+        let fetchUrl = url;
+        const jwt = jwtUtil.getJwt();
+
+        console.log(jwt);
+
+        if (jwt) {
+            headers = {
+                'Authorization': `JWT ${jwt}`,
+                'Content-Type': 'Application/json'
+            };
+        }
+
+        fetch(
+            fetchUrl, {
+            method: 'GET',
+            headers: headers,
+            credentials: 'include'
+        }
+        )
+            .then(handleHttpResponseError)
+            .then(response => response.json())
+            .then(
+                result => {
+                    this.setState({
+                        title: result.title,
+                        body: result.body,
+                        tags: result.tags,
+                        is_public: result.is_public,
+                        notification_enabled: result.notification_enabled,
+                        review_cycle_in_minute: result.review_cycle_in_minute,
+                        submitEnabled: true,
+                    });
+                }
+            )
+            .then(this.setState({ isLoading: false }))
+            .catch(error => this.props.history.push('/' + error.message));
     }
 
     fetchStudyData(quillEditor, imgUrls, state) {
@@ -239,74 +296,83 @@ class EditStudy extends Component {
 
     render() {
         return (
-            <div className="form">
-                <Header as="h2">Edit</Header>
-                <Divider />
-                <Form onSubmit={this.handleSubmit}>
-                    <CSRFToken />
-                    <Form.Field>
-                        <label>Title</label>
-                        <input
-                            name='title'
-                            placeholder='Title'
-                            value={this.state.title}
-                            onChange={this.handleGenericChange}
-                        />
-                    </Form.Field>
-                    <Form.Field>
-                        <label>Contents</label>
-                        <ReactQuill
-                            className='study-edit'
-                            name='body'
-                            theme='snow'
-                            modules={QuillModules}
-                            formats={QuillFormats}
-                            placeholder='Contents'
-                            value={this.state.body}
-                            onChange={this.handleEditorChange}
-                            ref={(r) => { this.editorRef = r }}
-                        />
-                    </Form.Field>
-                    <Form.Field>
-                        <label>Tags</label>
-                        <TagsInput
-                            name='tagsInput'
-                            value={this.state.tags}
-                            onChange={this.handleTagsChange}
-                            addKeys={[9, 13, 188]}
-                            onlyUnique={true} />
-                    </Form.Field>
-                    <Form.Field>
-                        <Form.Checkbox
-                            name='is_public'
-                            checked={this.state.is_public}
-                            onChange={this.handleToggleChange}
-                            label='Is Public'
-                            toggle
-                        />
-                        <Form.Checkbox
-                            name='notification_enabled'
-                            checked={this.state.notification_enabled}
-                            onChange={this.handleToggleChange}
-                            label='Notification Enabled'
-                            toggle
-                        />
-                    </Form.Field>
-                    <List className="list-checkbox-horizontal">
-
-                    </List>
-                    {
-                        this.state.submitEnabled ?
-                            <Button type='submit' color="blue">Submit</Button> :
-                            <Button type='submit' color="blue" disabled >Submit</Button>
-                    }
-                </Form>
-
+            <div>
                 {
-                    this.state.error ?
-                        <ErrorMessage header={this.state.error.header} contents={this.state.error.contents} />
-                        : ""
+                    this.state === null || this.state.isLoading ?
+                        <Dimmer active>
+                            <Loader>Loading</Loader>
+                        </Dimmer> : ""
                 }
+
+                <div className="form">
+                    <Header as="h2">Edit</Header>
+                    <Divider />
+                    <Form onSubmit={this.handleSubmit}>
+                        <CSRFToken />
+                        <Form.Field>
+                            <label>Title</label>
+                            <input
+                                name='title'
+                                placeholder='Title'
+                                value={this.state.title}
+                                onChange={this.handleGenericChange}
+                            />
+                        </Form.Field>
+                        <Form.Field>
+                            <label>Contents</label>
+                            <ReactQuill
+                                className='study-edit'
+                                name='body'
+                                theme='snow'
+                                modules={QuillModules}
+                                formats={QuillFormats}
+                                placeholder='Contents'
+                                value={this.state.body}
+                                onChange={this.handleEditorChange}
+                                ref={(r) => { this.editorRef = r }}
+                            />
+                        </Form.Field>
+                        <Form.Field>
+                            <label>Tags</label>
+                            <TagsInput
+                                name='tagsInput'
+                                value={this.state.tags}
+                                onChange={this.handleTagsChange}
+                                addKeys={[9, 13, 188]}
+                                onlyUnique={true} />
+                        </Form.Field>
+                        <Form.Field>
+                            <Form.Checkbox
+                                name='is_public'
+                                checked={this.state.is_public}
+                                onChange={this.handleToggleChange}
+                                label='Is Public'
+                                toggle
+                            />
+                            <Form.Checkbox
+                                name='notification_enabled'
+                                checked={this.state.notification_enabled}
+                                onChange={this.handleToggleChange}
+                                label='Notification Enabled'
+                                toggle
+                            />
+                        </Form.Field>
+                        <List className="list-checkbox-horizontal">
+
+                        </List>
+                        {
+                            this.state.submitEnabled ?
+                                <Button type='submit' color="blue">Submit</Button> :
+                                <Button type='submit' color="blue" disabled >Submit</Button>
+                        }
+                    </Form>
+
+                    {
+                        this.state.error ?
+                            <ErrorMessage header={this.state.error.header} contents={this.state.error.contents} />
+                            : ""
+                    }
+                </div>
             </div>
         )
     }
