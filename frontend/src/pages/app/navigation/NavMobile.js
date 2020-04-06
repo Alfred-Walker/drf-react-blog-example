@@ -24,7 +24,7 @@ const NavMobile = (props) => {
             </ Sidebar>
             <Sidebar.Pusher
                 dimmed={visible}
-                onClick={() => setVisible(!visible)}
+                onClick={() => visible? setVisible(!visible): ""}
                 style={{ minHeight: "100vh" }}
             >
                 <Menu fixed='top' pointing>
