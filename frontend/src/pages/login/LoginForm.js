@@ -19,13 +19,13 @@ const LoginForm = (props) => {
                 <Header as='h2' color='teal' textAlign='center'>
                     Login to your account
                     </Header>
-                <Form size='large' onSubmit={props.handleSubmit}>
+                <Form size='large' onSubmit={props.onSubmit}>
                     <CSRFToken />
                     <Segment stacked>
                         <Form.Input
                             name='email'
                             type='email'
-                            onChange={props.handleChange}
+                            onChange={props.onChange}
                             value={props.email}
                             fluid icon='user'
                             iconPosition='left'
@@ -41,7 +41,7 @@ const LoginForm = (props) => {
                             fluid
                             name='password'
                             type='password'
-                            onChange={props.handleChange}
+                            onChange={props.onChange}
                             value={props.password}
                             icon='lock'
                             iconPosition='left'
@@ -73,16 +73,16 @@ const LoginForm = (props) => {
 }
 
 LoginForm.propTypes = {
-    handleChange: PropTypes.func,
-    handleSubmit: PropTypes.func,
+    onChange: PropTypes.func,
+    onSubmit: PropTypes.func,
     email: PropTypes.string,
     password: PropTypes.string,
     error: PropTypes.object
 };
 
 LoginForm.defaultProps = {
-    handleChange: undefined,
-    handleSubmit: undefined,
+    onChange: undefined,
+    onSubmit: undefined,
     email: "",
     password: "",
     error: undefined

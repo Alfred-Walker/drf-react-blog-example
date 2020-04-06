@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
-import * as Utils from '../utils/jwt';
+import * as jwtUtil from '../utils/jwt';
 
 
 const Logout = (props) => {
-    Utils.clearJwt();
-    props.handleLogout();
+    jwtUtil.clearJwt();
+    props.onLogout();
     props.history.push('/');
 
     return null;
@@ -12,12 +12,12 @@ const Logout = (props) => {
 
 Logout.propTypes = {
     history: PropTypes.object,
-    handleLogout: PropTypes.func
+    onLogout: PropTypes.func
 };
 
 Logout.defaultProps = {
     history: undefined,
-    handleLogout: undefined
+    onLogout: undefined
 };
 
 export default Logout;

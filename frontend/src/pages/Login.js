@@ -15,17 +15,17 @@ class Login extends Component {
             error: undefined
         };
 
-        this.handleGeneralChange = this.handleGeneralChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.onGenericChange = this.onGenericChange.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
     }
 
-    handleGeneralChange(event) {
+    onGenericChange(event) {
         this.setState({
             [event.target.name]: event.target.value
         });
     }
 
-    handleSubmit(event) {
+    onSubmit(event) {
         const {
             email,
             password
@@ -53,7 +53,7 @@ class Login extends Component {
                 result => {
                     if(result.token) {
                         jwtUtil.setJwt(result.token);
-                        this.props.handleLogin(result);
+                        this.props.onLogin(result);
 
                         // TODO: need to fix for the case when users hit login page directly
                         this.props.history.goBack();
@@ -62,16 +62,14 @@ class Login extends Component {
                     }
                 }
             )
-            .catch(
-                err => console.log("login error", err)
-            );
+            .catch(err => console.error("login error", err));
     }
 
     render() {
         return (
             <LoginForm
-                handleChange={this.handleGeneralChange}
-                handleSubmit={this.handleSubmit}
+                onChange={this.onGenericChange}
+                onSubmit={this.onSubmit}
                 email={this.state.email}
                 password={this.state.password}
                 error={this.state.error}
@@ -82,12 +80,12 @@ class Login extends Component {
 
 Login.propTypes = {
     history: PropTypes.object,
-    handleLogin: PropTypes.func
+    onLogin: PropTypes.func
 };
 
 Login.defaultProps = {
     history: undefined,
-    handleLogin: undefined
+    onLogin: undefined
 };
 
 export default Login;

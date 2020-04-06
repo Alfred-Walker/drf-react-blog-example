@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import RegistrationForm from './registration/RegistrationForm';
-import * as Utils from '../utils/jwt';
+import * as jwtUtil from '../utils/jwt';
 import * as CSRF from '../utils/csrf';
 
 
@@ -18,17 +18,17 @@ class Registration extends Component {
             error: undefined
         };
 
-        this.handleGeneralChange = this.handleGeneralChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.onGenericChange = this.onGenericChange.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
     }
 
-    handleGeneralChange(event) {
+    onGenericChange(event) {
         this.setState({
             [event.target.name]: event.target.value
         });
     }
 
-    handleSubmit(event) {
+    onSubmit(event) {
         const {
             email,
             nickname,
@@ -37,6 +37,8 @@ class Registration extends Component {
         } = this.state
 
         var csrftoken = CSRF.getCookie('csrftoken');
+
+        event.preventDefault();
 
         fetch(
             'http://localhost:8000/rest-auth/registration/', {
@@ -57,25 +59,21 @@ class Registration extends Component {
         .then(
             result => {
                 if(result.token) {
-                    Utils.setJwt(result.token);
-                    this.props.handleRegistration(result);
+                    jwtUtil.setJwt(result.token);
+                    this.props.onRegistration(result);
                     this.props.history.push('/');
-                } else {
-                    this.setState({'error': result})
-                }
+                } else 
+                    this.setState({'error': result});
             }
         )
-        .catch(err => console.log("registration error", err));
-        
-        event.preventDefault();
-        // POST API here
+        .catch(err => console.error("registration error", err));
     }
 
     render() {
         return (
             <RegistrationForm
-                handleChange={this.handleGeneralChange}
-                handleSubmit={this.handleSubmit}
+                onChange={this.onGenericChange}
+                onSubmit={this.onSubmit}
                 email={this.state.email}
                 nickname={this.state.nickname}
                 password={this.state.password}
@@ -88,12 +86,12 @@ class Registration extends Component {
 
 Registration.propTypes = {
     history: PropTypes.object,
-    handleRegistration: PropTypes.func
+    onRegistration: PropTypes.func
 };
 
 Registration.defaultProps = {
     history: undefined,
-    handleRegistration: undefined
+    onRegistration: undefined
 };
 
 export default Registration;

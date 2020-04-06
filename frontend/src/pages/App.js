@@ -23,7 +23,7 @@ import Tags from './Tag';
 import Contact from './Contact'
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import Authenticated from './app/Authenticated';
-import * as Utils from '../utils/jwt';
+import * as jwtUtil from '../utils/jwt';
 import Error from './Error'
 
 
@@ -39,10 +39,10 @@ class App extends Component {
         }
 
         this.clearAuthInfo = this.clearAuthInfo.bind(this);
-        this.handleLogin = this.handleLogin.bind(this);
-        this.handleLogout = this.handleLogout.bind(this);
-        this.handleRegistration = this.handleRegistration.bind(this);
-        this.handleTokenRefreshSuccess = this.handleTokenRefreshSuccess.bind(this);
+        this.onLogin = this.onLogin.bind(this);
+        this.onLogout = this.onLogout.bind(this);
+        this.onRegistration = this.onRegistration.bind(this);
+        this.onTokenRefreshSuccess = this.onTokenRefreshSuccess.bind(this);
     }
 
     clearAuthInfo() {
@@ -54,7 +54,7 @@ class App extends Component {
     }
 
     initializeAuthInfo() {
-        const token = Utils.getJwt();
+        const token = jwtUtil.getJwt();
 
         // clear localStorage if there is no access token
         if (!token || token === 'undefined') {
@@ -63,7 +63,7 @@ class App extends Component {
         }
 
         // verify existing token's life before POST
-        const isExpired = Utils.isJwtExpired(token);
+        const isExpired = jwtUtil.isJwtExpired(token);
 
         if (isExpired) {
             localStorage.clear();
@@ -84,11 +84,11 @@ class App extends Component {
             )
             .then(
                 result => {
-                    this.handleTokenRefreshSuccess(result);
+                    this.onTokenRefreshSuccess(result);
                 }
             )
             .catch(err => {
-                this.handleTokenRefreshFailure();
+                this.onTokenRefreshFailure();
             }
             );
     }
@@ -97,18 +97,18 @@ class App extends Component {
         this.initializeAuthInfo();
     }
 
-    handleLogin(data) {
+    onLogin(data) {
         this.setState({
             loggedInStatus: "LOGGED_IN",
             user: data.user
         });
     }
 
-    handleLogout(data) {
+    onLogout(data) {
         this.clearAuthInfo();
     }
 
-    handleRegistration(data) {
+    onRegistration(data) {
         localStorage.setItem("jwt-token", data.token);
         this.setState({
             loggedInStatus: "LOGGED_IN",
@@ -116,7 +116,7 @@ class App extends Component {
         });
     }
 
-    handleTokenRefreshSuccess(data) {
+    onTokenRefreshSuccess(data) {
         localStorage.setItem("jwt-token", data.token);
         this.setState({
             loggedInStatus: "LOGGED_IN",
@@ -124,7 +124,7 @@ class App extends Component {
         });
     }
 
-    handleTokenRefreshFailure(data) {
+    onTokenRefreshFailure(data) {
         this.clearAuthInfo();
     }
 
@@ -290,19 +290,19 @@ class App extends Component {
                             <Route exact path="/login" render={props => (
                                 <Login
                                     {...props}
-                                    handleLogin={this.handleLogin} />
+                                    onLogin={this.onLogin} />
                             )}
                             />
                             <Route exact path="/logout" render={props => (
                                 <Logout
                                     {...props}
-                                    handleLogout={this.handleLogout} />
+                                    onLogout={this.onLogout} />
                             )}
                             />
                             <Route exact path="/registration" render={props => (
                                 <Registration
                                     {...props}
-                                    handleRegistration={this.handleRegistration} />
+                                    onRegistration={this.onRegistration} />
                             )}
                             />
                             <Route path="/500" render={props => (
