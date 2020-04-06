@@ -228,7 +228,7 @@ class NewQuestion extends Component {
 
     render() {
         return (
-            <div className="form">
+            <div className="question-form">
                 <Header as="h2">New Question</Header>
                 <Form onSubmit={this.handleSubmit}>
                     <CSRFToken />

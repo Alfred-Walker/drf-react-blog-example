@@ -289,7 +289,7 @@ class EditQuestion extends Component {
                         </Dimmer> : ""
                 }
 
-                <div className="form">
+                <div className="question-form">
                     <Header as="h2">Edit</Header>
                     <Divider />
                     <Form onSubmit={this.handleSubmit}>

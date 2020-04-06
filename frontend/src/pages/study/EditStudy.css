@@ -32,3 +32,8 @@ form.ui.form input[type='text'] {
 .study-edit .ql-container.ql-snow {
   border: 1px solid #ccc;
 }
+
+.study-form {
+  padding-top: 6em;
+  padding-bottom: 12em;
+}

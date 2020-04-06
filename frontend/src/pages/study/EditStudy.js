@@ -294,7 +294,7 @@ class EditStudy extends Component {
                         </Dimmer> : ""
                 }
 
-                <div className="form">
+                <div className="study-form">
                     <Header as="h2">Edit</Header>
                     <Divider />
                     <Form onSubmit={this.handleSubmit}>

@@ -67,6 +67,7 @@
 /* Custom css for Question */
 .ui.segment.question {
   border: none;
+  padding-top: 4em;
   padding-bottom: 12em;
 }
 

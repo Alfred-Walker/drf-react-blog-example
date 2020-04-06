@@ -20,7 +20,6 @@ import Questions from './Question';
 
 import Tags from './Tag';
 
-import Contact from './Contact'
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import Authenticated from './app/Authenticated';
 import * as jwtUtil from '../utils/jwt';
@@ -133,7 +132,7 @@ class App extends Component {
             <div className="App">
                 <div className="container">
                     <Router>
-                        <NavigationBar loggedInStatus={this.state.loggedInStatus} />
+                        <NavigationBar loggedInStatus={this.state.loggedInStatus} >
                         <Switch>
                             <Route exact path="/" render={props => (
                                 <Home
@@ -280,13 +279,7 @@ class App extends Component {
                                     question={props.location.question} />
                             )}
                             />
-                            <Route exact path="/contact" render={props => (
-                                <Contact
-                                    {...props}
-                                    loggedInStatus={this.state.loggedInStatus}
-                                    user={this.state.user} />
-                            )}
-                            />
+
                             <Route exact path="/login" render={props => (
                                 <Login
                                     {...props}
@@ -330,6 +323,7 @@ class App extends Component {
                             )}
                             />
                         </Switch>
+                        </NavigationBar>
                     </Router>
                 </div>
             </div >

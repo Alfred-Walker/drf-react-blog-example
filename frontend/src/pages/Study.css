@@ -67,6 +67,7 @@
 /* Custom css for Study */
 .ui.segment.study {
   border: none;
+  padding-top: 4em;
   padding-bottom: 12em;
 }
 

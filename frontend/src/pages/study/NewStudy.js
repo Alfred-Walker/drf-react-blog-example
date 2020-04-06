@@ -230,7 +230,7 @@ class NewStudy extends Component {
 
     render() {
         return (
-            <div className="form">
+            <div className="study-form">
                 <Header as="h2">New Study</Header>
                 <Form onSubmit={this.handleSubmit}>
                     <CSRFToken />

@@ -1,24 +1,26 @@
 import React from 'react';
-import { Menu } from 'semantic-ui-react'
+import { Responsive } from 'semantic-ui-react'
 import PropTypes from 'prop-types';
-import { NavLink } from "react-router-dom";
-import './Navigation.css';
+import NavDesktop from './navigation/NavDesktop';
+import NavMobile from './navigation/NavMobile';
+
 
 /* Tutorial Reference*/
 /* https://reactgo.com/semantic-ui-react/ */
 function NavigationBar(props) {
     return (
-        <Menu fixed='top' pointing>
-            <Menu.Item as={NavLink} exact to="/" activeClassName="active" name="home"/>
-            {props.loggedInStatus === "LOGGED_IN" ? <Menu.Item as={NavLink} to="/study/new" activeClassName="active" name="new"/> : <span></span>}
-            <Menu.Item as={NavLink} exact to="/study" activeClassName="active" name="studies"/>
-            <Menu.Item as={NavLink} to="/question" activeClassName="active" name="Questions"/>
-            <Menu.Item className="nav-right" name={props.user}/>
-            {props.loggedInStatus === "LOGGED_IN" ? <span>{props.user}</span> : <span></span>}
-            {props.loggedInStatus === "NOT_LOGGED_IN" ? <Menu.Item as={NavLink} to="/login" name="login"/> : <Menu.Item as={NavLink} to="/logout" name="logout"/>}
-            {props.loggedInStatus === "NOT_LOGGED_IN" ? <Menu.Item as={NavLink} exact to="/registration" activeClassName="active" name="registration"/> : <span></span>}
-            <Menu.Item as={NavLink} exact to="/contact" activeClassName="active" name="contact"/>
-        </Menu>
+        <div>
+            <Responsive {...Responsive.onlyMobile}>
+                <NavMobile loggedInStatus={props.loggedInStatus}>
+                    {props.children}
+                </ NavMobile>
+            </ Responsive>
+            <Responsive minWidth={Responsive.onlyTablet.minWidth}>
+                <NavDesktop loggedInStatus={props.loggedInStatus}>
+                    {props.children}
+                </NavDesktop>
+            </ Responsive>
+        </div>
     )
 }
 
