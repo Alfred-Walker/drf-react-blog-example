@@ -22,16 +22,8 @@ class Study(models.Model):
     # the day registered study
     registered_date = models.DateTimeField(auto_now_add=True)
 
-    # last notification date
-    last_review_date = models.DateTimeField(blank=True, null=True)
-
-    # review notification count
-    review_count = models.PositiveIntegerField(default=0)
-
-    # review notification cycle in minute
-    review_cycle_in_minute = models.PositiveIntegerField(default=0)
-
-    notification_enabled = models.BooleanField(blank=False, null=False, default=True)
+    # last edit date
+    last_edit_date = models.DateTimeField(auto_now=True)
 
     is_public = models.BooleanField(default=False)
 

@@ -13,10 +13,7 @@ class TestStudySerializer:
         """Tests expected serializer fields
         'title',
         'body',
-        'review_cycle_in_minute',
-        'notification_enabled',
         'is_public',
-        'last_review_date',
         """
         study_data = factory.build(dict, FACTORY_CLASS=StudyFactory)
         serializer = StudySerializer(data=study_data)
@@ -26,10 +23,8 @@ class TestStudySerializer:
         assert is_valid, "serializer validation test"
         assert serializer.validated_data.keys() == set(['title',
                                                         'body',
-                                                        'review_cycle_in_minute',
-                                                        'notification_enabled',
                                                         'is_public',
-                                                        'last_review_date'])
+                                                        ])
         # assert False, "dumb assert to make PyTest print my stuff"
 
 

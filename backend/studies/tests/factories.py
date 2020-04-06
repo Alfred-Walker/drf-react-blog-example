@@ -30,12 +30,8 @@ class StudyFactory(factory.django.DjangoModelFactory):
 
     registered_date = factory.LazyFunction(timezone.localtime)
 
-    last_review_date = factory.LazyAttribute(lambda study: study.registered_date + datetime.timedelta(days=1))
+    last_edit_date = factory.LazyFunction(timezone.localtime)
 
-    review_count = 0
-
-    review_cycle_in_minute = 60
-
-    notification_enabled = False
+    # last_review_date = factory.LazyAttribute(lambda study: study.registered_date + datetime.timedelta(days=1))
 
     is_public = True

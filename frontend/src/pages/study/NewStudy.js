@@ -33,8 +33,6 @@ class NewStudy extends Component {
             body: "",
             tags: [],
             is_public: true,
-            notification_enabled: false,
-            review_cycle_in_minute: 12,
             submitEnabled: false,
             error: undefined
         }
@@ -176,9 +174,7 @@ class NewStudy extends Component {
         const {
             title,
             tags,
-            is_public,
-            notification_enabled,
-            review_cycle_in_minute
+            is_public
         } = state;
 
         // update body html
@@ -196,9 +192,7 @@ class NewStudy extends Component {
                 title: title,
                 body: body,
                 tags: tags,
-                is_public: is_public,
-                notification_enabled: notification_enabled,
-                review_cycle_in_minute: review_cycle_in_minute
+                is_public: is_public
             }),
             credentials: 'include'
         }
@@ -278,13 +272,6 @@ class NewStudy extends Component {
                             checked={this.state.is_public}
                             onChange={this.handleToggleChange}
                             label='Is Public'
-                            toggle
-                        />
-                        <Form.Checkbox
-                            name='notification_enabled'
-                            checked={this.state.notification_enabled}
-                            onChange={this.handleToggleChange}
-                            label='Notification Enabled'
                             toggle
                         />
                     </Form.Field>

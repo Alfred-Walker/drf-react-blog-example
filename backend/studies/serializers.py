@@ -20,12 +20,10 @@ class StudySerializer(serializers.ModelSerializer):
             'title',
             'body',
             'tags',
-            'review_cycle_in_minute',
-            'notification_enabled',
             'is_public',
             'comment',
             'registered_date',
-            'last_review_date',
+            'last_edit_date'
         ]
 
     def __init__(self, *args, **kwargs):
@@ -43,8 +41,6 @@ class StudySerializer(serializers.ModelSerializer):
                 user=user,
                 title=validated_data['title'],
                 body=validated_data['body'],
-                review_cycle_in_minute=validated_data['review_cycle_in_minute'],
-                notification_enabled=validated_data['notification_enabled'],
                 is_public=validated_data['is_public'],
             )
         else:
@@ -52,7 +48,6 @@ class StudySerializer(serializers.ModelSerializer):
                 user=user,
                 title=validated_data['title'],
                 body=validated_data['body'],
-                notification_enabled=validated_data['notification_enabled'],
                 is_public=validated_data['is_public'],
             )
 
@@ -67,8 +62,6 @@ class StudySerializer(serializers.ModelSerializer):
         study.title = validated_data.get('title', study.body)
         study.body = validated_data.get('body', study.body)
         study.is_public = validated_data.get('is_public', study.is_public)
-        study.notification_enabled = validated_data.get('notification_enabled', study.notification_enabled)
-        study.review_cycle_in_minute = validated_data.get('review_cycle_in_minute', study.review_cycle_in_minute)
 
         tags_to_update = self.initial_data.get('tags')
 
@@ -97,4 +90,5 @@ class StudySummarySerializer(serializers.ModelSerializer):
             'tags',
             'is_public',
             'registered_date',
+            'last_edit_date'
         ]

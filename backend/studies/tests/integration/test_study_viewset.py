@@ -44,12 +44,10 @@ class TestStudyViewSet(APITestCase):
         assert 'title' in response_data['results'][0].keys(), "title field test."
         assert 'body' in response_data['results'][0].keys(), "body field test."
         assert 'tags' in response_data['results'][0].keys(), "tags field test."
-        assert 'review_cycle_in_minute' in response_data['results'][0].keys(), "review_cycle_in_minute field test."
-        assert 'notification_enabled' in response_data['results'][0].keys(), "notification_enabled field test."
         assert 'is_public' in response_data['results'][0].keys(), "is_public field test."
         assert 'comment' in response_data['results'][0].keys(), "comment field test."
         assert 'registered_date' in response_data['results'][0].keys(), "registered_date field test."
-        assert 'last_review_date' in response_data['results'][0].keys(), "last_review_date field test."
+        assert 'last_edit_date' in response_data['results'][0].keys(), "last_edit_date field test."
 
         # assert False, "dumb assert to make PyTest print my stuff"
 

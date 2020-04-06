@@ -34,8 +34,6 @@ class EditStudy extends Component {
             body: "",
             tags: [],
             is_public: false,
-            notification_enabled: false,
-            review_cycle_in_minute: 12,
             submitEnabled: false,
             isLoading: true,
             error: undefined
@@ -48,8 +46,6 @@ class EditStudy extends Component {
                 body: props.location.state.study.body,
                 tags: props.location.state.study.tags,
                 is_public: props.location.state.study.is_public,
-                notification_enabled: props.location.state.study.notification_enabled,
-                review_cycle_in_minute: props.location.state.study.review_cycle_in_minute,
                 submitEnabled: true,
                 isLoading: false,
                 error: undefined
@@ -196,8 +192,6 @@ class EditStudy extends Component {
                         body: result.body,
                         tags: result.tags,
                         is_public: result.is_public,
-                        notification_enabled: result.notification_enabled,
-                        review_cycle_in_minute: result.review_cycle_in_minute,
                         submitEnabled: true,
                     });
                 }
@@ -236,8 +230,6 @@ class EditStudy extends Component {
             title,
             tags,
             is_public,
-            notification_enabled,
-            review_cycle_in_minute
         } = state;
 
         // update body html
@@ -256,8 +248,6 @@ class EditStudy extends Component {
                 body: body,
                 tags: tags,
                 is_public: is_public,
-                notification_enabled: notification_enabled,
-                review_cycle_in_minute: review_cycle_in_minute
             }),
             credentials: 'include'
         }
@@ -347,13 +337,6 @@ class EditStudy extends Component {
                                 checked={this.state.is_public}
                                 onChange={this.handleToggleChange}
                                 label='Is Public'
-                                toggle
-                            />
-                            <Form.Checkbox
-                                name='notification_enabled'
-                                checked={this.state.notification_enabled}
-                                onChange={this.handleToggleChange}
-                                label='Notification Enabled'
                                 toggle
                             />
                         </Form.Field>
