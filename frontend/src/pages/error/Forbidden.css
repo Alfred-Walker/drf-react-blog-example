@@ -1,0 +1,54 @@
+/* Original Source - Pure CSS 404 Error Page */
+
+/* A Pen By SQFreaKz  */
+
+/* https://codepen.io/sqfreakz/pen/GJRJOY */
+
+
+.forbidden {
+    text-align: center;
+    display: block;
+    position: relative;
+    width: 80%;
+    margin: 128px auto;
+}
+
+.forbidden .header {
+    font-size: 112px;
+    position: relative;
+    display: block;
+    min-height: 96px;
+    letter-spacing: 16px;
+    margin-top: 16px auto;
+}
+
+.forbidden .label {
+    text-align: center;
+    display: block;
+    position: relative;
+    letter-spacing: 4px;
+    line-height: 80%;
+    margin: 4px auto;
+    max-width: 640px;
+}
+
+.forbidden .message {
+    text-align: center;
+    display: block;
+    position: relative;
+    font-size: 18px;
+    margin: 16px auto;
+    max-width: 640px;
+}
+
+.forbidden .button {
+    position: relative;
+    display: inline-block;
+    min-width: 172px;
+    padding: 5px;
+    z-index: 5;
+    margin: 0 auto;
+    color: #fff;
+    text-decoration: none;
+    margin-right: 10px
+}
