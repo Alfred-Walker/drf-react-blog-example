@@ -79,7 +79,7 @@ class TagViewSet(viewsets.ModelViewSet):
     # HTTP GET /tag/related/
     @action(detail=False)
     def related(self, request):
-        tag_name = self.request.query_params.get('name', '')
+        tag_name = self.request.query_params.get('tag', '')
         tag = self.get_queryset().get(name=tag_name, is_public=True)
         if tag:
             studies = tag.studies.all()
