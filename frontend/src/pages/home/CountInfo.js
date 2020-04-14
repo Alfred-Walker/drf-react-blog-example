@@ -10,7 +10,7 @@ function CountInfo(props) {
             <List.Item><Icon name='book' /> Study: { props.study_count.toLocaleString() } </List.Item>
             <List.Item><Icon name='question' /> Question: { props.question_count.toLocaleString() } </List.Item>
             <List.Item><Icon name='comment' /> Comment: { props.comment_count.toLocaleString() } </List.Item>
-            <List.Item><Icon name='tag' /> Tag: { props.comment_count.toLocaleString() } </List.Item>
+            <List.Item><Icon name='tag' /> Tag: { props.tag_count.toLocaleString() } </List.Item>
         </List>
     )
 }
