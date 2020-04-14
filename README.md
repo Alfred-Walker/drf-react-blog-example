@@ -28,7 +28,7 @@ It contains:
 
 <br/>
 
-## End-points
+## Main End-points
 * Study & Question <br/>
  (just replace all 'study' in path with 'question' to access end-points for `Question` instead `Study`.
 
