@@ -1,9 +1,10 @@
 from django.db.models import Count, F, Q
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
 from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
 
 from .serializers import *
 from .models import Tag
@@ -21,9 +22,10 @@ class TagPagination(PageNumberPagination):
     max_page_size = 100000
 
 
-class TagViewSet(viewsets.ModelViewSet):
+class TagViewSet(mixins.CreateModelMixin,
+                 mixins.ListModelMixin,
+                 GenericViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,)
-    # permission_classes = (AllowAny,)
     serializer_class = TagSerializer
 
     pagination_class = TagPagination

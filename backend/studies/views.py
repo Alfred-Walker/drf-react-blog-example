@@ -1,5 +1,6 @@
 from django.db.models import Q
-from rest_framework import viewsets
+from django.core.exceptions import ObjectDoesNotExist
+from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
 from rest_framework.response import Response
@@ -8,10 +9,46 @@ from .serializers import *
 from .models import Study
 
 
+class IsDeleteStudy(permissions.BasePermission):
+    def has_permission(self, request, view):
+        # can write custom code
+        try:
+            study = Study.objects.get(pk=view.kwargs['pk'])
+        except ObjectDoesNotExist:
+            return False
+
+        if request.user.is_superuser or request.user == study.user:
+            return True
+
+        return False
+
+
+class IsUpdateStudy(permissions.BasePermission):
+    def has_permission(self, request, view):
+        # can write custom code
+        try:
+            study = Study.objects.get(pk=view.kwargs['pk'])
+        except ObjectDoesNotExist:
+            return False
+
+        if request.user.is_superuser or request.user == study.user:
+            return True
+
+        return False
+
+
 class StudyViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,)
-    # permission_classes = (AllowAny,)
     serializer_class = StudySerializer
+
+    def get_permissions(self):
+        if self.request.method == 'DELETE':
+            self.permission_classes = (IsDeleteStudy, )
+
+        if self.request.method == 'PUT' or self.request.method == 'PATCH':
+            self.permission_classes = (IsUpdateStudy, )
+
+        return super(StudyViewSet, self).get_permissions()
 
     # HTTP GET /study/
     # HTTP GET /study/?search=
@@ -35,7 +72,6 @@ class StudyViewSet(viewsets.ModelViewSet):
                 criteria = Q()
             else:
                 criteria = (Q(is_public=True) | Q(user_id=self.request.user.id))
-                print(tag)
 
         if tag:
             queryset = Study.objects.filter(criteria, Q(tags__name__exact=tag)).order_by('-registered_date')
@@ -146,7 +182,11 @@ class StudyViewSet(viewsets.ModelViewSet):
         if not request.user.is_authenticated:
             return Response('Unauthorized request.', status=401)
 
-        instance = Study.objects.get(pk=pk)
+        try:
+            instance = Study.objects.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response('Internal server error. Object to edit not found.', status=500);
+
         serializer = self.get_serializer(instance)
 
         if request.user == instance.user or request.user.is_superuser:

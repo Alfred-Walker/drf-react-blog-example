@@ -1,5 +1,6 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
 from rest_framework.response import Response
@@ -8,10 +9,46 @@ from .serializers import *
 from .models import Question
 
 
+class IsDeleteQuestion(permissions.BasePermission):
+    def has_permission(self, request, view):
+        # can write custom code
+        try:
+            question = Question.objects.get(pk=view.kwargs['pk'])
+        except ObjectDoesNotExist:
+            return False
+
+        if request.user.is_superuser or request.user == question.user:
+            return True
+
+        return False
+
+
+class IsUpdateQuestion(permissions.BasePermission):
+    def has_permission(self, request, view):
+        # can write custom code
+        try:
+            question = Question.objects.get(pk=view.kwargs['pk'])
+        except ObjectDoesNotExist:
+            return False
+
+        if request.user.is_superuser or request.user == question.user:
+            return True
+
+        return False
+
+
 class QuestionViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,)
-    # permission_classes = (AllowAny,)
     serializer_class = QuestionSerializer
+
+    def get_permissions(self):
+        if self.request.method == 'DELETE':
+            self.permission_classes = (IsDeleteQuestion, )
+
+        if self.request.method == 'PUT' or self.request.method == 'PATCH':
+            self.permission_classes = (IsUpdateQuestion, )
+
+        return super(QuestionViewSet, self).get_permissions()
 
     # HTTP GET /question/
     # HTTP GET /question/?search=
@@ -111,7 +148,11 @@ class QuestionViewSet(viewsets.ModelViewSet):
         if not request.user.is_authenticated:
             return Response('Unauthorized request.', status=401)
 
-        instance = Question.objects.get(pk=pk)
+        try:
+            instance = Question.objects.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response('Internal server error. Object to edit not found.', status=500);
+
         serializer = self.get_serializer(instance)
 
         if request.user == instance.user or request.user.is_superuser:
