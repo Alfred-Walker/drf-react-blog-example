@@ -19,7 +19,7 @@ const RegistrationForm = (props) => {
                 <Header as='h2' color='teal' textAlign='center'>
                     Register your account
                     </Header>
-                <Form size='large' onSubmit={props.handleSubmit}>
+                <Form size='large' onSubmit={props.onSubmit}>
                     <CSRFToken />
                     <Segment stacked>
                         <Form.Input
@@ -28,7 +28,7 @@ const RegistrationForm = (props) => {
                             fluid icon='user'
                             iconPosition='left'
                             placeholder='E-mail address'
-                            onChange={props.handleChange}
+                            onChange={props.onChange}
                             value={props.email}
                             required
                         />
@@ -43,7 +43,7 @@ const RegistrationForm = (props) => {
                             fluid icon='user'
                             iconPosition='left'
                             placeholder='Nickname'
-                            onChange={props.handleChange}
+                            onChange={props.onChange}
                             value={props.nickname}
                             required
                         />
@@ -59,7 +59,7 @@ const RegistrationForm = (props) => {
                             icon='lock'
                             iconPosition='left'
                             placeholder='Password'
-                            onChange={props.handleChange}
+                            onChange={props.onChange}
                             value={props.password}
                             required
                         />
@@ -75,7 +75,7 @@ const RegistrationForm = (props) => {
                             icon='lock'
                             iconPosition='left'
                             placeholder='Password Confirmation'
-                            onChange={props.handleChange}
+                            onChange={props.onChange}
                             value={props.password_confirmation}
                             required
                         />
@@ -106,8 +106,8 @@ const RegistrationForm = (props) => {
 }
 
 RegistrationForm.propTypes = {
-    handleChange: PropTypes.func,
-    handleSubmit: PropTypes.func,
+    onChange: PropTypes.func,
+    onSubmit: PropTypes.func,
     email: PropTypes.string,
     nickname: PropTypes.string,
     password: PropTypes.string,
@@ -116,8 +116,8 @@ RegistrationForm.propTypes = {
 };
 
 RegistrationForm.defaultProps = {
-    handleChange: undefined,
-    handleSubmit: undefined,
+    onChange: undefined,
+    onSubmit: undefined,
     email: "",
     nickname: "",
     password: "",
