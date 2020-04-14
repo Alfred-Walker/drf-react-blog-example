@@ -50,7 +50,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return super(UserViewSet, self).get_permissions()
 
     def get_queryset(self):
-        if self.request.user.is_admin:
+        if self.request.user.is_superuser:
             return User.objects.all().order_by('-date_joined')
         else:
             return User.objects.filter(id=self.request.user.id).order_by('-date_joined')
