@@ -19,6 +19,7 @@ It contains:
   - Customized serializers for Django Models
   - JWT based authentication
   - rest-auth based social account authentication (Google, Kakao, without frontend page)
+  - [**ReDoc**](https://github.com/Redocly/redoc) support via [**drf-yasg**](https://github.com/axnsan12/drf-yasg) :warning: (swagger pages are disabled for jwt auth issues)
 * React based frontend blog services 
   - CRUD of rich text based contents
   - basic auth
@@ -169,8 +170,10 @@ Secret key: None
 
 
 <!-- ISSUES -->
-## Issues (will be added to `Issues` or already added things)
+## Issues
 * Default REST API page and Swagger page are having trouble with rest-auth based authentication.
+* Session based authentication disabled
+* jwt based auth not working with swagger pages
 
 
 <!-- CONTRIBUTING -->
