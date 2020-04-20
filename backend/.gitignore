@@ -5,3 +5,4 @@ myvenv
 db.sqlite3
 .DS_Store
 configs/privates.json
+migrations
