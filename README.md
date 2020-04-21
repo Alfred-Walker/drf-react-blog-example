@@ -60,6 +60,11 @@ It contains:
 |**POST** |/image|Create|Upload file(s) and create new Image item(s)|
 <br/>
 
+* ReDoc of Example Site <br/>
+http://alfredwalker.pythonanywhere.com/redoc/v1/
+
+<br/>
+
 ## Getting Started
 <!-- GETTING STARTED -->
 
