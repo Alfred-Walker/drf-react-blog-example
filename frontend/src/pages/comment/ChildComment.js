@@ -32,7 +32,7 @@ function ChildComment(props) {
 
     return (
         <Comment>
-            <Comment.Avatar as='a' src='https://react.semantic-ui.com/images/avatar/small/jenny.jpg' />
+            <Comment.Avatar as='a' src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
             <Comment.Content>
                 <Comment.Author as='a'>{props.user.nickname}</Comment.Author>
                 <Comment.Metadata>
