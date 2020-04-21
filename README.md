@@ -132,7 +132,7 @@ export const URL_BASE = "http://alfredwalker.pythonanywhere.com/";
 http://alfredwalker.pythonanywhere.com/redoc/v1/  <br/>
 http://alfredwalker.pythonanywhere.com/  <br/>
 
-* blog service example with nginx, and [**pythonanywhere**](https://www.pythonanywhere.com/) (stopped)<br/>
+* blog service example with nginx, and [**pythonanywhere**](https://www.pythonanywhere.com/) <br/>
 https://alfred-walker.duckdns.org/ <br/>
 
 :x: Not available until the [**mixed contents issue**](https://github.com/Alfred-Walker/drf-react-blog-example/issues/6) is resolved. 
