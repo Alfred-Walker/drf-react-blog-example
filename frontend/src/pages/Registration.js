@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import RegistrationForm from './registration/RegistrationForm';
 import * as jwtUtil from '../utils/jwt';
 import * as CSRF from '../utils/csrf';
+import * as Urls from './Urls';
 
 
 class Registration extends Component {
@@ -41,7 +42,7 @@ class Registration extends Component {
         event.preventDefault();
 
         fetch(
-            'http://localhost:8000/rest-auth/registration/', {
+            Urls.URL_REGISTRATION, {
                 method: 'POST',
                 headers: {'Content-Type':'application/json; charset="utf-8"', 'X-CSRFToken': csrftoken},
                 body: JSON.stringify({

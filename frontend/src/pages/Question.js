@@ -9,6 +9,7 @@ import ReadOnlyQuillSegment from '../components/ReadOnlyQuillSegment'
 import CommentThreaded from './comment/CommentThreaded'
 
 import TagList from './tag/TagList';
+import * as Urls from './Urls';
 
 import {
     Button,
@@ -76,7 +77,7 @@ class Questions extends Component {
         event.preventDefault();
 
         fetch(
-            'http://localhost:8000/question/' + id + "/", {
+            Urls.URL_QUESTION_LIST + id + "/", {
             method: 'DELETE',
             headers: {
                 'Authorization': `JWT ${jwt}`,

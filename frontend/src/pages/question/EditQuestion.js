@@ -10,6 +10,7 @@ import './EditQuestion.css'
 import { CSRFToken } from '../../utils/csrf';
 import { QuillFormats, QuillModules } from './quill/Editor'
 import ErrorMessage from '../../components/ErrorMessage'
+import * as Urls from '../Urls';
 
 
 /* References */
@@ -61,7 +62,7 @@ class EditQuestion extends Component {
 
     componentDidMount() {
         if (this.state.isLoading)
-            this.loadStudyFromServer('http://localhost:8000/question/' + this.props.match.params.id + '/edit/')
+            this.loadQuestionFromServer(Urls.URL_QUESTION_LIST + this.props.match.params.id + '/edit/')
 
         var quillEditor = this.editorRef.getEditor();
         quillEditor.getModule('toolbar')
@@ -144,7 +145,7 @@ class EditQuestion extends Component {
         const jwt = jwtUtil.getJwt();
 
         return fetch(
-            'http://localhost:8000/image/', {
+            Urls.URL_IMAGE, {
             method: 'POST',
             headers: {
                 'Authorization': `JWT ${jwt}`,
@@ -233,7 +234,7 @@ class EditQuestion extends Component {
         this.setState({ body: body });
 
         return fetch(
-            'http://localhost:8000/question/' + id + "/", {
+            Urls.URL_QUESTION_LIST + id + "/", {
             method: 'PUT',
             headers: {
                 'Authorization': `JWT ${jwt}`,

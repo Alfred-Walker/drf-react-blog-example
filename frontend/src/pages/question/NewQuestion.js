@@ -10,6 +10,7 @@ import './NewQuestion.css'
 import { CSRFToken } from '../../utils/csrf';
 import { QuillFormats, QuillModules } from './quill/Editor'
 import ErrorMessage from '../../components/ErrorMessage'
+import * as Urls from '../Urls';
 
 
 /* References */
@@ -129,7 +130,7 @@ class NewQuestion extends Component {
         const jwt = jwtUtil.getJwt();
 
         return fetch(
-            'http://localhost:8000/image/', {
+            Urls.URL_IMAGE, {
             method: 'POST',
             headers: {
                 'Authorization': `JWT ${jwt}`,
@@ -180,7 +181,7 @@ class NewQuestion extends Component {
         this.setState({ body: body });
 
         return fetch(
-            'http://localhost:8000/question/', {
+            Urls.URL_QUESTION_LIST, {
             method: 'POST',
             headers: {
                 'Authorization': `JWT ${jwt}`,

@@ -25,7 +25,7 @@ import Authenticated from './app/Authenticated';
 import * as jwtUtil from '../utils/jwt';
 import Error from './Error'
 
-
+import * as Urls from './Urls';
 
 
 class App extends Component {
@@ -101,6 +101,7 @@ class App extends Component {
             loggedInStatus: "LOGGED_IN",
             user: data.user
         });
+        console.log("Login Success", data.user);
     }
 
     onLogout(data) {
@@ -113,6 +114,7 @@ class App extends Component {
             loggedInStatus: "LOGGED_IN",
             user: data.user
         });
+        console.log("Registration Success", data.user);
     }
 
     onTokenRefreshSuccess(data) {
@@ -179,8 +181,8 @@ class App extends Component {
                                     loggedInStatus={this.state.loggedInStatus}
                                     user={this.state.user}
                                     page={1}
-                                    studyListUrl="http://localhost:8000/study/"
-                                    tagListUrl="http://localhost:8000/tag/"
+                                    studyListUrl={Urls.URL_STUDY_LIST}
+                                    tagListUrl={Urls.URL_TAG_LIST}
                                 />
                             )}
                             />
@@ -199,9 +201,9 @@ class App extends Component {
                                     loggedInStatus={this.state.loggedInStatus}
                                     user={this.state.user}
                                     page={1}
-                                    studyListUrl="http://localhost:8000/study/"
-                                    taggedStudyUrl="http://localhost:8000/tag/study?tag="
-                                    taggedQuestionUrl="http://localhost:8000/tag/question?tag="
+                                    studyListUrl={Urls.URL_STUDY_LIST}
+                                    taggedStudyUrl={Urls.URL_TAGGED_STUDY}
+                                    taggedQuestionUrl={Urls.URL_TAGGED_QUESTION}
                                     studyItemPath="/study/"
                                     questionItemPath="/question/"
                                 />
@@ -213,8 +215,8 @@ class App extends Component {
                                     loggedInStatus={this.state.loggedInStatus}
                                     user={this.state.user}
                                     page={1}
-                                    studyListUrl="http://localhost:8000/study/"
-                                    tagListUrl="http://localhost:8000/tag/"
+                                    studyListUrl={Urls.URL_STUDY_LIST}
+                                    tagListUrl={Urls.URL_TAG_LIST}
                                 />
                             )}
                             />
@@ -224,8 +226,8 @@ class App extends Component {
                                     loggedInStatus={this.state.loggedInStatus}
                                     user={this.state.user}
                                     page={1}
-                                    questionListUrl="http://localhost:8000/question/"
-                                    tagListUrl="http://localhost:8000/tag/"
+                                    questionListUrl={Urls.URL_QUESTION_LIST}
+                                    tagListUrl={Urls.URL_TAG_LIST}
                                 />
                             )}
                             />
@@ -266,8 +268,8 @@ class App extends Component {
                                     loggedInStatus={this.state.loggedInStatus}
                                     user={this.state.user}
                                     page={1}
-                                    questionListUrl="http://localhost:8000/question/"
-                                    tagListUrl="http://localhost:8000/tag/"
+                                    questionListUrl={Urls.URL_QUESTION_LIST}
+                                    tagListUrl={Urls.URL_TAG_LIST}
                                 />
                             )}
                             />

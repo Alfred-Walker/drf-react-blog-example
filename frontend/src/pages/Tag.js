@@ -6,6 +6,7 @@ import {
 } from 'semantic-ui-react'
 
 import TitleList from '../components/TitleList'
+import * as Urls from './Urls';
 
 
 function Tags(props) {
@@ -44,8 +45,8 @@ Tags.propTypes = {
 };
 
 Tags.defaultProps = {
-    taggedStudyUrl: "http://localhost:8000/tag/study?tag=",
-    taggedQuestionUrl: "http://localhost:8000/tag/question?tag=",
+    taggedStudyUrl: Urls.URL_TAGGED_STUDY,
+    taggedQuestionUrl: Urls.URL_TAGGED_QUESTION,
     studyItemPath: "/study/",
     questionItemPath: "/question/",
 };

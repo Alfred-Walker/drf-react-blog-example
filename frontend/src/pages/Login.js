@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import LoginForm from './login/LoginForm';
 import * as jwtUtil from '../utils/jwt';
 import * as CSRF from '../utils/csrf';
+import * as Urls from './Urls';
 
 
 class Login extends Component {
@@ -36,7 +37,7 @@ class Login extends Component {
         var csrftoken = CSRF.getCookie('csrftoken');
 
         fetch(
-            'http://localhost:8000/jwt-auth/', {
+            Urls.URL_JWT_AUTH, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json; charset="utf-8"', 'X-CSRFToken': csrftoken },
             body: JSON.stringify({

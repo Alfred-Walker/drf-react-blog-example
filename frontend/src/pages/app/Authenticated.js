@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import * as helpers from '../../utils/jwt';
 import { Dimmer, Loader } from 'semantic-ui-react'
 import handleHttpResponseError from '../../utils/httpResponseError';
+import * as Urls from '../Urls';
 
 
 class Authenticated extends Component {
@@ -37,7 +38,7 @@ class Authenticated extends Component {
         }
 
         fetch(
-            "http://localhost:8000/jwt-auth/verify/", {
+            Urls.URL_JWT_AUTH_VERIFY, {
             method: 'POST',
             headers: { 'Authorization': `JWT ${token}`, 'Content-Type': 'application/json; charset="utf-8"' },
             body: JSON.stringify({

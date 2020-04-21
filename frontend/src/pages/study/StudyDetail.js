@@ -6,6 +6,7 @@ import CommandButtonGroup from '../../components/CommandButtonGroup';
 import ReadOnlyQuillSegment from '../../components/ReadOnlyQuillSegment';
 import handleHttpResponseError from '../../utils/httpResponseError';
 import jwtUtil from '../../utils/jwt';
+import * as Urls from '../Urls';
 
 
 function StudyDetail(props) {
@@ -50,7 +51,7 @@ function StudyDetail(props) {
         event.preventDefault();
 
         fetch(
-            'http://localhost:8000/study/' + id + "/", {
+            Urls.URL_STUDY_LIST + id + "/", {
             method: 'DELETE',
             headers: {
                 'Authorization': `JWT ${jwt}`,
@@ -77,7 +78,7 @@ function StudyDetail(props) {
         function fetchStudyData(loggedInStatus, id) {
             // TODO: Need to pass url from 'App.js' to 'StudyDetail.js' via props
             // TODO: All urls must be managed at one place together
-            loadDataFromServer("http://localhost:8000/study/" + id, onStudyLoadSuccess);
+            loadDataFromServer(Urls.URL_STUDY_LIST + id, onStudyLoadSuccess);
         }
 
         if (!props.study)

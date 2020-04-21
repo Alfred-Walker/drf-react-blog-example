@@ -10,6 +10,7 @@ import './EditStudy.css'
 import { CSRFToken } from '../../utils/csrf';
 import { QuillFormats, QuillModules } from './quill/Editor'
 import ErrorMessage from '../../components/ErrorMessage'
+import * as Urls from '../Urls';
 
 
 /* References */
@@ -63,7 +64,7 @@ class EditStudy extends Component {
 
     componentDidMount() {
         if (this.state.isLoading)
-            this.loadStudyFromServer('http://localhost:8000/study/' + this.props.match.params.id + '/edit/')
+            this.loadStudyFromServer(Urls.URL_STUDY_LIST + this.props.match.params.id + '/edit/')
 
         var quillEditor = this.editorRef.getEditor();
         quillEditor.getModule('toolbar')
@@ -146,7 +147,7 @@ class EditStudy extends Component {
         const jwt = jwtUtil.getJwt();
 
         return fetch(
-            'http://localhost:8000/image/', {
+            Urls.URL_IMAGE, {
             method: 'POST',
             headers: {
                 'Authorization': `JWT ${jwt}`,
@@ -237,7 +238,7 @@ class EditStudy extends Component {
         this.setState({ body: body });
 
         return fetch(
-            'http://localhost:8000/study/' + id + "/", {
+            Urls.URL_STUDY_LIST + id + "/", {
             method: 'PUT',
             headers: {
                 'Authorization': `JWT ${jwt}`,

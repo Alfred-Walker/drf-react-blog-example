@@ -11,6 +11,7 @@ import CountInfo from './home/CountInfo';
 import TitleList from '../components/TitleList'
 
 import * as Utils from '../utils/jwt';
+import * as Urls from './Urls';
 
 
 function Home(props) {
@@ -73,8 +74,8 @@ function Home(props) {
         function fetchData(loggedInStatus) {
             // TODO: Need to pass url from 'App.js' to 'Home.js' via props
             // TODO: All urls must be managed at one place together
-            loadDataFromServer("http://localhost:8000/tag/popular/", onPopularTagsLoadSuccess, onPopularTagsLoadFailure);
-            loadDataFromServer("http://localhost:8000/indicator/count/", onCountInfoLoadSuccess, onCountInfoLoadFailure);
+            loadDataFromServer(Urls.URL_TAG_POPULAR, onPopularTagsLoadSuccess, onPopularTagsLoadFailure);
+            loadDataFromServer(Urls.URL_INDICATOR_COUNT, onCountInfoLoadSuccess, onCountInfoLoadFailure);
         }
 
         fetchData(props.loggedInStatus);
@@ -88,7 +89,7 @@ function Home(props) {
                         <Grid.Column>
                             <TitleList
                                 {...props}
-                                url="http://localhost:8000/study/recent"
+                                url={Urls.URL_STUDY_RECENT}
                                 itemPath="/study/"
                                 perPageCount={10}
                                 header="Recent Studies"
@@ -100,7 +101,7 @@ function Home(props) {
                         <Grid.Column>
                             <TitleList
                                 {...props}
-                                url="http://localhost:8000/question/recent"
+                                url={Urls.URL_QUESTION_RECENT}
                                 itemPath="/question/"
                                 perPageCount={10}
                                 header="Recent Questions"
@@ -115,7 +116,7 @@ function Home(props) {
                                 <Grid.Column>
                                     <TitleList
                                         {...props}
-                                        url="http://localhost:8000/study/my"
+                                        url={Urls.URL_STUDY_MY}
                                         itemPath="/study/"
                                         perPageCount={10}
                                         header="My Studies"
@@ -127,7 +128,7 @@ function Home(props) {
                                 <Grid.Column>
                                     <TitleList
                                         {...props}
-                                        url="http://localhost:8000/question/my"
+                                        url={Urls.URL_QUESTION_MY}
                                         itemPath="/question/"
                                         perPageCount={10}
                                         header="My Questions"
