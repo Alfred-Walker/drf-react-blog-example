@@ -209,7 +209,7 @@ class EditQuestion extends Component {
             // assign new image src urls to existing image urls
             for (var op in ops) {
                 if (ops[op].insert && ops[op].insert.image) {
-                    ops[op].insert.image = imgUrls[index];
+                    ops[op].insert.image = Urls.URL_BASE_UPLOAD + imgUrls[index];
                     index += 1;
                 }
             }
