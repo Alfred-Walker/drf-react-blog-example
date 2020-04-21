@@ -60,11 +60,6 @@ It contains:
 |**POST** |/image|Create|Upload file(s) and create new Image item(s)|
 <br/>
 
-* ReDoc of Example Site <br/>
-http://alfredwalker.pythonanywhere.com/redoc/v1/
-
-<br/>
-
 ## Getting Started
 <!-- GETTING STARTED -->
 
@@ -111,6 +106,7 @@ python manage.py migrate --run-syncdb
 python manage.py runserver # starts the server
 ```
 
+* [**Another case of 'error-no-such-table'**](https://stackoverflow.com/questions/24912173/django-1-7-makemigrations-not-detecting-changes/46362750#46362750)
 
 
 ### React Frontend
@@ -125,6 +121,22 @@ yarn install  # install dependencies
 yarn start
 ```
 
+* Change Base Url of /src/pages/Urls.js
+```sh
+export const URL_BASE = "http://alfredwalker.pythonanywhere.com/";
+```
+
+## Example
+
+* Auto-generated ReDoc & drf site on [**pythonanywherer**](https://www.pythonanywhere.com/)<br/>
+http://alfredwalker.pythonanywhere.com/redoc/v1/  <br/>
+http://alfredwalker.pythonanywhere.com/  <br/>
+
+* blog service example with nginx, and [**pythonanywherer**](https://www.pythonanywhere.com/)
+https://alfred-walker.duckdns.org/ <br/>
+
+:x: Not available until the [**mixed contents issue**](https://github.com/Alfred-Walker/drf-react-blog-example/issues/6) is resolved. 
+<br/>
 
 ## Others
 ### CORS_ORIGIN_WHITELIST Setup
