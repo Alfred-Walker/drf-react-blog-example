@@ -13,7 +13,7 @@ function ChildComment(props) {
         event.preventDefault();
 
         fetch(
-            URL_COMMENT + id + "/", {
+            Urls.URL_COMMENT + id + "/", {
             method: 'DELETE',
             headers: {
                 'Authorization': `JWT ${jwt}`,
