@@ -71,7 +71,7 @@ class App extends Component {
 
         // refresh token
         fetch(
-            'http://localhost:8000/jwt-auth/refresh/', {
+            Urls.URL_JWT_AUTH_REFRESH, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json; charset="utf-8"' },
             body: JSON.stringify({ token: token }),

@@ -6,6 +6,7 @@ export const URL_BASE_UPLOAD = "https://alfredwalker.pythonanywhere.com/";
 
 // jwt
 export const URL_JWT_AUTH = URL_BASE + "jwt-auth/";
+export const URL_JWT_AUTH_REFRESH = URL_JWT_AUTH + "refresh/";
 export const URL_JWT_AUTH_VERIFY = URL_JWT_AUTH + "verify/";
 
 // registration
