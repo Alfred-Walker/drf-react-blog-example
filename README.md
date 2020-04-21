@@ -133,9 +133,8 @@ http://alfredwalker.pythonanywhere.com/redoc/v1/  <br/>
 http://alfredwalker.pythonanywhere.com/  <br/>
 
 * blog service example with nginx, and [**pythonanywhere**](https://www.pythonanywhere.com/) <br/>
-https://alfred-walker.duckdns.org/ <br/>
+https://alfred-walker.duckdns.org/ (:warning: slow, unstable for frequent fix)<br/>
 
-:x: Not available until the [**mixed contents issue**](https://github.com/Alfred-Walker/drf-react-blog-example/issues/6) is resolved. 
 <br/>
 
 ## Others
