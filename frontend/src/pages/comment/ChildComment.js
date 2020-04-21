@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types';
 import { Comment } from 'semantic-ui-react'
 import * as Utils from '../../utils/jwt'
+import * as Urls from '../Urls';
 
 
 function ChildComment(props) {
@@ -12,7 +13,7 @@ function ChildComment(props) {
         event.preventDefault();
 
         fetch(
-            'http://localhost:8000/comment/' + id + "/", {
+            URL_COMMENT + id + "/", {
             method: 'DELETE',
             headers: {
                 'Authorization': `JWT ${jwt}`,

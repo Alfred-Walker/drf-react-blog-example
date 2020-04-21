@@ -4,6 +4,7 @@ import { Accordion, Button, Comment, Form, Header } from 'semantic-ui-react'
 import ChildComment from './ChildComment';
 import * as Utils from '../../utils/jwt'
 import { CSRFToken } from '../../utils/csrf';
+import * as Urls from '../Urls';
 
 
 function CommentThreaded(props) {
@@ -46,7 +47,7 @@ function CommentThreaded(props) {
     event.preventDefault();
 
     fetch(
-      'http://localhost:8000/comment/' + id + "/", {
+      Urls.URL_COMMENT + id + "/", {
       method: 'DELETE',
       headers: {
         'Authorization': `JWT ${jwt}`,
@@ -94,7 +95,7 @@ function CommentThreaded(props) {
     }
 
     fetch(
-      'http://localhost:8000/comment/', {
+      Urls.URL_COMMENT, {
       method: 'POST',
       headers: {
         'Authorization': `JWT ${jwt}`,

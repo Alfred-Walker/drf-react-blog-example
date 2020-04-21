@@ -24,10 +24,12 @@ export const URL_QUESTION_LIST = URL_BASE + "question/";
 export const URL_QUESTION_MY = URL_BASE + "question/my/";
 export const URL_QUESTION_RECENT = URL_BASE + "question/recent/";
 
-
 // tag related
 export const URL_TAG_LIST = URL_BASE + "tag/";
 export const URL_TAG_POPULAR = URL_BASE + "tag/popular/";
+
+// comment related
+export const URL_COMMENT = URL_BASE + "comment/";
 
 // image related
 export const URL_IMAGE = URL_BASE + "image/";
