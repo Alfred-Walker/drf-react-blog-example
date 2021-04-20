@@ -37,7 +37,7 @@ packaging==19.2
 Pillow==7.0.0
 pip-autoremove==0.9.1
 pluggy==0.13.1
-py==1.8.1
+py==1.10.0
 PyJWT==1.7.1
 pylint==2.4.4
 pyparsing==2.4.2
