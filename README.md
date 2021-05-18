@@ -1,4 +1,4 @@
-# drf-react-blog-example
+# drf-react-blog-example (deprecated)
 
 
 [![django-image]][django-url]
