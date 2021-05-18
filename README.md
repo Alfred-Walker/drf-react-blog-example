@@ -11,6 +11,8 @@
 <!-- ABOUT THE PROJECT -->
 ## About
 
+:warning: **THIS REPOSITORY IS DEPREACTED.**
+
 [**drf-react-blog-example**](https://github.com/Alfred-Walker/drf-react-blog-example/) is an example project for Django backend with React frontend.
 
 It contains:
